@@ -24,6 +24,7 @@ set(LLAMA_MODEL_PATH "/mnt/nvme/models/Llama-3.2-1B-Instruct/model.safetensors"
 
 add_executable(cuda_cublas_json
   src/main.cu
+  src/prefill.cu
 )
 
 target_link_libraries(cuda_cublas_json
@@ -45,6 +46,19 @@ if(BUILD_TESTING)
 
   add_test(NAME prompt_tokens_test COMMAND prompt_tokens_test)
   set_tests_properties(prompt_tokens_test PROPERTIES SKIP_RETURN_CODE 77)
+
+  add_executable(prefill_test
+    tests/prefill_test.cu
+    src/prefill.cu
+  )
+
+  target_link_libraries(prefill_test
+    PRIVATE
+      CUDA::cudart
+  )
+
+  add_test(NAME prefill_test COMMAND prefill_test)
+  set_tests_properties(prefill_test PROPERTIES SKIP_RETURN_CODE 77)
 
   add_test(
     NAME llama_model_prompt_gpu_smoke

@@ -4,6 +4,7 @@
 #include <nlohmann/json.hpp>
 
 #include "prompt_tokens.cuh"
+#include "prefill.cuh"
 
 #include <algorithm>
 #include <cctype>
@@ -29,7 +30,7 @@ namespace {
 constexpr double B_TO_MB = 1024.0 * 1024.0;
 constexpr double B_TO_GB = 1024.0 * 1024.0 * 1024.0;
 constexpr size_t COPY_CHUNK_BYTES = 64 * 1024 * 1024;
-constexpr int LLAMA_HIDDEN_SIZE = 2048;
+constexpr int LLAMA_HIDDEN_SIZE = llama_prefill::HIDDEN_SIZE;
 constexpr const char* DEFAULT_MODEL_PATH = "/mnt/nvme/models/Llama-3.2-1B-Instruct/model.safetensors";
 
 void check_cuda(cudaError_t status, const char* call) {
@@ -145,14 +146,6 @@ struct ModelWeights {
   std::vector<__nv_bfloat16*> rms_attn;
   std::vector<__nv_bfloat16*> rms_ffn;
 };
-
-__global__ void embeddingGatherKernel(int* gpu_input_tokens,
-                                      __nv_bfloat16* input_embeddings,
-                                      __nv_bfloat16* embed_tokens) {
-  int workIndex = threadIdx.x + blockIdx.x * 2048;
-  input_embeddings[workIndex] = embed_tokens[gpu_input_tokens[blockIdx.x] * 2048 + threadIdx.x];
-  input_embeddings[workIndex + 1024] = embed_tokens[gpu_input_tokens[blockIdx.x] * 2048 + threadIdx.x + 1024];
-}
 
 size_t checked_element_count(const std::vector<int64_t>& shape, const std::string& name) {
   size_t count = 1;
@@ -395,22 +388,6 @@ void print_mapping_debug(const ModelWeights& weights) {
   std::cout << "\nDirect pointer check: weights.w_k[5]=" << static_cast<void*>(weights.w_k.at(5)) << '\n';
 }
 
-void gather_input_embeddings(const prompt_tokens::GpuPromptTokens& gpu_input_tokens,
-                             __nv_bfloat16* input_embeddings,
-                             const ModelWeights& weights) {
-  if (gpu_input_tokens.count == 0) {
-    return;
-  }
-
-  embeddingGatherKernel<<<static_cast<unsigned int>(gpu_input_tokens.count), 1024>>>(
-      gpu_input_tokens.device_ptr, input_embeddings, weights.tok_embeddings);
-  check_cuda(cudaGetLastError(), "embeddingGatherKernel launch");
-  check_cuda(cudaDeviceSynchronize(), "embeddingGatherKernel");
-
-  std::cout << "Gathered " << gpu_input_tokens.count << " token embeddings into "
-            << static_cast<void*>(input_embeddings) << '\n';
-}
-
 void print_bf16_sample(const std::vector<__nv_bfloat16>& values) {
   std::cout << std::fixed << std::setprecision(6);
   for (size_t i = 0; i < values.size(); ++i) {
@@ -494,10 +471,23 @@ int main(int argc, char** argv) {
 
     copy_payload_to_gpu(metadata, model_weights);
     ModelWeights weights = build_llama_weight_views(metadata, model_weights);
-    gather_input_embeddings(gpu_input_tokens, input_embeddings, weights);
+    __nv_bfloat16* hidden_state = nullptr;
+    __nv_bfloat16* rms_norms = nullptr;
+    check_cuda(cudaMalloc(reinterpret_cast<void**>(&hidden_state), input_embeddings_bytes), "cudaMalloc(hidden_state)");
+    check_cuda(cudaMalloc(reinterpret_cast<void**>(&rms_norms), input_embeddings_bytes), "cudaMalloc(rms_norms)");
+
+    llama_prefill::PrefillWeights prefill_weights;
+    prefill_weights.tok_embeddings = weights.tok_embeddings;
+    prefill_weights.input_layernorm = weights.rms_attn;
+    llama_prefill::prefill(gpu_input_tokens.device_ptr, gpu_input_tokens.count, input_embeddings, hidden_state, rms_norms, prefill_weights);
+    std::cout << "Gathered " << gpu_input_tokens.count << " token embeddings into "
+              << static_cast<void*>(input_embeddings) << '\n';
+
     print_input_embedding_debug(gpu_input_tokens, input_embeddings);
     print_mapping_debug(weights);
 
+    check_cuda(cudaFree(rms_norms), "cudaFree(rms_norms)");
+    check_cuda(cudaFree(hidden_state), "cudaFree(hidden_state)");
     check_cuda(cudaFree(model_weights), "cudaFree(model_weights)");
     check_cuda(cudaFree(input_embeddings), "cudaFree(input_embeddings)");
   } catch (const std::exception& error) {
