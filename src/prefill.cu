@@ -225,11 +225,13 @@ void prefill(const int* gpu_input_tokens,
         throw std::runtime_error("prefill encountered null q_proj weight");
       }
 
-      // We conceptually want Q = inputs * wq^T in row-major form.
-      // cublasGemmEx interprets buffers as column-major, so feeding row-major A/B
-      // effectively means GEMM computes and stores C^T for our row-major C.
-      // With this operand order/transposition setup, the output buffer already
-      // corresponds to the transposed result we need, so no extra transpose pass.
+      // Row-major target we want: Q = R * Wq^T, where
+      //   R  = rms_norms [P, H], Wq = w_q [H, H], Q [P, H].
+      // cuBLAS reads all buffers as column-major:
+      //   R(row-major [P, H]) appears as R^T [H, P].
+      //   Wq(row-major [H, H]) appears as Wq^T [H, H], and opA=T flips it to Wq.
+      // So GEMM computes C_col = Wq * R^T = (R * Wq^T)^T.
+      // Writing C in column-major gives the same bytes as row-major Q [P, H].
       cublasStatus_t q_proj_status = cublasGemmEx(cublas_guard.handle,
                                                   CUBLAS_OP_T,
                                                   CUBLAS_OP_N,
@@ -258,12 +260,13 @@ void prefill(const int* gpu_input_tokens,
         throw std::runtime_error("prefill encountered null k_proj weight");
       }
 
-      // Input activations: rms_norms [prompt_len, HIDDEN_SIZE] (row-major).
-      // Input weights: w_k [KV_DIM, HIDDEN_SIZE] (row-major, out x in).
-      // Output buffer: k_proj_batched_buffer receives K_proj [prompt_len, KV_DIM].
-      // Since cuBLAS interprets buffers as column-major, this call computes the
-      // equivalent transposed GEMM (W_k^T * rms_norms) and writes K_proj^T in
-      // column-major, which matches our row-major K_proj layout in memory.
+      // Row-major target we want: K = R * Wk^T, where
+      //   R  = rms_norms [P, H], Wk = w_k [KV, H], K [P, KV].
+      // cuBLAS reads row-major buffers as column-major:
+      //   R(row-major [P, H]) appears as R^T [H, P].
+      //   Wk(row-major [KV, H]) appears as Wk^T [H, KV], and opA=T flips it to Wk.
+      // So GEMM computes C_col = Wk * R^T = (R * Wk^T)^T.
+      // Writing C in column-major gives the same bytes as row-major K [P, KV].
       cublasStatus_t k_proj_status = cublasGemmEx(cublas_guard.handle,
                                                   CUBLAS_OP_T,
                                                   CUBLAS_OP_N,
@@ -292,8 +295,11 @@ void prefill(const int* gpu_input_tokens,
         throw std::runtime_error("prefill encountered null v_proj weight");
       }
 
-      // Same transpose/layout trick as K projection:
-      // output V_proj [prompt_len, KV_DIM] is written into v_proj_batched_buffer.
+      // Row-major target we want: V = R * Wv^T, where
+      //   R  = rms_norms [P, H], Wv = w_v [KV, H], V [P, KV].
+      // cuBLAS sees R as R^T and sees Wv as Wv^T, then opA=T flips Wv back.
+      // So GEMM computes C_col = Wv * R^T = (R * Wv^T)^T.
+      // Writing C in column-major gives row-major V [P, KV] in this buffer.
       cublasStatus_t v_proj_status = cublasGemmEx(cublas_guard.handle,
                                                   CUBLAS_OP_T,
                                                   CUBLAS_OP_N,
