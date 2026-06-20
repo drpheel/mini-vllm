@@ -157,6 +157,8 @@ void prefill(const int* gpu_input_tokens,
              __nv_bfloat16* hidden_state,
              __nv_bfloat16* rms_norms,
              __nv_bfloat16* q_proj,
+             __nv_bfloat16* k_proj_batched_buffer,
+             __nv_bfloat16* v_proj_batched_buffer,
              const PrefillWeights& weights) {
   if (prompt_len == 0) {
     return;
@@ -170,6 +172,12 @@ void prefill(const int* gpu_input_tokens,
   if (!weights.w_q.empty() && weights.w_q.size() != weights.input_layernorm.size()) {
     throw std::runtime_error("prefill requires w_q to match input_layernorm size when q-proj is enabled");
   }
+  if (!weights.w_k.empty() && weights.w_k.size() != weights.input_layernorm.size()) {
+    throw std::runtime_error("prefill requires w_k to match input_layernorm size when k-proj is enabled");
+  }
+  if (!weights.w_v.empty() && weights.w_v.size() != weights.input_layernorm.size()) {
+    throw std::runtime_error("prefill requires w_v to match input_layernorm size when v-proj is enabled");
+  }
   if (prompt_len > static_cast<size_t>(std::numeric_limits<int>::max())) {
     throw std::runtime_error("prefill prompt_len exceeds int range for cuBLAS");
   }
@@ -179,16 +187,27 @@ void prefill(const int* gpu_input_tokens,
              "cudaMemcpy(prefill hidden_state <- input_embeddings)");
 
   CublasHandleGuard cublas_guard;
-  if (!weights.w_q.empty()) {
-    if (q_proj == nullptr) {
-      throw std::runtime_error("prefill q-proj is enabled but q_proj buffer is null");
-    }
+  if (!weights.w_q.empty() || !weights.w_k.empty() || !weights.w_v.empty()) {
     check_cublas(cublasCreate(&cublas_guard.handle), "cublasCreate(prefill)");
+  }
+  if (!weights.w_q.empty() && q_proj == nullptr) {
+    throw std::runtime_error("prefill q-proj is enabled but q_proj buffer is null");
+  }
+  if (!weights.w_k.empty() && k_proj_batched_buffer == nullptr) {
+    throw std::runtime_error("prefill k-proj is enabled but k_proj_batched_buffer is null");
+  }
+  if (!weights.w_v.empty() && v_proj_batched_buffer == nullptr) {
+    throw std::runtime_error("prefill v-proj is enabled but v_proj_batched_buffer is null");
   }
 
   const float q_proj_alpha = 1.0f;
   const float q_proj_beta = 0.0f;
+  const float k_proj_alpha = 1.0f;
+  const float k_proj_beta = 0.0f;
+  const float v_proj_alpha = 1.0f;
+  const float v_proj_beta = 0.0f;
   const int embedding_length = HIDDEN_SIZE;
+  const int kv_dim = KV_DIM;
   const int prompt_len_int = static_cast<int>(prompt_len);
 
   for (size_t layer = 0; layer < weights.input_layernorm.size(); ++layer) {
@@ -231,6 +250,70 @@ void prefill(const int* gpu_input_tokens,
                                                   CUBLAS_COMPUTE_32F,
                                                   CUBLAS_GEMM_DEFAULT);
       check_cublas(q_proj_status, "cublasGemmEx(prefill q_proj)");
+    }
+
+    if (!weights.w_k.empty()) {
+      const __nv_bfloat16* w_k = weights.w_k[layer];
+      if (w_k == nullptr) {
+        throw std::runtime_error("prefill encountered null k_proj weight");
+      }
+
+      // Input activations: rms_norms [prompt_len, HIDDEN_SIZE] (row-major).
+      // Input weights: w_k [KV_DIM, HIDDEN_SIZE] (row-major, out x in).
+      // Output buffer: k_proj_batched_buffer receives K_proj [prompt_len, KV_DIM].
+      // Since cuBLAS interprets buffers as column-major, this call computes the
+      // equivalent transposed GEMM (W_k^T * rms_norms) and writes K_proj^T in
+      // column-major, which matches our row-major K_proj layout in memory.
+      cublasStatus_t k_proj_status = cublasGemmEx(cublas_guard.handle,
+                                                  CUBLAS_OP_T,
+                                                  CUBLAS_OP_N,
+                                                  kv_dim,
+                                                  prompt_len_int,
+                                                  embedding_length,
+                                                  &k_proj_alpha,
+                                                  w_k,
+                                                  CUDA_R_16BF,
+                                                  embedding_length,
+                                                  rms_norms,
+                                                  CUDA_R_16BF,
+                                                  embedding_length,
+                                                  &k_proj_beta,
+                                                  k_proj_batched_buffer,
+                                                  CUDA_R_16BF,
+                                                  kv_dim,
+                                                  CUBLAS_COMPUTE_32F,
+                                                  CUBLAS_GEMM_DEFAULT);
+      check_cublas(k_proj_status, "cublasGemmEx(prefill k_proj)");
+    }
+
+    if (!weights.w_v.empty()) {
+      const __nv_bfloat16* w_v = weights.w_v[layer];
+      if (w_v == nullptr) {
+        throw std::runtime_error("prefill encountered null v_proj weight");
+      }
+
+      // Same transpose/layout trick as K projection:
+      // output V_proj [prompt_len, KV_DIM] is written into v_proj_batched_buffer.
+      cublasStatus_t v_proj_status = cublasGemmEx(cublas_guard.handle,
+                                                  CUBLAS_OP_T,
+                                                  CUBLAS_OP_N,
+                                                  kv_dim,
+                                                  prompt_len_int,
+                                                  embedding_length,
+                                                  &v_proj_alpha,
+                                                  w_v,
+                                                  CUDA_R_16BF,
+                                                  embedding_length,
+                                                  rms_norms,
+                                                  CUDA_R_16BF,
+                                                  embedding_length,
+                                                  &v_proj_beta,
+                                                  v_proj_batched_buffer,
+                                                  CUDA_R_16BF,
+                                                  kv_dim,
+                                                  CUBLAS_COMPUTE_32F,
+                                                  CUBLAS_GEMM_DEFAULT);
+      check_cublas(v_proj_status, "cublasGemmEx(prefill v_proj)");
     }
   }
 }

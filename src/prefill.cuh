@@ -8,11 +8,14 @@
 namespace llama_prefill {
 
 constexpr int HIDDEN_SIZE = 2048;
+constexpr int KV_DIM = 512;
 
 struct PrefillWeights {
   __nv_bfloat16* tok_embeddings = nullptr;
   std::vector<__nv_bfloat16*> input_layernorm;
   std::vector<__nv_bfloat16*> w_q;
+  std::vector<__nv_bfloat16*> w_k;
+  std::vector<__nv_bfloat16*> w_v;
 };
 
 void embedding_gather(const int* gpu_input_tokens,
@@ -35,6 +38,8 @@ void prefill(const int* gpu_input_tokens,
              __nv_bfloat16* hidden_state,
              __nv_bfloat16* rms_norms,
              __nv_bfloat16* q_proj,
+             __nv_bfloat16* k_proj_batched_buffer,
+             __nv_bfloat16* v_proj_batched_buffer,
              const PrefillWeights& weights);
 
 }  // namespace llama_prefill

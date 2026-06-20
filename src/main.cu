@@ -474,22 +474,34 @@ int main(int argc, char** argv) {
     __nv_bfloat16* hidden_state = nullptr;
     __nv_bfloat16* rms_norms = nullptr;
     __nv_bfloat16* q_proj = nullptr;
+    __nv_bfloat16* k_proj_batched_buffer = nullptr;
+    __nv_bfloat16* v_proj_batched_buffer = nullptr;
+    const size_t kv_proj_bytes =
+        static_cast<size_t>(prompt_tokens::MAX_PROMPT_LEN) * llama_prefill::KV_DIM * sizeof(__nv_bfloat16);
     check_cuda(cudaMalloc(reinterpret_cast<void**>(&hidden_state), input_embeddings_bytes), "cudaMalloc(hidden_state)");
     check_cuda(cudaMalloc(reinterpret_cast<void**>(&rms_norms), input_embeddings_bytes), "cudaMalloc(rms_norms)");
     check_cuda(cudaMalloc(reinterpret_cast<void**>(&q_proj), input_embeddings_bytes), "cudaMalloc(q_proj)");
+    check_cuda(cudaMalloc(reinterpret_cast<void**>(&k_proj_batched_buffer), kv_proj_bytes),
+               "cudaMalloc(k_proj_batched_buffer)");
+    check_cuda(cudaMalloc(reinterpret_cast<void**>(&v_proj_batched_buffer), kv_proj_bytes),
+               "cudaMalloc(v_proj_batched_buffer)");
 
     llama_prefill::PrefillWeights prefill_weights;
     prefill_weights.tok_embeddings = weights.tok_embeddings;
     prefill_weights.input_layernorm = weights.rms_attn;
     prefill_weights.w_q = weights.w_q;
+    prefill_weights.w_k = weights.w_k;
+    prefill_weights.w_v = weights.w_v;
     llama_prefill::prefill(gpu_input_tokens.device_ptr, gpu_input_tokens.count, input_embeddings, hidden_state, rms_norms, q_proj,
-                           prefill_weights);
+                           k_proj_batched_buffer, v_proj_batched_buffer, prefill_weights);
     std::cout << "Gathered " << gpu_input_tokens.count << " token embeddings into "
               << static_cast<void*>(input_embeddings) << '\n';
 
     print_input_embedding_debug(gpu_input_tokens, input_embeddings);
     print_mapping_debug(weights);
 
+    check_cuda(cudaFree(v_proj_batched_buffer), "cudaFree(v_proj_batched_buffer)");
+    check_cuda(cudaFree(k_proj_batched_buffer), "cudaFree(k_proj_batched_buffer)");
     check_cuda(cudaFree(q_proj), "cudaFree(q_proj)");
     check_cuda(cudaFree(rms_norms), "cudaFree(rms_norms)");
     check_cuda(cudaFree(hidden_state), "cudaFree(hidden_state)");
