@@ -473,19 +473,24 @@ int main(int argc, char** argv) {
     ModelWeights weights = build_llama_weight_views(metadata, model_weights);
     __nv_bfloat16* hidden_state = nullptr;
     __nv_bfloat16* rms_norms = nullptr;
+    __nv_bfloat16* q_proj = nullptr;
     check_cuda(cudaMalloc(reinterpret_cast<void**>(&hidden_state), input_embeddings_bytes), "cudaMalloc(hidden_state)");
     check_cuda(cudaMalloc(reinterpret_cast<void**>(&rms_norms), input_embeddings_bytes), "cudaMalloc(rms_norms)");
+    check_cuda(cudaMalloc(reinterpret_cast<void**>(&q_proj), input_embeddings_bytes), "cudaMalloc(q_proj)");
 
     llama_prefill::PrefillWeights prefill_weights;
     prefill_weights.tok_embeddings = weights.tok_embeddings;
     prefill_weights.input_layernorm = weights.rms_attn;
-    llama_prefill::prefill(gpu_input_tokens.device_ptr, gpu_input_tokens.count, input_embeddings, hidden_state, rms_norms, prefill_weights);
+    prefill_weights.w_q = weights.w_q;
+    llama_prefill::prefill(gpu_input_tokens.device_ptr, gpu_input_tokens.count, input_embeddings, hidden_state, rms_norms, q_proj,
+                           prefill_weights);
     std::cout << "Gathered " << gpu_input_tokens.count << " token embeddings into "
               << static_cast<void*>(input_embeddings) << '\n';
 
     print_input_embedding_debug(gpu_input_tokens, input_embeddings);
     print_mapping_debug(weights);
 
+    check_cuda(cudaFree(q_proj), "cudaFree(q_proj)");
     check_cuda(cudaFree(rms_norms), "cudaFree(rms_norms)");
     check_cuda(cudaFree(hidden_state), "cudaFree(hidden_state)");
     check_cuda(cudaFree(model_weights), "cudaFree(model_weights)");

@@ -55,6 +55,7 @@ if(BUILD_TESTING)
   target_link_libraries(prefill_test
     PRIVATE
       CUDA::cudart
+      CUDA::cublas
   )
 
   add_test(NAME prefill_test COMMAND prefill_test)

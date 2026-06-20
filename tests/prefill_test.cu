@@ -43,7 +43,10 @@ int run_prefill_test() {
   __nv_bfloat16* gpu_input_embeddings = nullptr;
   __nv_bfloat16* gpu_hidden_state = nullptr;
   __nv_bfloat16* gpu_rms_norms = nullptr;
+  __nv_bfloat16* gpu_q_proj = nullptr;
   __nv_bfloat16* gpu_layernorm_weights = nullptr;
+  __nv_bfloat16* gpu_residual_input = nullptr;
+  __nv_bfloat16* gpu_residual_embeds = nullptr;
 
   check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_prompt_tokens), prompt_tokens.size() * sizeof(int)),
              "cudaMalloc(gpu_prompt_tokens)");
@@ -51,8 +54,11 @@ int run_prefill_test() {
   check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_input_embeddings), hidden_bytes), "cudaMalloc(gpu_input_embeddings)");
   check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_hidden_state), hidden_bytes), "cudaMalloc(gpu_hidden_state)");
   check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_rms_norms), hidden_bytes), "cudaMalloc(gpu_rms_norms)");
+  check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_q_proj), hidden_bytes), "cudaMalloc(gpu_q_proj)");
   check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_layernorm_weights), layernorm_cpu.size() * sizeof(__nv_bfloat16)),
              "cudaMalloc(gpu_layernorm_weights)");
+  check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_residual_input), hidden_bytes), "cudaMalloc(gpu_residual_input)");
+  check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_residual_embeds), hidden_bytes), "cudaMalloc(gpu_residual_embeds)");
 
   check_cuda(cudaMemcpy(gpu_prompt_tokens, prompt_tokens.data(), prompt_tokens.size() * sizeof(int), cudaMemcpyHostToDevice),
              "cudaMemcpy(prompt H2D)");
@@ -61,21 +67,53 @@ int run_prefill_test() {
                         cudaMemcpyHostToDevice),
              "cudaMemcpy(layernorm H2D)");
 
+  std::vector<__nv_bfloat16> residual_input_cpu(prompt_len * llama_prefill::HIDDEN_SIZE, __float2bfloat16(0.25f));
+  std::vector<__nv_bfloat16> residual_embed_cpu(prompt_len * llama_prefill::HIDDEN_SIZE, __float2bfloat16(0.75f));
+  check_cuda(cudaMemcpy(gpu_residual_input, residual_input_cpu.data(), hidden_bytes, cudaMemcpyHostToDevice),
+             "cudaMemcpy(residual input H2D)");
+  check_cuda(cudaMemcpy(gpu_residual_embeds, residual_embed_cpu.data(), hidden_bytes, cudaMemcpyHostToDevice),
+             "cudaMemcpy(residual embeds H2D)");
+
+  llama_prefill::residual_add(gpu_residual_input, gpu_residual_embeds, prompt_len);
+
+  std::vector<__nv_bfloat16> residual_out(prompt_len * llama_prefill::HIDDEN_SIZE);
+  check_cuda(cudaMemcpy(residual_out.data(), gpu_residual_input, hidden_bytes, cudaMemcpyDeviceToHost),
+             "cudaMemcpy(residual D2H)");
+
+  const std::vector<size_t> residual_checks{
+      0,
+      1023,
+      1024,
+      llama_prefill::HIDDEN_SIZE,
+      llama_prefill::HIDDEN_SIZE + 1024,
+      prompt_len * llama_prefill::HIDDEN_SIZE - 1};
+  for (const size_t idx : residual_checks) {
+    require(std::fabs(__bfloat162float(residual_out[idx]) - 1.0f) < 0.01f, "residual_add produced unexpected value");
+  }
+
   llama_prefill::PrefillWeights weights;
   weights.tok_embeddings = gpu_embed_tokens;
   weights.input_layernorm.push_back(gpu_layernorm_weights);
 
-  llama_prefill::prefill(gpu_prompt_tokens, prompt_len, gpu_input_embeddings, gpu_hidden_state, gpu_rms_norms, weights);
+  llama_prefill::prefill(gpu_prompt_tokens, prompt_len, gpu_input_embeddings, gpu_hidden_state, gpu_rms_norms, gpu_q_proj, weights);
 
   std::vector<__nv_bfloat16> hidden_out(prompt_len * llama_prefill::HIDDEN_SIZE);
   check_cuda(cudaMemcpy(hidden_out.data(), gpu_hidden_state, hidden_bytes, cudaMemcpyDeviceToHost), "cudaMemcpy(hidden D2H)");
 
-  const float expected = 1.0f / std::sqrt(1.0f + 1.0e-5f);
-  for (size_t i = 0; i < hidden_out.size(); ++i) {
-    const float actual = __bfloat162float(hidden_out[i]);
-    require(std::fabs(actual - expected) < 0.015f, "prefill output does not match expected RMS norm value");
-  }
+  const float inv_rms = 1.0f / std::sqrt(1.0f + 1.0e-5f);
 
+  const float token0_dim0 = __bfloat162float(hidden_out[0]);
+  require(std::fabs(token0_dim0 - inv_rms) < 0.02f, "token 0 should remain unchanged by RoPE angle 0");
+
+  const size_t token1_base = llama_prefill::HIDDEN_SIZE;
+  const float token1_dim0 = __bfloat162float(hidden_out[token1_base]);
+  const float token1_dim1 = __bfloat162float(hidden_out[token1_base + 1]);
+  const float expected_dim0 = (std::cos(1.0f) - std::sin(1.0f)) * inv_rms;
+  const float expected_dim1 = (std::sin(1.0f) + std::cos(1.0f)) * inv_rms;
+  require(std::fabs(token1_dim0 - expected_dim0) < 0.03f, "token 1 dim0 did not match expected RoPE rotation");
+  require(std::fabs(token1_dim1 - expected_dim1) < 0.03f, "token 1 dim1 did not match expected RoPE rotation");
+
+  check_cuda(cudaFree(gpu_q_proj), "cudaFree(gpu_q_proj)");
   check_cuda(cudaFree(gpu_layernorm_weights), "cudaFree(gpu_layernorm_weights)");
   check_cuda(cudaFree(gpu_rms_norms), "cudaFree(gpu_rms_norms)");
   check_cuda(cudaFree(gpu_hidden_state), "cudaFree(gpu_hidden_state)");
