@@ -21,6 +21,11 @@ void check_cuda(cudaError_t status, const char* call) {
   }
 }
 
+float rope_theta_for_pair(int pair_index, int head_dim) {
+  const int double_i = 2 * pair_index;
+  return 1.0f / std::pow(500000.0f, static_cast<float>(double_i) / static_cast<float>(head_dim));
+}
+
 int run_prefill_test() {
   int device_count = 0;
   const cudaError_t device_status = cudaGetDeviceCount(&device_count);
@@ -167,15 +172,36 @@ int run_prefill_test() {
     const size_t q_base = token * llama_prefill::HIDDEN_SIZE;
     const size_t kv_base = token * llama_prefill::KV_DIM;
 
-    require(std::fabs(__bfloat162float(q_proj_out[q_base + 0]) - inv_rms) < 0.02f, "q_proj dim0 mismatch");
-    require(std::fabs(__bfloat162float(q_proj_out[q_base + 1]) - (2.0f * inv_rms)) < 0.03f, "q_proj dim1 mismatch");
-    require(std::fabs(__bfloat162float(q_proj_out[q_base + 2]) - (-0.5f * inv_rms)) < 0.02f, "q_proj dim2 mismatch");
-    require(std::fabs(__bfloat162float(q_proj_out[q_base + 3])) < 0.01f, "q_proj dim3 should stay near zero");
+    const float token_pos = static_cast<float>(token);
+    const float q_pair0_angle = token_pos * rope_theta_for_pair(0, 64);
+    const float q_pair1_angle = token_pos * rope_theta_for_pair(1, 64);
+    const float q_in0 = inv_rms;
+    const float q_in1 = 2.0f * inv_rms;
+    const float q_in2 = -0.5f * inv_rms;
+    const float q_expected0 = q_in0 * std::cos(q_pair0_angle) - q_in1 * std::sin(q_pair0_angle);
+    const float q_expected1 = q_in0 * std::sin(q_pair0_angle) + q_in1 * std::cos(q_pair0_angle);
+    const float q_expected2 = q_in2 * std::cos(q_pair1_angle);
+    const float q_expected3 = q_in2 * std::sin(q_pair1_angle);
 
-    require(std::fabs(__bfloat162float(k_proj_out[kv_base + 0]) - (1.5f * inv_rms)) < 0.03f, "k_proj dim0 mismatch");
-    require(std::fabs(__bfloat162float(k_proj_out[kv_base + 1]) - (-1.0f * inv_rms)) < 0.03f, "k_proj dim1 mismatch");
-    require(std::fabs(__bfloat162float(k_proj_out[kv_base + 2]) - (0.25f * inv_rms)) < 0.02f, "k_proj dim2 mismatch");
-    require(std::fabs(__bfloat162float(k_proj_out[kv_base + 3])) < 0.01f, "k_proj dim3 should stay near zero");
+    require(std::fabs(__bfloat162float(q_proj_out[q_base + 0]) - q_expected0) < 0.05f, "q_proj dim0 mismatch");
+    require(std::fabs(__bfloat162float(q_proj_out[q_base + 1]) - q_expected1) < 0.05f, "q_proj dim1 mismatch");
+    require(std::fabs(__bfloat162float(q_proj_out[q_base + 2]) - q_expected2) < 0.03f, "q_proj dim2 mismatch");
+    require(std::fabs(__bfloat162float(q_proj_out[q_base + 3]) - q_expected3) < 0.03f, "q_proj dim3 mismatch");
+
+    const float k_pair0_angle = token_pos * rope_theta_for_pair(0, 64);
+    const float k_pair1_angle = token_pos * rope_theta_for_pair(1, 64);
+    const float k_in0 = 1.5f * inv_rms;
+    const float k_in1 = -1.0f * inv_rms;
+    const float k_in2 = 0.25f * inv_rms;
+    const float k_expected0 = k_in0 * std::cos(k_pair0_angle) - k_in1 * std::sin(k_pair0_angle);
+    const float k_expected1 = k_in0 * std::sin(k_pair0_angle) + k_in1 * std::cos(k_pair0_angle);
+    const float k_expected2 = k_in2 * std::cos(k_pair1_angle);
+    const float k_expected3 = k_in2 * std::sin(k_pair1_angle);
+
+    require(std::fabs(__bfloat162float(k_proj_out[kv_base + 0]) - k_expected0) < 0.05f, "k_proj dim0 mismatch");
+    require(std::fabs(__bfloat162float(k_proj_out[kv_base + 1]) - k_expected1) < 0.05f, "k_proj dim1 mismatch");
+    require(std::fabs(__bfloat162float(k_proj_out[kv_base + 2]) - k_expected2) < 0.03f, "k_proj dim2 mismatch");
+    require(std::fabs(__bfloat162float(k_proj_out[kv_base + 3]) - k_expected3) < 0.03f, "k_proj dim3 mismatch");
 
     require(std::fabs(__bfloat162float(v_proj_out[kv_base + 0]) - (-2.0f * inv_rms)) < 0.04f, "v_proj dim0 mismatch");
     require(std::fabs(__bfloat162float(v_proj_out[kv_base + 1]) - (0.5f * inv_rms)) < 0.02f, "v_proj dim1 mismatch");

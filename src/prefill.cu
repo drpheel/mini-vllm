@@ -91,6 +91,178 @@ __global__ void residualKernel(__nv_bfloat16* input, const __nv_bfloat16* input_
       static_cast<__nv_bfloat16>(static_cast<float>(input[work_index + 1024]) + static_cast<float>(input_embeds[work_index + 1024]));
 }
 
+__global__ void siluKernel(__nv_bfloat16* a, const __nv_bfloat16* b) {
+  const int work_index = threadIdx.x + blockIdx.x * 8192;
+  for (int i = 0; i < 8192; i += 1024) {
+    const float a_value = static_cast<float>(a[work_index + i]);
+    const float b_value = static_cast<float>(b[work_index + i]);
+    a[work_index + i] = static_cast<__nv_bfloat16>(a_value * (1.0f / (1.0f + expf(-a_value))) * b_value);
+  }
+}
+
+__global__ void causalMaskKernel(__nv_bfloat16* input, int num_tokens) {
+  if (threadIdx.x + blockIdx.x * blockDim.x >= num_tokens * num_tokens * NUM_Q_HEADS) {
+    return;
+  }
+
+  const int column = threadIdx.x;
+  const int row = blockIdx.x % num_tokens;
+  if (column > row) {
+    input[blockIdx.x * num_tokens + threadIdx.x] = __float2bfloat16(-HUGE_VALF);
+  }
+}
+
+void scatter_kv_to_paged_attention_cache(const __nv_bfloat16* k_proj_batched_buffer,
+                                         const __nv_bfloat16* v_proj_batched_buffer,
+                                         size_t prompt_len,
+                                         size_t layer,
+                                         size_t num_layers,
+                                         int kv_dim,
+                                         PagedAttentionState* paged_attention_state) {
+  if (paged_attention_state == nullptr) {
+    return;
+  }
+  if (paged_attention_state->block_size <= 0) {
+    throw std::runtime_error("paged attention requires positive block_size");
+  }
+  if (paged_attention_state->max_blocks_per_seq <= 0) {
+    throw std::runtime_error("paged attention requires positive max_blocks_per_seq");
+  }
+  if (paged_attention_state->kv_cache == nullptr ||
+      paged_attention_state->block_table == nullptr ||
+      paged_attention_state->free_blocks == nullptr) {
+    throw std::runtime_error("paged attention requires kv_cache, block_table, and free_blocks");
+  }
+  if (paged_attention_state->slot < 0) {
+    throw std::runtime_error("paged attention requires non-negative slot");
+  }
+  if (num_layers == 0) {
+    throw std::runtime_error("paged attention requires at least one layer");
+  }
+  if (paged_attention_state->block_bytes == 0) {
+    throw std::runtime_error("paged attention requires positive block_bytes");
+  }
+  if (paged_attention_state->v_offset >= paged_attention_state->block_bytes) {
+    throw std::runtime_error("paged attention requires v_offset < block_bytes");
+  }
+
+  const int prompt_len_int = static_cast<int>(prompt_len);
+  for (int token_idx = 0; token_idx < prompt_len_int; token_idx += paged_attention_state->block_size) {
+    int num_tokens_to_copy = prompt_len_int - token_idx;
+    if (num_tokens_to_copy > paged_attention_state->block_size) {
+      num_tokens_to_copy = paged_attention_state->block_size;
+    }
+
+    const int block_idx = token_idx / paged_attention_state->block_size;
+    if (block_idx >= paged_attention_state->max_blocks_per_seq) {
+      throw std::runtime_error("paged attention block_idx exceeds max_blocks_per_seq");
+    }
+
+    const size_t block_table_index =
+        static_cast<size_t>(paged_attention_state->slot) * num_layers * paged_attention_state->max_blocks_per_seq +
+        layer * paged_attention_state->max_blocks_per_seq + static_cast<size_t>(block_idx);
+    int block = paged_attention_state->block_table[block_table_index];
+    if (block == -1) {
+      if (paged_attention_state->free_blocks_count == 0) {
+        throw std::runtime_error("paged attention has no free blocks available");
+      }
+      const size_t free_block_idx = paged_attention_state->free_blocks_count - 1;
+      block = paged_attention_state->free_blocks[free_block_idx];
+      paged_attention_state->free_blocks_count = free_block_idx;
+      paged_attention_state->block_table[block_table_index] = block;
+    } else {
+      throw std::runtime_error("paged attention expected unallocated block during prefill");
+    }
+
+    __nv_bfloat16* k_cache_ptr = reinterpret_cast<__nv_bfloat16*>(
+        reinterpret_cast<char*>(paged_attention_state->kv_cache) + static_cast<size_t>(block) * paged_attention_state->block_bytes);
+    const __nv_bfloat16* k_proj_ptr = k_proj_batched_buffer + static_cast<size_t>(token_idx) * kv_dim;
+    check_cuda(cudaMemcpy(k_cache_ptr,
+                          k_proj_ptr,
+                          static_cast<size_t>(num_tokens_to_copy) * kv_dim * sizeof(__nv_bfloat16),
+                          cudaMemcpyDeviceToDevice),
+               "cudaMemcpy(prefill paged attention K)");
+
+    __nv_bfloat16* v_cache_ptr = reinterpret_cast<__nv_bfloat16*>(
+        reinterpret_cast<char*>(paged_attention_state->kv_cache) + static_cast<size_t>(block) * paged_attention_state->block_bytes +
+        paged_attention_state->v_offset);
+    const __nv_bfloat16* v_proj_ptr = v_proj_batched_buffer + static_cast<size_t>(token_idx) * kv_dim;
+    check_cuda(cudaMemcpy(v_cache_ptr,
+                          v_proj_ptr,
+                          static_cast<size_t>(num_tokens_to_copy) * kv_dim * sizeof(__nv_bfloat16),
+                          cudaMemcpyDeviceToDevice),
+               "cudaMemcpy(prefill paged attention V)");
+  }
+}
+
+void compute_prefill_attention_scores_gqa(cublasHandle_t cublas_handle,
+                                          const __nv_bfloat16* q_proj,
+                                          const __nv_bfloat16* k_proj_batched_buffer,
+                                          size_t prompt_len,
+                                          size_t layer,
+                                          __nv_bfloat16* prefill_attn_scores) {
+  if (prefill_attn_scores == nullptr) {
+    return;
+  }
+  if (q_proj == nullptr || k_proj_batched_buffer == nullptr) {
+    throw std::runtime_error("prefill attention scoring requires q_proj and k_proj buffers");
+  }
+  static_assert(HIDDEN_SIZE % HEAD_DIM == 0, "HIDDEN_SIZE must be divisible by HEAD_DIM");
+  static_assert(KV_DIM % HEAD_DIM == 0, "KV_DIM must be divisible by HEAD_DIM");
+  static_assert(NUM_Q_HEADS % NUM_KV_HEADS == 0, "NUM_Q_HEADS must be divisible by NUM_KV_HEADS");
+
+  const int prompt_len_int = static_cast<int>(prompt_len);
+  const float attn_alpha = 1.0f / sqrtf(static_cast<float>(HEAD_DIM));
+  const float attn_beta = 0.0f;
+  const size_t layer_offset = layer * static_cast<size_t>(NUM_Q_HEADS) * prompt_len * prompt_len;
+  const size_t per_head_scores = prompt_len * prompt_len;
+
+  for (int q_head_idx = 0; q_head_idx < NUM_Q_HEADS; ++q_head_idx) {
+    const int k_head_idx = q_head_idx / GQA_Q_TO_K_RATIO;
+    const __nv_bfloat16* q_head = q_proj + q_head_idx * HEAD_DIM;
+    const __nv_bfloat16* k_head = k_proj_batched_buffer + k_head_idx * HEAD_DIM;
+    __nv_bfloat16* attn_score_head = prefill_attn_scores + layer_offset + static_cast<size_t>(q_head_idx) * per_head_scores;
+
+    cublasStatus_t attn_score_status = cublasGemmEx(cublas_handle,
+                                                    CUBLAS_OP_T,
+                                                    CUBLAS_OP_N,
+                                                    prompt_len_int,
+                                                    prompt_len_int,
+                                                    HEAD_DIM,
+                                                    &attn_alpha,
+                                                    k_head,
+                                                    CUDA_R_16BF,
+                                                    KV_DIM,
+                                                    q_head,
+                                                    CUDA_R_16BF,
+                                                    HIDDEN_SIZE,
+                                                    &attn_beta,
+                                                    attn_score_head,
+                                                    CUDA_R_16BF,
+                                                    prompt_len_int,
+                                                    CUBLAS_COMPUTE_32F,
+                                                    CUBLAS_GEMM_DEFAULT);
+    check_cublas(attn_score_status, "cublasGemmEx(prefill gqa attention scores)");
+  }
+}
+
+void causal_mask(__nv_bfloat16* input, int num_tokens) {
+  if (input == nullptr) {
+    return;
+  }
+  if (num_tokens <= 0) {
+    return;
+  }
+  if (num_tokens > 1024) {
+    std::cout << "Can't launch more than 1024 threads on RTX 5090, Causal mask kernel not launched\n";
+    return;
+  }
+
+  causalMaskKernel<<<num_tokens * NUM_Q_HEADS, num_tokens>>>(input, num_tokens);
+  check_cuda(cudaGetLastError(), "causalMaskKernel launch");
+  check_cuda(cudaDeviceSynchronize(), "causalMaskKernel");
+}
+
 }  // namespace
 
 void embedding_gather(const int* gpu_input_tokens,
@@ -151,6 +323,15 @@ void residual_add(__nv_bfloat16* input, const __nv_bfloat16* input_embeds, size_
   check_cuda(cudaDeviceSynchronize(), "residualKernel");
 }
 
+void silu(__nv_bfloat16* a, const __nv_bfloat16* b, size_t num_tokens) {
+  if (num_tokens == 0) {
+    return;
+  }
+  siluKernel<<<static_cast<unsigned int>(num_tokens), 1024>>>(a, b);
+  check_cuda(cudaGetLastError(), "siluKernel launch");
+  check_cuda(cudaDeviceSynchronize(), "siluKernel");
+}
+
 void prefill(const int* gpu_input_tokens,
              size_t prompt_len,
              __nv_bfloat16* input_embeddings,
@@ -159,7 +340,9 @@ void prefill(const int* gpu_input_tokens,
              __nv_bfloat16* q_proj,
              __nv_bfloat16* k_proj_batched_buffer,
              __nv_bfloat16* v_proj_batched_buffer,
-             const PrefillWeights& weights) {
+             const PrefillWeights& weights,
+             PagedAttentionState* paged_attention_state,
+             __nv_bfloat16* prefill_attn_scores) {
   if (prompt_len == 0) {
     return;
   }
@@ -320,6 +503,32 @@ void prefill(const int* gpu_input_tokens,
                                                   CUBLAS_COMPUTE_32F,
                                                   CUBLAS_GEMM_DEFAULT);
       check_cublas(v_proj_status, "cublasGemmEx(prefill v_proj)");
+    }
+    
+    if (!weights.w_q.empty()) {
+      rope(q_proj, prompt_len, embedding_length);
+    }
+    if (!weights.w_k.empty()) {
+      rope(k_proj_batched_buffer, prompt_len, kv_dim);
+    }
+
+    if (!weights.w_k.empty() && !weights.w_v.empty()) {
+      scatter_kv_to_paged_attention_cache(
+          k_proj_batched_buffer, v_proj_batched_buffer, prompt_len, layer, weights.input_layernorm.size(), kv_dim,
+          paged_attention_state);
+    }
+
+    if (!weights.w_q.empty() && !weights.w_k.empty()) {
+      compute_prefill_attention_scores_gqa(
+          cublas_guard.handle, q_proj, k_proj_batched_buffer, prompt_len, layer, prefill_attn_scores);
+    }
+    
+  }
+
+  if (prefill_attn_scores != nullptr) {
+    const size_t per_layer_scores = static_cast<size_t>(NUM_Q_HEADS) * prompt_len * prompt_len;
+    for (size_t layer = 0; layer < weights.input_layernorm.size(); ++layer) {
+      causal_mask(prefill_attn_scores + layer * per_layer_scores, prompt_len_int);
     }
   }
 }
