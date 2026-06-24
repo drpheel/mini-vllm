@@ -12,6 +12,8 @@
 namespace llama_prefill {
 namespace {
 
+int g_prefill_total_q_heads = NUM_Q_HEADS;
+
 void check_cuda(cudaError_t status, const char* call) {
   if (status != cudaSuccess) {
     throw std::runtime_error(std::string(call) + " failed: " + cudaGetErrorString(status));
@@ -100,8 +102,8 @@ __global__ void siluKernel(__nv_bfloat16* a, const __nv_bfloat16* b) {
   }
 }
 
-__global__ void causalMaskKernel(__nv_bfloat16* input, int num_tokens) {
-  if (threadIdx.x + blockIdx.x * blockDim.x >= num_tokens * num_tokens * NUM_Q_HEADS) {
+__global__ void causalMaskKernel(__nv_bfloat16* input, int num_tokens, int num_q_heads) {
+  if (threadIdx.x + blockIdx.x * blockDim.x >= num_tokens * num_tokens * num_q_heads) {
     return;
   }
 
@@ -253,14 +255,76 @@ void causal_mask(__nv_bfloat16* input, int num_tokens) {
   if (num_tokens <= 0) {
     return;
   }
+  if (g_prefill_total_q_heads <= 0) {
+    return;
+  }
   if (num_tokens > 1024) {
-    std::cout << "Can't launch more than 1024 threads on RTX 5090, Causal mask kernel not launched\n";
+    std::cout << "Can't launch more than 1024 threads, Causal mask kernel not launched\n";
     return;
   }
 
-  causalMaskKernel<<<num_tokens * NUM_Q_HEADS, num_tokens>>>(input, num_tokens);
+  causalMaskKernel<<<num_tokens * g_prefill_total_q_heads, num_tokens>>>(
+      input, num_tokens, g_prefill_total_q_heads);
   check_cuda(cudaGetLastError(), "causalMaskKernel launch");
   check_cuda(cudaDeviceSynchronize(), "causalMaskKernel");
+}
+
+__global__ void softmaxKernel(__nv_bfloat16* input, int num_tokens, int num_q_heads) {
+  if (threadIdx.x + blockIdx.x * blockDim.x >= num_tokens * num_tokens * num_q_heads) {
+    return;
+  }
+
+  __shared__ float row[1024];
+  __shared__ float max_val;
+
+  const int work_index = blockIdx.x * num_tokens + threadIdx.x;
+  const __nv_bfloat16 token = input[work_index];
+  row[threadIdx.x] = static_cast<float>(token);
+  __syncthreads();
+
+  for (int i = 1; i < num_tokens; i *= 2) {
+    if (threadIdx.x % (i * 2) == 0 && threadIdx.x + i < num_tokens) {
+      row[threadIdx.x] = fmaxf(row[threadIdx.x], row[threadIdx.x + i]);
+    }
+    __syncthreads();
+  }
+  if (threadIdx.x == 0) {
+    max_val = row[0];
+  }
+  __syncthreads();
+
+  const float exp_value = expf(static_cast<float>(token) - max_val);
+  row[threadIdx.x] = exp_value;
+  __syncthreads();
+
+  for (int i = 1; i < num_tokens; i *= 2) {
+    if (threadIdx.x % (i * 2) == 0 && threadIdx.x + i < num_tokens) {
+      row[threadIdx.x] = row[threadIdx.x] + row[threadIdx.x + i];
+    }
+    __syncthreads();
+  }
+
+  input[work_index] = static_cast<__nv_bfloat16>(exp_value / row[0]);
+}
+
+void softmax(__nv_bfloat16* input, int num_tokens) {
+  if (input == nullptr) {
+    return;
+  }
+  if (num_tokens <= 0) {
+    return;
+  }
+  if (g_prefill_total_q_heads <= 0) {
+    return;
+  }
+  if (num_tokens > 1024) {
+    std::cout << "Can't launch more than 1024 threads on RTX 5090, Softmax kernel not launched\n";
+    return;
+  }
+
+  softmaxKernel<<<num_tokens * g_prefill_total_q_heads, num_tokens>>>(input, num_tokens, g_prefill_total_q_heads);
+  check_cuda(cudaGetLastError(), "softmaxKernel launch");
+  check_cuda(cudaDeviceSynchronize(), "softmaxKernel");
 }
 
 }  // namespace
@@ -526,10 +590,9 @@ void prefill(const int* gpu_input_tokens,
   }
 
   if (prefill_attn_scores != nullptr) {
-    const size_t per_layer_scores = static_cast<size_t>(NUM_Q_HEADS) * prompt_len * prompt_len;
-    for (size_t layer = 0; layer < weights.input_layernorm.size(); ++layer) {
-      causal_mask(prefill_attn_scores + layer * per_layer_scores, prompt_len_int);
-    }
+    g_prefill_total_q_heads = static_cast<int>(weights.input_layernorm.size()) * NUM_Q_HEADS;
+    causal_mask(prefill_attn_scores, prompt_len_int);
+    softmax(prefill_attn_scores, prompt_len_int);
   }
 }
 
