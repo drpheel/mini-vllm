@@ -30,9 +30,7 @@ struct CublasHandleGuard {
   cublasHandle_t handle = nullptr;
 
   ~CublasHandleGuard() {
-    if (handle != nullptr) {
-      (void)cublasDestroy(handle);
-    }
+    (void)cublasDestroy(handle);
   }
 };
 
@@ -121,19 +119,11 @@ void scatter_kv_to_paged_attention_cache(const __nv_bfloat16* k_proj_batched_buf
                                          size_t num_layers,
                                          int kv_dim,
                                          PagedAttentionState* paged_attention_state) {
-  if (paged_attention_state == nullptr) {
-    return;
-  }
   if (paged_attention_state->block_size <= 0) {
     throw std::runtime_error("paged attention requires positive block_size");
   }
   if (paged_attention_state->max_blocks_per_seq <= 0) {
     throw std::runtime_error("paged attention requires positive max_blocks_per_seq");
-  }
-  if (paged_attention_state->kv_cache == nullptr ||
-      paged_attention_state->block_table == nullptr ||
-      paged_attention_state->free_blocks == nullptr) {
-    throw std::runtime_error("paged attention requires kv_cache, block_table, and free_blocks");
   }
   if (paged_attention_state->slot < 0) {
     throw std::runtime_error("paged attention requires non-negative slot");
@@ -197,61 +187,7 @@ void scatter_kv_to_paged_attention_cache(const __nv_bfloat16* k_proj_batched_buf
   }
 }
 
-void compute_prefill_attention_scores_gqa(cublasHandle_t cublas_handle,
-                                          const __nv_bfloat16* q_proj,
-                                          const __nv_bfloat16* k_proj_batched_buffer,
-                                          size_t prompt_len,
-                                          size_t layer,
-                                          __nv_bfloat16* prefill_attn_scores) {
-  if (prefill_attn_scores == nullptr) {
-    return;
-  }
-  if (q_proj == nullptr || k_proj_batched_buffer == nullptr) {
-    throw std::runtime_error("prefill attention scoring requires q_proj and k_proj buffers");
-  }
-  static_assert(HIDDEN_SIZE % HEAD_DIM == 0, "HIDDEN_SIZE must be divisible by HEAD_DIM");
-  static_assert(KV_DIM % HEAD_DIM == 0, "KV_DIM must be divisible by HEAD_DIM");
-  static_assert(NUM_Q_HEADS % NUM_KV_HEADS == 0, "NUM_Q_HEADS must be divisible by NUM_KV_HEADS");
-
-  const int prompt_len_int = static_cast<int>(prompt_len);
-  const float attn_alpha = 1.0f / sqrtf(static_cast<float>(HEAD_DIM));
-  const float attn_beta = 0.0f;
-  const size_t layer_offset = layer * static_cast<size_t>(NUM_Q_HEADS) * prompt_len * prompt_len;
-  const size_t per_head_scores = prompt_len * prompt_len;
-
-  for (int q_head_idx = 0; q_head_idx < NUM_Q_HEADS; ++q_head_idx) {
-    const int k_head_idx = q_head_idx / GQA_Q_TO_K_RATIO;
-    const __nv_bfloat16* q_head = q_proj + q_head_idx * HEAD_DIM;
-    const __nv_bfloat16* k_head = k_proj_batched_buffer + k_head_idx * HEAD_DIM;
-    __nv_bfloat16* attn_score_head = prefill_attn_scores + layer_offset + static_cast<size_t>(q_head_idx) * per_head_scores;
-
-    cublasStatus_t attn_score_status = cublasGemmEx(cublas_handle,
-                                                    CUBLAS_OP_T,
-                                                    CUBLAS_OP_N,
-                                                    prompt_len_int,
-                                                    prompt_len_int,
-                                                    HEAD_DIM,
-                                                    &attn_alpha,
-                                                    k_head,
-                                                    CUDA_R_16BF,
-                                                    KV_DIM,
-                                                    q_head,
-                                                    CUDA_R_16BF,
-                                                    HIDDEN_SIZE,
-                                                    &attn_beta,
-                                                    attn_score_head,
-                                                    CUDA_R_16BF,
-                                                    prompt_len_int,
-                                                    CUBLAS_COMPUTE_32F,
-                                                    CUBLAS_GEMM_DEFAULT);
-    check_cublas(attn_score_status, "cublasGemmEx(prefill gqa attention scores)");
-  }
-}
-
 void causal_mask(__nv_bfloat16* input, int num_tokens) {
-  if (input == nullptr) {
-    return;
-  }
   if (num_tokens <= 0) {
     return;
   }
@@ -308,9 +244,6 @@ __global__ void softmaxKernel(__nv_bfloat16* input, int num_tokens, int num_q_he
 }
 
 void softmax(__nv_bfloat16* input, int num_tokens) {
-  if (input == nullptr) {
-    return;
-  }
   if (num_tokens <= 0) {
     return;
   }
@@ -410,9 +343,6 @@ void prefill(const int* gpu_input_tokens,
   if (prompt_len == 0) {
     return;
   }
-  if (weights.tok_embeddings == nullptr) {
-    throw std::runtime_error("prefill requires tok_embeddings");
-  }
   if (weights.input_layernorm.empty()) {
     throw std::runtime_error("prefill requires at least one input layernorm weight");
   }
@@ -437,15 +367,6 @@ void prefill(const int* gpu_input_tokens,
   if (!weights.w_q.empty() || !weights.w_k.empty() || !weights.w_v.empty()) {
     check_cublas(cublasCreate(&cublas_guard.handle), "cublasCreate(prefill)");
   }
-  if (!weights.w_q.empty() && q_proj == nullptr) {
-    throw std::runtime_error("prefill q-proj is enabled but q_proj buffer is null");
-  }
-  if (!weights.w_k.empty() && k_proj_batched_buffer == nullptr) {
-    throw std::runtime_error("prefill k-proj is enabled but k_proj_batched_buffer is null");
-  }
-  if (!weights.w_v.empty() && v_proj_batched_buffer == nullptr) {
-    throw std::runtime_error("prefill v-proj is enabled but v_proj_batched_buffer is null");
-  }
 
   const float q_proj_alpha = 1.0f;
   const float q_proj_beta = 0.0f;
@@ -453,24 +374,22 @@ void prefill(const int* gpu_input_tokens,
   const float k_proj_beta = 0.0f;
   const float v_proj_alpha = 1.0f;
   const float v_proj_beta = 0.0f;
+  const float attn_alpha = 1.0f / sqrtf(static_cast<float>(HEAD_DIM));
+  const float attn_beta = 0.0f;
+  const float attn_scores_v_alpha = 1.0f;
+  const float attn_scores_v_beta = 0.0f;
   const int embedding_length = HIDDEN_SIZE;
   const int kv_dim = KV_DIM;
   const int prompt_len_int = static_cast<int>(prompt_len);
 
   for (size_t layer = 0; layer < weights.input_layernorm.size(); ++layer) {
     const __nv_bfloat16* norm_weight = weights.input_layernorm[layer];
-    if (norm_weight == nullptr) {
-      throw std::runtime_error("prefill encountered null layernorm weight");
-    }
     rms_norm(hidden_state, rms_norms, norm_weight, prompt_len);
     check_cuda(cudaMemcpy(hidden_state, rms_norms, prompt_len * HIDDEN_SIZE * sizeof(__nv_bfloat16), cudaMemcpyDeviceToDevice),
                "cudaMemcpy(prefill hidden_state <- rms_norms)");
 
     if (!weights.w_q.empty()) {
       const __nv_bfloat16* w_q = weights.w_q[layer];
-      if (w_q == nullptr) {
-        throw std::runtime_error("prefill encountered null q_proj weight");
-      }
 
       // Row-major target we want: Q = R * Wq^T, where
       //   R  = rms_norms [P, H], Wq = w_q [H, H], Q [P, H].
@@ -503,9 +422,6 @@ void prefill(const int* gpu_input_tokens,
 
     if (!weights.w_k.empty()) {
       const __nv_bfloat16* w_k = weights.w_k[layer];
-      if (w_k == nullptr) {
-        throw std::runtime_error("prefill encountered null k_proj weight");
-      }
 
       // Row-major target we want: K = R * Wk^T, where
       //   R  = rms_norms [P, H], Wk = w_k [KV, H], K [P, KV].
@@ -538,9 +454,6 @@ void prefill(const int* gpu_input_tokens,
 
     if (!weights.w_v.empty()) {
       const __nv_bfloat16* w_v = weights.w_v[layer];
-      if (w_v == nullptr) {
-        throw std::runtime_error("prefill encountered null v_proj weight");
-      }
 
       // Row-major target we want: V = R * Wv^T, where
       //   R  = rms_norms [P, H], Wv = w_v [KV, H], V [P, KV].
@@ -583,17 +496,79 @@ void prefill(const int* gpu_input_tokens,
     }
 
     if (!weights.w_q.empty() && !weights.w_k.empty()) {
-      compute_prefill_attention_scores_gqa(
-          cublas_guard.handle, q_proj, k_proj_batched_buffer, prompt_len, layer, prefill_attn_scores);
+      const size_t layer_offset = layer * static_cast<size_t>(NUM_Q_HEADS) * prompt_len * prompt_len;
+      __nv_bfloat16* layer_attn_scores = prefill_attn_scores + layer_offset;
+
+      // Attention scores: each Q head uses one grouped K head and writes [prompt_len, prompt_len].
+      for (int i = 0; i < NUM_Q_HEADS; ++i) {
+        const int k_head_idx = i / GQA_Q_TO_K_RATIO;
+        __nv_bfloat16* q_head = q_proj + i * HEAD_DIM;
+        __nv_bfloat16* k_head = k_proj_batched_buffer + k_head_idx * HEAD_DIM;
+        __nv_bfloat16* attn_score_head =
+            layer_attn_scores + static_cast<size_t>(i) * prompt_len * prompt_len;
+
+        cublasStatus_t attn_score_status = cublasGemmEx(cublas_guard.handle,
+                                                        CUBLAS_OP_T,
+                                                        CUBLAS_OP_N,
+                                                        prompt_len_int,
+                                                        prompt_len_int,
+                                                        HEAD_DIM,
+                                                        &attn_alpha,
+                                                        k_head,
+                                                        CUDA_R_16BF,
+                                                        KV_DIM,
+                                                        q_head,
+                                                        CUDA_R_16BF,
+                                                        HIDDEN_SIZE,
+                                                        &attn_beta,
+                                                        attn_score_head,
+                                                        CUDA_R_16BF,
+                                                        prompt_len_int,
+                                                        CUBLAS_COMPUTE_32F,
+                                                        CUBLAS_GEMM_DEFAULT);
+        check_cublas(attn_score_status, "cublasGemmEx(prefill attention scores)");
+      }
+
+      g_prefill_total_q_heads = NUM_Q_HEADS;
+      causal_mask(layer_attn_scores, prompt_len_int);
+      softmax(layer_attn_scores, prompt_len_int);
+
+      if (!weights.w_v.empty()) {
+        // Attention scores * V: each Q head uses one grouped V head and writes [prompt_len, HEAD_DIM].
+        __nv_bfloat16* attn_scores_v = q_proj;
+        for (int i = 0; i < NUM_Q_HEADS; ++i) {
+          const int v_head_idx = i / GQA_Q_TO_K_RATIO;
+          __nv_bfloat16* attn_scores_head =
+              layer_attn_scores + static_cast<size_t>(i) * prompt_len * prompt_len;
+          __nv_bfloat16* v_head = v_proj_batched_buffer + v_head_idx * HEAD_DIM;
+          __nv_bfloat16* output_attn_scores_head = attn_scores_v + i * HEAD_DIM;
+
+          cublasStatus_t attn_score_v_status = cublasGemmEx(cublas_guard.handle,
+                                                            CUBLAS_OP_N,
+                                                            CUBLAS_OP_N,
+                                                            HEAD_DIM,
+                                                            prompt_len_int,
+                                                            prompt_len_int,
+                                                            &attn_scores_v_alpha,
+                                                            v_head,
+                                                            CUDA_R_16BF,
+                                                            KV_DIM,
+                                                            attn_scores_head,
+                                                            CUDA_R_16BF,
+                                                            prompt_len_int,
+                                                            &attn_scores_v_beta,
+                                                            output_attn_scores_head,
+                                                            CUDA_R_16BF,
+                                                            HIDDEN_SIZE,
+                                                            CUBLAS_COMPUTE_32F,
+                                                            CUBLAS_GEMM_DEFAULT);
+          check_cublas(attn_score_v_status, "cublasGemmEx(prefill attn_scores * V)");
+        }
+      }
     }
     
   }
 
-  if (prefill_attn_scores != nullptr) {
-    g_prefill_total_q_heads = static_cast<int>(weights.input_layernorm.size()) * NUM_Q_HEADS;
-    causal_mask(prefill_attn_scores, prompt_len_int);
-    softmax(prefill_attn_scores, prompt_len_int);
-  }
 }
 
 }  // namespace llama_prefill
