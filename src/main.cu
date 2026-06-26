@@ -493,6 +493,7 @@ int main(int argc, char** argv) {
     prefill_weights.w_q = weights.w_q;
     prefill_weights.w_k = weights.w_k;
     prefill_weights.w_v = weights.w_v;
+    prefill_weights.w_o = weights.w_o;
 
     const size_t num_layers = prefill_weights.input_layernorm.size();
     const size_t prompt_len = gpu_input_tokens.count;

@@ -343,18 +343,6 @@ void prefill(const int* gpu_input_tokens,
   if (prompt_len == 0) {
     return;
   }
-  if (weights.input_layernorm.empty()) {
-    throw std::runtime_error("prefill requires at least one input layernorm weight");
-  }
-  if (!weights.w_q.empty() && weights.w_q.size() != weights.input_layernorm.size()) {
-    throw std::runtime_error("prefill requires w_q to match input_layernorm size when q-proj is enabled");
-  }
-  if (!weights.w_k.empty() && weights.w_k.size() != weights.input_layernorm.size()) {
-    throw std::runtime_error("prefill requires w_k to match input_layernorm size when k-proj is enabled");
-  }
-  if (!weights.w_v.empty() && weights.w_v.size() != weights.input_layernorm.size()) {
-    throw std::runtime_error("prefill requires w_v to match input_layernorm size when v-proj is enabled");
-  }
   if (prompt_len > static_cast<size_t>(std::numeric_limits<int>::max())) {
     throw std::runtime_error("prefill prompt_len exceeds int range for cuBLAS");
   }
@@ -364,9 +352,7 @@ void prefill(const int* gpu_input_tokens,
              "cudaMemcpy(prefill hidden_state <- input_embeddings)");
 
   CublasHandleGuard cublas_guard;
-  if (!weights.w_q.empty() || !weights.w_k.empty() || !weights.w_v.empty()) {
-    check_cublas(cublasCreate(&cublas_guard.handle), "cublasCreate(prefill)");
-  }
+  check_cublas(cublasCreate(&cublas_guard.handle), "cublasCreate(prefill)");
 
   const float q_proj_alpha = 1.0f;
   const float q_proj_beta = 0.0f;
@@ -378,195 +364,214 @@ void prefill(const int* gpu_input_tokens,
   const float attn_beta = 0.0f;
   const float attn_scores_v_alpha = 1.0f;
   const float attn_scores_v_beta = 0.0f;
+  const float o_proj_alpha = 1.0f;
+  const float o_proj_beta = 0.0f;
   const int embedding_length = HIDDEN_SIZE;
   const int kv_dim = KV_DIM;
   const int prompt_len_int = static_cast<int>(prompt_len);
 
   for (size_t layer = 0; layer < weights.input_layernorm.size(); ++layer) {
+    check_cuda(cudaMemcpy(input_embeddings,
+                          hidden_state,
+                          prompt_len * HIDDEN_SIZE * sizeof(__nv_bfloat16),
+                          cudaMemcpyDeviceToDevice),
+               "cudaMemcpy(prefill residual <- hidden_state)");
+
     const __nv_bfloat16* norm_weight = weights.input_layernorm[layer];
     rms_norm(hidden_state, rms_norms, norm_weight, prompt_len);
     check_cuda(cudaMemcpy(hidden_state, rms_norms, prompt_len * HIDDEN_SIZE * sizeof(__nv_bfloat16), cudaMemcpyDeviceToDevice),
                "cudaMemcpy(prefill hidden_state <- rms_norms)");
 
-    if (!weights.w_q.empty()) {
-      const __nv_bfloat16* w_q = weights.w_q[layer];
+    const __nv_bfloat16* w_q = weights.w_q[layer];
 
-      // Row-major target we want: Q = R * Wq^T, where
-      //   R  = rms_norms [P, H], Wq = w_q [H, H], Q [P, H].
-      // cuBLAS reads all buffers as column-major:
-      //   R(row-major [P, H]) appears as R^T [H, P].
-      //   Wq(row-major [H, H]) appears as Wq^T [H, H], and opA=T flips it to Wq.
-      // So GEMM computes C_col = Wq * R^T = (R * Wq^T)^T.
-      // Writing C in column-major gives the same bytes as row-major Q [P, H].
-      cublasStatus_t q_proj_status = cublasGemmEx(cublas_guard.handle,
-                                                  CUBLAS_OP_T,
-                                                  CUBLAS_OP_N,
-                                                  embedding_length,
-                                                  prompt_len_int,
-                                                  embedding_length,
-                                                  &q_proj_alpha,
-                                                  w_q,
-                                                  CUDA_R_16BF,
-                                                  embedding_length,
-                                                  rms_norms,
-                                                  CUDA_R_16BF,
-                                                  embedding_length,
-                                                  &q_proj_beta,
-                                                  q_proj,
-                                                  CUDA_R_16BF,
-                                                  embedding_length,
-                                                  CUBLAS_COMPUTE_32F,
-                                                  CUBLAS_GEMM_DEFAULT);
-      check_cublas(q_proj_status, "cublasGemmEx(prefill q_proj)");
+    // Row-major target we want: Q = R * Wq^T, where
+    //   R  = rms_norms [P, H], Wq = w_q [H, H], Q [P, H].
+    // cuBLAS reads all buffers as column-major:
+    //   R(row-major [P, H]) appears as R^T [H, P].
+    //   Wq(row-major [H, H]) appears as Wq^T [H, H], and opA=T flips it to Wq.
+    // So GEMM computes C_col = Wq * R^T = (R * Wq^T)^T.
+    // Writing C in column-major gives the same bytes as row-major Q [P, H].
+    cublasStatus_t q_proj_status = cublasGemmEx(cublas_guard.handle,
+                                                CUBLAS_OP_T,
+                                                CUBLAS_OP_N,
+                                                embedding_length,
+                                                prompt_len_int,
+                                                embedding_length,
+                                                &q_proj_alpha,
+                                                w_q,
+                                                CUDA_R_16BF,
+                                                embedding_length,
+                                                rms_norms,
+                                                CUDA_R_16BF,
+                                                embedding_length,
+                                                &q_proj_beta,
+                                                q_proj,
+                                                CUDA_R_16BF,
+                                                embedding_length,
+                                                CUBLAS_COMPUTE_32F,
+                                                CUBLAS_GEMM_DEFAULT);
+    check_cublas(q_proj_status, "cublasGemmEx(prefill q_proj)");
+
+    const __nv_bfloat16* w_k = weights.w_k[layer];
+
+    // Row-major target we want: K = R * Wk^T, where
+    //   R  = rms_norms [P, H], Wk = w_k [KV, H], K [P, KV].
+    // cuBLAS reads row-major buffers as column-major:
+    //   R(row-major [P, H]) appears as R^T [H, P].
+    //   Wk(row-major [KV, H]) appears as Wk^T [H, KV], and opA=T flips it to Wk.
+    // So GEMM computes C_col = Wk * R^T = (R * Wk^T)^T.
+    // Writing C in column-major gives the same bytes as row-major K [P, KV].
+    cublasStatus_t k_proj_status = cublasGemmEx(cublas_guard.handle,
+                                                CUBLAS_OP_T,
+                                                CUBLAS_OP_N,
+                                                kv_dim,
+                                                prompt_len_int,
+                                                embedding_length,
+                                                &k_proj_alpha,
+                                                w_k,
+                                                CUDA_R_16BF,
+                                                embedding_length,
+                                                rms_norms,
+                                                CUDA_R_16BF,
+                                                embedding_length,
+                                                &k_proj_beta,
+                                                k_proj_batched_buffer,
+                                                CUDA_R_16BF,
+                                                kv_dim,
+                                                CUBLAS_COMPUTE_32F,
+                                                CUBLAS_GEMM_DEFAULT);
+    check_cublas(k_proj_status, "cublasGemmEx(prefill k_proj)");
+
+    const __nv_bfloat16* w_v = weights.w_v[layer];
+
+    // Row-major target we want: V = R * Wv^T, where
+    //   R  = rms_norms [P, H], Wv = w_v [KV, H], V [P, KV].
+    // cuBLAS sees R as R^T and sees Wv as Wv^T, then opA=T flips Wv back.
+    // So GEMM computes C_col = Wv * R^T = (R * Wv^T)^T.
+    // Writing C in column-major gives row-major V [P, KV] in this buffer.
+    cublasStatus_t v_proj_status = cublasGemmEx(cublas_guard.handle,
+                                                CUBLAS_OP_T,
+                                                CUBLAS_OP_N,
+                                                kv_dim,
+                                                prompt_len_int,
+                                                embedding_length,
+                                                &v_proj_alpha,
+                                                w_v,
+                                                CUDA_R_16BF,
+                                                embedding_length,
+                                                rms_norms,
+                                                CUDA_R_16BF,
+                                                embedding_length,
+                                                &v_proj_beta,
+                                                v_proj_batched_buffer,
+                                                CUDA_R_16BF,
+                                                kv_dim,
+                                                CUBLAS_COMPUTE_32F,
+                                                CUBLAS_GEMM_DEFAULT);
+    check_cublas(v_proj_status, "cublasGemmEx(prefill v_proj)");
+
+    rope(q_proj, prompt_len, embedding_length);
+    rope(k_proj_batched_buffer, prompt_len, kv_dim);
+
+    scatter_kv_to_paged_attention_cache(
+        k_proj_batched_buffer, v_proj_batched_buffer, prompt_len, layer, weights.input_layernorm.size(), kv_dim,
+        paged_attention_state);
+
+    const size_t layer_offset = layer * static_cast<size_t>(NUM_Q_HEADS) * prompt_len * prompt_len;
+    __nv_bfloat16* layer_attn_scores = prefill_attn_scores + layer_offset;
+
+    // Attention scores: each Q head uses one grouped K head and writes [prompt_len, prompt_len].
+    for (int i = 0; i < NUM_Q_HEADS; ++i) {
+      const int k_head_idx = i / GQA_Q_TO_K_RATIO;
+      __nv_bfloat16* q_head = q_proj + i * HEAD_DIM;
+      __nv_bfloat16* k_head = k_proj_batched_buffer + k_head_idx * HEAD_DIM;
+      __nv_bfloat16* attn_score_head =
+          layer_attn_scores + static_cast<size_t>(i) * prompt_len * prompt_len;
+
+      cublasStatus_t attn_score_status = cublasGemmEx(cublas_guard.handle,
+                                                      CUBLAS_OP_T,
+                                                      CUBLAS_OP_N,
+                                                      prompt_len_int,
+                                                      prompt_len_int,
+                                                      HEAD_DIM,
+                                                      &attn_alpha,
+                                                      k_head,
+                                                      CUDA_R_16BF,
+                                                      KV_DIM,
+                                                      q_head,
+                                                      CUDA_R_16BF,
+                                                      HIDDEN_SIZE,
+                                                      &attn_beta,
+                                                      attn_score_head,
+                                                      CUDA_R_16BF,
+                                                      prompt_len_int,
+                                                      CUBLAS_COMPUTE_32F,
+                                                      CUBLAS_GEMM_DEFAULT);
+      check_cublas(attn_score_status, "cublasGemmEx(prefill attention scores)");
     }
 
-    if (!weights.w_k.empty()) {
-      const __nv_bfloat16* w_k = weights.w_k[layer];
+    g_prefill_total_q_heads = NUM_Q_HEADS;
+    causal_mask(layer_attn_scores, prompt_len_int);
+    softmax(layer_attn_scores, prompt_len_int);
 
-      // Row-major target we want: K = R * Wk^T, where
-      //   R  = rms_norms [P, H], Wk = w_k [KV, H], K [P, KV].
-      // cuBLAS reads row-major buffers as column-major:
-      //   R(row-major [P, H]) appears as R^T [H, P].
-      //   Wk(row-major [KV, H]) appears as Wk^T [H, KV], and opA=T flips it to Wk.
-      // So GEMM computes C_col = Wk * R^T = (R * Wk^T)^T.
-      // Writing C in column-major gives the same bytes as row-major K [P, KV].
-      cublasStatus_t k_proj_status = cublasGemmEx(cublas_guard.handle,
-                                                  CUBLAS_OP_T,
-                                                  CUBLAS_OP_N,
-                                                  kv_dim,
-                                                  prompt_len_int,
-                                                  embedding_length,
-                                                  &k_proj_alpha,
-                                                  w_k,
-                                                  CUDA_R_16BF,
-                                                  embedding_length,
-                                                  rms_norms,
-                                                  CUDA_R_16BF,
-                                                  embedding_length,
-                                                  &k_proj_beta,
-                                                  k_proj_batched_buffer,
-                                                  CUDA_R_16BF,
-                                                  kv_dim,
-                                                  CUBLAS_COMPUTE_32F,
-                                                  CUBLAS_GEMM_DEFAULT);
-      check_cublas(k_proj_status, "cublasGemmEx(prefill k_proj)");
-    }
+    // Attention scores * V: each Q head uses one grouped V head and writes [prompt_len, HEAD_DIM].
+    __nv_bfloat16* attn_scores_v = q_proj;
+    for (int i = 0; i < NUM_Q_HEADS; ++i) {
+      const int v_head_idx = i / GQA_Q_TO_K_RATIO;
+      __nv_bfloat16* attn_scores_head =
+          layer_attn_scores + static_cast<size_t>(i) * prompt_len * prompt_len;
+      __nv_bfloat16* v_head = v_proj_batched_buffer + v_head_idx * HEAD_DIM;
+      __nv_bfloat16* output_attn_scores_head = attn_scores_v + i * HEAD_DIM;
 
-    if (!weights.w_v.empty()) {
-      const __nv_bfloat16* w_v = weights.w_v[layer];
-
-      // Row-major target we want: V = R * Wv^T, where
-      //   R  = rms_norms [P, H], Wv = w_v [KV, H], V [P, KV].
-      // cuBLAS sees R as R^T and sees Wv as Wv^T, then opA=T flips Wv back.
-      // So GEMM computes C_col = Wv * R^T = (R * Wv^T)^T.
-      // Writing C in column-major gives row-major V [P, KV] in this buffer.
-      cublasStatus_t v_proj_status = cublasGemmEx(cublas_guard.handle,
-                                                  CUBLAS_OP_T,
-                                                  CUBLAS_OP_N,
-                                                  kv_dim,
-                                                  prompt_len_int,
-                                                  embedding_length,
-                                                  &v_proj_alpha,
-                                                  w_v,
-                                                  CUDA_R_16BF,
-                                                  embedding_length,
-                                                  rms_norms,
-                                                  CUDA_R_16BF,
-                                                  embedding_length,
-                                                  &v_proj_beta,
-                                                  v_proj_batched_buffer,
-                                                  CUDA_R_16BF,
-                                                  kv_dim,
-                                                  CUBLAS_COMPUTE_32F,
-                                                  CUBLAS_GEMM_DEFAULT);
-      check_cublas(v_proj_status, "cublasGemmEx(prefill v_proj)");
-    }
-    
-    if (!weights.w_q.empty()) {
-      rope(q_proj, prompt_len, embedding_length);
-    }
-    if (!weights.w_k.empty()) {
-      rope(k_proj_batched_buffer, prompt_len, kv_dim);
-    }
-
-    if (!weights.w_k.empty() && !weights.w_v.empty()) {
-      scatter_kv_to_paged_attention_cache(
-          k_proj_batched_buffer, v_proj_batched_buffer, prompt_len, layer, weights.input_layernorm.size(), kv_dim,
-          paged_attention_state);
-    }
-
-    if (!weights.w_q.empty() && !weights.w_k.empty()) {
-      const size_t layer_offset = layer * static_cast<size_t>(NUM_Q_HEADS) * prompt_len * prompt_len;
-      __nv_bfloat16* layer_attn_scores = prefill_attn_scores + layer_offset;
-
-      // Attention scores: each Q head uses one grouped K head and writes [prompt_len, prompt_len].
-      for (int i = 0; i < NUM_Q_HEADS; ++i) {
-        const int k_head_idx = i / GQA_Q_TO_K_RATIO;
-        __nv_bfloat16* q_head = q_proj + i * HEAD_DIM;
-        __nv_bfloat16* k_head = k_proj_batched_buffer + k_head_idx * HEAD_DIM;
-        __nv_bfloat16* attn_score_head =
-            layer_attn_scores + static_cast<size_t>(i) * prompt_len * prompt_len;
-
-        cublasStatus_t attn_score_status = cublasGemmEx(cublas_guard.handle,
-                                                        CUBLAS_OP_T,
+      cublasStatus_t attn_score_v_status = cublasGemmEx(cublas_guard.handle,
                                                         CUBLAS_OP_N,
-                                                        prompt_len_int,
-                                                        prompt_len_int,
+                                                        CUBLAS_OP_N,
                                                         HEAD_DIM,
-                                                        &attn_alpha,
-                                                        k_head,
+                                                        prompt_len_int,
+                                                        prompt_len_int,
+                                                        &attn_scores_v_alpha,
+                                                        v_head,
                                                         CUDA_R_16BF,
                                                         KV_DIM,
-                                                        q_head,
-                                                        CUDA_R_16BF,
-                                                        HIDDEN_SIZE,
-                                                        &attn_beta,
-                                                        attn_score_head,
+                                                        attn_scores_head,
                                                         CUDA_R_16BF,
                                                         prompt_len_int,
+                                                        &attn_scores_v_beta,
+                                                        output_attn_scores_head,
+                                                        CUDA_R_16BF,
+                                                        HIDDEN_SIZE,
                                                         CUBLAS_COMPUTE_32F,
                                                         CUBLAS_GEMM_DEFAULT);
-        check_cublas(attn_score_status, "cublasGemmEx(prefill attention scores)");
-      }
-
-      g_prefill_total_q_heads = NUM_Q_HEADS;
-      causal_mask(layer_attn_scores, prompt_len_int);
-      softmax(layer_attn_scores, prompt_len_int);
-
-      if (!weights.w_v.empty()) {
-        // Attention scores * V: each Q head uses one grouped V head and writes [prompt_len, HEAD_DIM].
-        __nv_bfloat16* attn_scores_v = q_proj;
-        for (int i = 0; i < NUM_Q_HEADS; ++i) {
-          const int v_head_idx = i / GQA_Q_TO_K_RATIO;
-          __nv_bfloat16* attn_scores_head =
-              layer_attn_scores + static_cast<size_t>(i) * prompt_len * prompt_len;
-          __nv_bfloat16* v_head = v_proj_batched_buffer + v_head_idx * HEAD_DIM;
-          __nv_bfloat16* output_attn_scores_head = attn_scores_v + i * HEAD_DIM;
-
-          cublasStatus_t attn_score_v_status = cublasGemmEx(cublas_guard.handle,
-                                                            CUBLAS_OP_N,
-                                                            CUBLAS_OP_N,
-                                                            HEAD_DIM,
-                                                            prompt_len_int,
-                                                            prompt_len_int,
-                                                            &attn_scores_v_alpha,
-                                                            v_head,
-                                                            CUDA_R_16BF,
-                                                            KV_DIM,
-                                                            attn_scores_head,
-                                                            CUDA_R_16BF,
-                                                            prompt_len_int,
-                                                            &attn_scores_v_beta,
-                                                            output_attn_scores_head,
-                                                            CUDA_R_16BF,
-                                                            HIDDEN_SIZE,
-                                                            CUBLAS_COMPUTE_32F,
-                                                            CUBLAS_GEMM_DEFAULT);
-          check_cublas(attn_score_v_status, "cublasGemmEx(prefill attn_scores * V)");
-        }
-      }
+      check_cublas(attn_score_v_status, "cublasGemmEx(prefill attn_scores * V)");
     }
-    
+
+    const __nv_bfloat16* w_o = weights.w_o[layer];
+    __nv_bfloat16* o_proj = hidden_state;
+
+    // Row-major target: O = (attention scores * V) * Wo^T, [P, H].
+    // This follows the same row-major/column-major layout trick as Q projection.
+    cublasStatus_t o_proj_status = cublasGemmEx(cublas_guard.handle,
+                                                CUBLAS_OP_T,
+                                                CUBLAS_OP_N,
+                                                embedding_length,
+                                                prompt_len_int,
+                                                embedding_length,
+                                                &o_proj_alpha,
+                                                w_o,
+                                                CUDA_R_16BF,
+                                                embedding_length,
+                                                attn_scores_v,
+                                                CUDA_R_16BF,
+                                                embedding_length,
+                                                &o_proj_beta,
+                                                o_proj,
+                                                CUDA_R_16BF,
+                                                embedding_length,
+                                                CUBLAS_COMPUTE_32F,
+                                                CUBLAS_GEMM_DEFAULT);
+    check_cublas(o_proj_status, "cublasGemmEx(prefill o_proj)");
+    residual_add(hidden_state, input_embeddings, prompt_len);
+    rms_norm(hidden_state, rms_norms, norm_weight, prompt_len);
   }
 
 }

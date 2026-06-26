@@ -20,6 +20,7 @@ struct PrefillWeights {
   std::vector<__nv_bfloat16*> w_q;
   std::vector<__nv_bfloat16*> w_k;
   std::vector<__nv_bfloat16*> w_v;
+  std::vector<__nv_bfloat16*> w_o;
 };
 
 struct PagedAttentionState {
@@ -59,7 +60,7 @@ void prefill(const int* gpu_input_tokens,
              __nv_bfloat16* k_proj_batched_buffer,
              __nv_bfloat16* v_proj_batched_buffer,
              const PrefillWeights& weights,
-             PagedAttentionState* paged_attention_state = nullptr,
-             __nv_bfloat16* prefill_attn_scores = nullptr);
+             PagedAttentionState* paged_attention_state,
+             __nv_bfloat16* prefill_attn_scores);
 
 }  // namespace llama_prefill
