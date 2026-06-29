@@ -44,9 +44,15 @@ int run_prefill_test() {
   const size_t w_k_bytes = static_cast<size_t>(llama_prefill::KV_DIM) * llama_prefill::HIDDEN_SIZE * sizeof(__nv_bfloat16);
   const size_t w_v_bytes = static_cast<size_t>(llama_prefill::KV_DIM) * llama_prefill::HIDDEN_SIZE * sizeof(__nv_bfloat16);
   const size_t w_o_bytes = static_cast<size_t>(llama_prefill::HIDDEN_SIZE) * llama_prefill::HIDDEN_SIZE * sizeof(__nv_bfloat16);
+  const size_t w_gate_bytes =
+      static_cast<size_t>(llama_prefill::MLP_INTERMEDIATE_SIZE) * llama_prefill::HIDDEN_SIZE * sizeof(__nv_bfloat16);
+  const size_t w_up_bytes = w_gate_bytes;
+  const size_t w_down_bytes = w_gate_bytes;
+  const size_t mlp_intermediate_bytes = prompt_len * llama_prefill::MLP_INTERMEDIATE_SIZE * sizeof(__nv_bfloat16);
   const size_t prefill_scores_elements =
       static_cast<size_t>(llama_prefill::NUM_Q_HEADS) * prompt_len * prompt_len;
   const size_t prefill_scores_bytes = std::max(prefill_scores_elements * sizeof(__nv_bfloat16), sizeof(__nv_bfloat16));
+  const size_t embed_proj_bytes = prompt_len * static_cast<size_t>(vocab_size) * sizeof(__nv_bfloat16);
 
   std::vector<__nv_bfloat16> embed_cpu(static_cast<size_t>(vocab_size) * llama_prefill::HIDDEN_SIZE, __float2bfloat16(1.0f));
   std::vector<__nv_bfloat16> layernorm_cpu(llama_prefill::HIDDEN_SIZE, __float2bfloat16(1.0f));
@@ -58,6 +64,12 @@ int run_prefill_test() {
                                      __float2bfloat16(0.0f));
   std::vector<__nv_bfloat16> w_o_cpu(static_cast<size_t>(llama_prefill::HIDDEN_SIZE) * llama_prefill::HIDDEN_SIZE,
                                      __float2bfloat16(0.0f));
+  std::vector<__nv_bfloat16> w_gate_cpu(
+      static_cast<size_t>(llama_prefill::MLP_INTERMEDIATE_SIZE) * llama_prefill::HIDDEN_SIZE, __float2bfloat16(0.0f));
+  std::vector<__nv_bfloat16> w_up_cpu(
+      static_cast<size_t>(llama_prefill::MLP_INTERMEDIATE_SIZE) * llama_prefill::HIDDEN_SIZE, __float2bfloat16(0.0f));
+  std::vector<__nv_bfloat16> w_down_cpu(
+      static_cast<size_t>(llama_prefill::HIDDEN_SIZE) * llama_prefill::MLP_INTERMEDIATE_SIZE, __float2bfloat16(0.0f));
 
   int* gpu_prompt_tokens = nullptr;
   __nv_bfloat16* gpu_embed_tokens = nullptr;
@@ -71,8 +83,15 @@ int run_prefill_test() {
   __nv_bfloat16* gpu_w_k = nullptr;
   __nv_bfloat16* gpu_w_v = nullptr;
   __nv_bfloat16* gpu_w_o = nullptr;
+  __nv_bfloat16* gpu_w_gate = nullptr;
+  __nv_bfloat16* gpu_w_up = nullptr;
+  __nv_bfloat16* gpu_w_down = nullptr;
+  __nv_bfloat16* gpu_mlp_gate = nullptr;
+  __nv_bfloat16* gpu_mlp_up = nullptr;
   __nv_bfloat16* gpu_prefill_attn_scores = nullptr;
+  __nv_bfloat16* gpu_embed_proj = nullptr;
   __nv_bfloat16* gpu_layernorm_weights = nullptr;
+  __nv_bfloat16* gpu_ffn_layernorm_weights = nullptr;
   __nv_bfloat16* gpu_residual_input = nullptr;
   __nv_bfloat16* gpu_residual_embeds = nullptr;
 
@@ -91,10 +110,18 @@ int run_prefill_test() {
   check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_w_k), w_k_bytes), "cudaMalloc(gpu_w_k)");
   check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_w_v), w_v_bytes), "cudaMalloc(gpu_w_v)");
   check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_w_o), w_o_bytes), "cudaMalloc(gpu_w_o)");
+  check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_w_gate), w_gate_bytes), "cudaMalloc(gpu_w_gate)");
+  check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_w_up), w_up_bytes), "cudaMalloc(gpu_w_up)");
+  check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_w_down), w_down_bytes), "cudaMalloc(gpu_w_down)");
+  check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_mlp_gate), mlp_intermediate_bytes), "cudaMalloc(gpu_mlp_gate)");
+  check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_mlp_up), mlp_intermediate_bytes), "cudaMalloc(gpu_mlp_up)");
   check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_prefill_attn_scores), prefill_scores_bytes),
              "cudaMalloc(gpu_prefill_attn_scores)");
+  check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_embed_proj), embed_proj_bytes), "cudaMalloc(gpu_embed_proj)");
   check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_layernorm_weights), layernorm_cpu.size() * sizeof(__nv_bfloat16)),
              "cudaMalloc(gpu_layernorm_weights)");
+  check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_ffn_layernorm_weights), layernorm_cpu.size() * sizeof(__nv_bfloat16)),
+             "cudaMalloc(gpu_ffn_layernorm_weights)");
   check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_residual_input), hidden_bytes), "cudaMalloc(gpu_residual_input)");
   check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_residual_embeds), hidden_bytes), "cudaMalloc(gpu_residual_embeds)");
 
@@ -104,6 +131,9 @@ int run_prefill_test() {
   check_cuda(cudaMemcpy(gpu_layernorm_weights, layernorm_cpu.data(), layernorm_cpu.size() * sizeof(__nv_bfloat16),
                         cudaMemcpyHostToDevice),
              "cudaMemcpy(layernorm H2D)");
+  check_cuda(cudaMemcpy(gpu_ffn_layernorm_weights, layernorm_cpu.data(), layernorm_cpu.size() * sizeof(__nv_bfloat16),
+                        cudaMemcpyHostToDevice),
+             "cudaMemcpy(ffn layernorm H2D)");
 
   // Build sparse deterministic projection weights in [out, in] row-major layout.
   w_q_cpu[0 * llama_prefill::HIDDEN_SIZE + 0] = __float2bfloat16(1.0f);
@@ -126,6 +156,9 @@ int run_prefill_test() {
   check_cuda(cudaMemcpy(gpu_w_k, w_k_cpu.data(), w_k_bytes, cudaMemcpyHostToDevice), "cudaMemcpy(w_k H2D)");
   check_cuda(cudaMemcpy(gpu_w_v, w_v_cpu.data(), w_v_bytes, cudaMemcpyHostToDevice), "cudaMemcpy(w_v H2D)");
   check_cuda(cudaMemcpy(gpu_w_o, w_o_cpu.data(), w_o_bytes, cudaMemcpyHostToDevice), "cudaMemcpy(w_o H2D)");
+  check_cuda(cudaMemcpy(gpu_w_gate, w_gate_cpu.data(), w_gate_bytes, cudaMemcpyHostToDevice), "cudaMemcpy(w_gate H2D)");
+  check_cuda(cudaMemcpy(gpu_w_up, w_up_cpu.data(), w_up_bytes, cudaMemcpyHostToDevice), "cudaMemcpy(w_up H2D)");
+  check_cuda(cudaMemcpy(gpu_w_down, w_down_cpu.data(), w_down_bytes, cudaMemcpyHostToDevice), "cudaMemcpy(w_down H2D)");
 
   std::vector<__nv_bfloat16> residual_input_cpu(prompt_len * llama_prefill::HIDDEN_SIZE, __float2bfloat16(0.25f));
   std::vector<__nv_bfloat16> residual_embed_cpu(prompt_len * llama_prefill::HIDDEN_SIZE, __float2bfloat16(0.75f));
@@ -154,10 +187,16 @@ int run_prefill_test() {
   llama_prefill::PrefillWeights weights;
   weights.tok_embeddings = gpu_embed_tokens;
   weights.input_layernorm.push_back(gpu_layernorm_weights);
+  weights.post_attention_layernorm.push_back(gpu_ffn_layernorm_weights);
   weights.w_q.push_back(gpu_w_q);
   weights.w_k.push_back(gpu_w_k);
   weights.w_v.push_back(gpu_w_v);
   weights.w_o.push_back(gpu_w_o);
+  weights.w_gate.push_back(gpu_w_gate);
+  weights.w_up.push_back(gpu_w_up);
+  weights.w_down.push_back(gpu_w_down);
+  weights.norm = gpu_layernorm_weights;
+  weights.vocab_size = vocab_size;
 
   llama_prefill::PagedAttentionState paged_attention_state;
   paged_attention_state.slot = 0;
@@ -177,8 +216,8 @@ int run_prefill_test() {
   paged_attention_state.free_blocks_count = free_blocks_storage.size();
 
   llama_prefill::prefill(gpu_prompt_tokens, prompt_len, gpu_input_embeddings, gpu_hidden_state, gpu_rms_norms, gpu_q_proj,
-                         gpu_k_proj_batched_buffer, gpu_v_proj_batched_buffer, weights, &paged_attention_state,
-                         gpu_prefill_attn_scores);
+                         gpu_k_proj_batched_buffer, gpu_v_proj_batched_buffer, gpu_mlp_gate, gpu_mlp_up, weights,
+                         &paged_attention_state, gpu_prefill_attn_scores, gpu_embed_proj);
 
   std::vector<__nv_bfloat16> hidden_out(prompt_len * llama_prefill::HIDDEN_SIZE);
   check_cuda(cudaMemcpy(hidden_out.data(), gpu_hidden_state, hidden_bytes, cudaMemcpyDeviceToHost), "cudaMemcpy(hidden D2H)");
@@ -219,9 +258,16 @@ int run_prefill_test() {
   }
 
   check_cuda(cudaFree(paged_attention_state.kv_cache), "cudaFree(paged_attention_state.kv_cache)");
+  check_cuda(cudaFree(gpu_embed_proj), "cudaFree(gpu_embed_proj)");
   check_cuda(cudaFree(gpu_prefill_attn_scores), "cudaFree(gpu_prefill_attn_scores)");
+  check_cuda(cudaFree(gpu_mlp_up), "cudaFree(gpu_mlp_up)");
+  check_cuda(cudaFree(gpu_mlp_gate), "cudaFree(gpu_mlp_gate)");
+  check_cuda(cudaFree(gpu_ffn_layernorm_weights), "cudaFree(gpu_ffn_layernorm_weights)");
   check_cuda(cudaFree(gpu_residual_embeds), "cudaFree(gpu_residual_embeds)");
   check_cuda(cudaFree(gpu_residual_input), "cudaFree(gpu_residual_input)");
+  check_cuda(cudaFree(gpu_w_down), "cudaFree(gpu_w_down)");
+  check_cuda(cudaFree(gpu_w_up), "cudaFree(gpu_w_up)");
+  check_cuda(cudaFree(gpu_w_gate), "cudaFree(gpu_w_gate)");
   check_cuda(cudaFree(gpu_w_o), "cudaFree(gpu_w_o)");
   check_cuda(cudaFree(gpu_w_v), "cudaFree(gpu_w_v)");
   check_cuda(cudaFree(gpu_w_k), "cudaFree(gpu_w_k)");

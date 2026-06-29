@@ -92,8 +92,8 @@ __global__ void residualKernel(__nv_bfloat16* input, const __nv_bfloat16* input_
 }
 
 __global__ void siluKernel(__nv_bfloat16* a, const __nv_bfloat16* b) {
-  const int work_index = threadIdx.x + blockIdx.x * 8192;
-  for (int i = 0; i < 8192; i += 1024) {
+  const int work_index = threadIdx.x + blockIdx.x * MLP_INTERMEDIATE_SIZE;
+  for (int i = 0; i < MLP_INTERMEDIATE_SIZE; i += 1024) {
     const float a_value = static_cast<float>(a[work_index + i]);
     const float b_value = static_cast<float>(b[work_index + i]);
     a[work_index + i] = static_cast<__nv_bfloat16>(a_value * (1.0f / (1.0f + expf(-a_value))) * b_value);
@@ -337,9 +337,12 @@ void prefill(const int* gpu_input_tokens,
              __nv_bfloat16* q_proj,
              __nv_bfloat16* k_proj_batched_buffer,
              __nv_bfloat16* v_proj_batched_buffer,
+             __nv_bfloat16* mlp_gate,
+             __nv_bfloat16* mlp_up,
              const PrefillWeights& weights,
              PagedAttentionState* paged_attention_state,
-             __nv_bfloat16* prefill_attn_scores) {
+             __nv_bfloat16* prefill_attn_scores,
+             __nv_bfloat16* embed_proj) {
   if (prompt_len == 0) {
     return;
   }
@@ -366,7 +369,17 @@ void prefill(const int* gpu_input_tokens,
   const float attn_scores_v_beta = 0.0f;
   const float o_proj_alpha = 1.0f;
   const float o_proj_beta = 0.0f;
+  const float gate_alpha = 1.0f;
+  const float gate_beta = 0.0f;
+  const float up_alpha = 1.0f;
+  const float up_beta = 0.0f;
+  const float down_alpha = 1.0f;
+  const float down_beta = 0.0f;
+  const float embed_alpha = 1.0f;
+  const float embed_beta = 0.0f;
   const int embedding_length = HIDDEN_SIZE;
+  const int vocab_size = weights.vocab_size;
+  const int mlp_intermediate_size = MLP_INTERMEDIATE_SIZE;
   const int kv_dim = KV_DIM;
   const int prompt_len_int = static_cast<int>(prompt_len);
 
@@ -571,9 +584,112 @@ void prefill(const int* gpu_input_tokens,
                                                 CUBLAS_GEMM_DEFAULT);
     check_cublas(o_proj_status, "cublasGemmEx(prefill o_proj)");
     residual_add(hidden_state, input_embeddings, prompt_len);
-    rms_norm(hidden_state, rms_norms, norm_weight, prompt_len);
+
+    const __nv_bfloat16* ffn_norm_weight = weights.post_attention_layernorm[layer];
+    rms_norm(hidden_state, rms_norms, ffn_norm_weight, prompt_len);
+
+    const __nv_bfloat16* w_gate = weights.w_gate[layer];
+    cublasStatus_t gate_status = cublasGemmEx(cublas_guard.handle,
+                                              CUBLAS_OP_T,
+                                              CUBLAS_OP_N,
+                                              mlp_intermediate_size,
+                                              prompt_len_int,
+                                              embedding_length,
+                                              &gate_alpha,
+                                              w_gate,
+                                              CUDA_R_16BF,
+                                              embedding_length,
+                                              rms_norms,
+                                              CUDA_R_16BF,
+                                              embedding_length,
+                                              &gate_beta,
+                                              mlp_gate,
+                                              CUDA_R_16BF,
+                                              mlp_intermediate_size,
+                                              CUBLAS_COMPUTE_32F,
+                                              CUBLAS_GEMM_DEFAULT);
+    check_cublas(gate_status, "cublasGemmEx(prefill mlp_gate)");
+
+    const __nv_bfloat16* w_up = weights.w_up[layer];
+    cublasStatus_t up_status = cublasGemmEx(cublas_guard.handle,
+                                            CUBLAS_OP_T,
+                                            CUBLAS_OP_N,
+                                            mlp_intermediate_size,
+                                            prompt_len_int,
+                                            embedding_length,
+                                            &up_alpha,
+                                            w_up,
+                                            CUDA_R_16BF,
+                                            embedding_length,
+                                            rms_norms,
+                                            CUDA_R_16BF,
+                                            embedding_length,
+                                            &up_beta,
+                                            mlp_up,
+                                            CUDA_R_16BF,
+                                            mlp_intermediate_size,
+                                            CUBLAS_COMPUTE_32F,
+                                            CUBLAS_GEMM_DEFAULT);
+    check_cublas(up_status, "cublasGemmEx(prefill mlp_up)");
+
+    silu(mlp_gate, mlp_up, prompt_len);
+
+    const __nv_bfloat16* w_down = weights.w_down[layer];
+    __nv_bfloat16* down = q_proj;
+    cublasStatus_t down_status = cublasGemmEx(cublas_guard.handle,
+                                              CUBLAS_OP_T,
+                                              CUBLAS_OP_N,
+                                              embedding_length,
+                                              prompt_len_int,
+                                              mlp_intermediate_size,
+                                              &down_alpha,
+                                              w_down,
+                                              CUDA_R_16BF,
+                                              mlp_intermediate_size,
+                                              mlp_gate,
+                                              CUDA_R_16BF,
+                                              mlp_intermediate_size,
+                                              &down_beta,
+                                              down,
+                                              CUDA_R_16BF,
+                                              embedding_length,
+                                              CUBLAS_COMPUTE_32F,
+                                              CUBLAS_GEMM_DEFAULT);
+    check_cublas(down_status, "cublasGemmEx(prefill mlp_down)");
+    residual_add(hidden_state, down, prompt_len);
   }
 
+  rms_norm(hidden_state, rms_norms, weights.norm, prompt_len);
+  check_cuda(cudaMemcpy(hidden_state, rms_norms, prompt_len * HIDDEN_SIZE * sizeof(__nv_bfloat16), cudaMemcpyDeviceToDevice),
+             "cudaMemcpy(prefill hidden_state <- final rms_norms)");
+
+  // Row-major target we want: logits = R * E^T, where
+  //   R = rms_norms [P, H], E = tok_embeddings [V, H], logits [P, V].
+  // Naively that is m=P, n=V, k=H, but cuBLAS is column-major and our buffers are row-major.
+  // cuBLAS sees row-major R [P, H] as R^T [H, P], and row-major E [V, H] as E^T [H, V].
+  // With opA=T on E, cuBLAS uses E. GEMM computes C_col = E * R^T = (R * E^T)^T.
+  // Storing C in column-major with m=V, n=P gives the same bytes as row-major logits [P, V].
+  // Leading dims: lda=ldb=H, ldc=V.
+  cublasStatus_t embed_status = cublasGemmEx(cublas_guard.handle,
+                                             CUBLAS_OP_T,
+                                             CUBLAS_OP_N,
+                                             vocab_size,
+                                             prompt_len_int,
+                                             embedding_length,
+                                             &embed_alpha,
+                                             weights.tok_embeddings,
+                                             CUDA_R_16BF,
+                                             embedding_length,
+                                             rms_norms,
+                                             CUDA_R_16BF,
+                                             embedding_length,
+                                             &embed_beta,
+                                             embed_proj,
+                                             CUDA_R_16BF,
+                                             vocab_size,
+                                             CUBLAS_COMPUTE_32F,
+                                             CUBLAS_GEMM_DEFAULT);
+  check_cublas(embed_status, "cublasGemmEx(prefill embed_proj)");
 }
 
 }  // namespace llama_prefill

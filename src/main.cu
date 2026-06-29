@@ -476,9 +476,14 @@ int main(int argc, char** argv) {
     __nv_bfloat16* q_proj = nullptr;
     __nv_bfloat16* k_proj_batched_buffer = nullptr;
     __nv_bfloat16* v_proj_batched_buffer = nullptr;
+    __nv_bfloat16* mlp_gate = nullptr;
+    __nv_bfloat16* mlp_up = nullptr;
     __nv_bfloat16* prefill_attn_scores = nullptr;
+    __nv_bfloat16* embed_proj = nullptr;
     const size_t kv_proj_bytes =
         static_cast<size_t>(prompt_tokens::MAX_PROMPT_LEN) * llama_prefill::KV_DIM * sizeof(__nv_bfloat16);
+    const size_t mlp_intermediate_bytes =
+        static_cast<size_t>(prompt_tokens::MAX_PROMPT_LEN) * llama_prefill::MLP_INTERMEDIATE_SIZE * sizeof(__nv_bfloat16);
     check_cuda(cudaMalloc(reinterpret_cast<void**>(&hidden_state), input_embeddings_bytes), "cudaMalloc(hidden_state)");
     check_cuda(cudaMalloc(reinterpret_cast<void**>(&rms_norms), input_embeddings_bytes), "cudaMalloc(rms_norms)");
     check_cuda(cudaMalloc(reinterpret_cast<void**>(&q_proj), input_embeddings_bytes), "cudaMalloc(q_proj)");
@@ -486,6 +491,8 @@ int main(int argc, char** argv) {
                "cudaMalloc(k_proj_batched_buffer)");
     check_cuda(cudaMalloc(reinterpret_cast<void**>(&v_proj_batched_buffer), kv_proj_bytes),
                "cudaMalloc(v_proj_batched_buffer)");
+    check_cuda(cudaMalloc(reinterpret_cast<void**>(&mlp_gate), mlp_intermediate_bytes), "cudaMalloc(mlp_gate)");
+    check_cuda(cudaMalloc(reinterpret_cast<void**>(&mlp_up), mlp_intermediate_bytes), "cudaMalloc(mlp_up)");
 
     llama_prefill::PrefillWeights prefill_weights;
     prefill_weights.tok_embeddings = weights.tok_embeddings;
@@ -494,6 +501,16 @@ int main(int argc, char** argv) {
     prefill_weights.w_k = weights.w_k;
     prefill_weights.w_v = weights.w_v;
     prefill_weights.w_o = weights.w_o;
+    prefill_weights.post_attention_layernorm = weights.rms_ffn;
+    prefill_weights.w_gate = weights.w_gate;
+    prefill_weights.w_up = weights.w_up;
+    prefill_weights.w_down = weights.w_down;
+    prefill_weights.norm = weights.final_norm;
+    const auto embed_it = weights.tensors.find("model.embed_tokens.weight");
+    if (embed_it == weights.tensors.end() || embed_it->second.shape.empty()) {
+      throw std::runtime_error("model.embed_tokens.weight shape unavailable for vocab_size");
+    }
+    prefill_weights.vocab_size = static_cast<int>(embed_it->second.shape[0]);
 
     const size_t num_layers = prefill_weights.input_layernorm.size();
     const size_t prompt_len = gpu_input_tokens.count;
@@ -502,6 +519,9 @@ int main(int argc, char** argv) {
     const size_t prefill_scores_bytes = std::max(prefill_scores_elements * sizeof(__nv_bfloat16), sizeof(__nv_bfloat16));
     check_cuda(cudaMalloc(reinterpret_cast<void**>(&prefill_attn_scores), prefill_scores_bytes),
                "cudaMalloc(prefill_attn_scores)");
+    const size_t embed_proj_bytes =
+        prompt_len * static_cast<size_t>(prefill_weights.vocab_size) * sizeof(__nv_bfloat16);
+    check_cuda(cudaMalloc(reinterpret_cast<void**>(&embed_proj), embed_proj_bytes), "cudaMalloc(embed_proj)");
 
     llama_prefill::PagedAttentionState paged_attention_state;
     paged_attention_state.slot = 0;
@@ -525,8 +545,8 @@ int main(int argc, char** argv) {
     paged_attention_state.free_blocks = free_blocks_storage.data();
     paged_attention_state.free_blocks_count = free_blocks_storage.size();
     llama_prefill::prefill(gpu_input_tokens.device_ptr, gpu_input_tokens.count, input_embeddings, hidden_state, rms_norms, q_proj,
-                           k_proj_batched_buffer, v_proj_batched_buffer, prefill_weights, &paged_attention_state,
-                           prefill_attn_scores);
+                           k_proj_batched_buffer, v_proj_batched_buffer, mlp_gate, mlp_up, prefill_weights,
+                           &paged_attention_state, prefill_attn_scores, embed_proj);
     std::cout << "Gathered " << gpu_input_tokens.count << " token embeddings into "
               << static_cast<void*>(input_embeddings) << '\n';
 
@@ -534,7 +554,10 @@ int main(int argc, char** argv) {
     print_mapping_debug(weights);
 
     check_cuda(cudaFree(paged_attention_state.kv_cache), "cudaFree(paged_attention_state.kv_cache)");
+    check_cuda(cudaFree(embed_proj), "cudaFree(embed_proj)");
     check_cuda(cudaFree(prefill_attn_scores), "cudaFree(prefill_attn_scores)");
+    check_cuda(cudaFree(mlp_up), "cudaFree(mlp_up)");
+    check_cuda(cudaFree(mlp_gate), "cudaFree(mlp_gate)");
     check_cuda(cudaFree(v_proj_batched_buffer), "cudaFree(v_proj_batched_buffer)");
     check_cuda(cudaFree(k_proj_batched_buffer), "cudaFree(k_proj_batched_buffer)");
     check_cuda(cudaFree(q_proj), "cudaFree(q_proj)");

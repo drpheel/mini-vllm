@@ -8,19 +8,27 @@
 namespace llama_prefill {
 
 constexpr int HIDDEN_SIZE = 2048;
+constexpr int MLP_INTERMEDIATE_SIZE = 8192;
 constexpr int KV_DIM = 512;
 constexpr int HEAD_DIM = 64;
 constexpr int NUM_Q_HEADS = HIDDEN_SIZE / HEAD_DIM;
 constexpr int NUM_KV_HEADS = KV_DIM / HEAD_DIM;
 constexpr int GQA_Q_TO_K_RATIO = NUM_Q_HEADS / NUM_KV_HEADS;
+constexpr int VOCAB_SIZE = 128256;
 
 struct PrefillWeights {
   __nv_bfloat16* tok_embeddings = nullptr;
+  int vocab_size = VOCAB_SIZE;
   std::vector<__nv_bfloat16*> input_layernorm;
   std::vector<__nv_bfloat16*> w_q;
   std::vector<__nv_bfloat16*> w_k;
   std::vector<__nv_bfloat16*> w_v;
   std::vector<__nv_bfloat16*> w_o;
+  std::vector<__nv_bfloat16*> post_attention_layernorm;
+  std::vector<__nv_bfloat16*> w_gate;
+  std::vector<__nv_bfloat16*> w_up;
+  std::vector<__nv_bfloat16*> w_down;
+  __nv_bfloat16* norm = nullptr;
 };
 
 struct PagedAttentionState {
@@ -59,8 +67,11 @@ void prefill(const int* gpu_input_tokens,
              __nv_bfloat16* q_proj,
              __nv_bfloat16* k_proj_batched_buffer,
              __nv_bfloat16* v_proj_batched_buffer,
+             __nv_bfloat16* mlp_gate,
+             __nv_bfloat16* mlp_up,
              const PrefillWeights& weights,
              PagedAttentionState* paged_attention_state,
-             __nv_bfloat16* prefill_attn_scores);
+             __nv_bfloat16* prefill_attn_scores,
+             __nv_bfloat16* embed_proj);
 
 }  // namespace llama_prefill
