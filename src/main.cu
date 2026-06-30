@@ -522,6 +522,7 @@ int main(int argc, char** argv) {
     const size_t embed_proj_bytes =
         prompt_len * static_cast<size_t>(prefill_weights.vocab_size) * sizeof(__nv_bfloat16);
     check_cuda(cudaMalloc(reinterpret_cast<void**>(&embed_proj), embed_proj_bytes), "cudaMalloc(embed_proj)");
+    std::vector<__nv_bfloat16> embed_proj_cpu(prompt_len * static_cast<size_t>(prefill_weights.vocab_size));
 
     llama_prefill::PagedAttentionState paged_attention_state;
     paged_attention_state.slot = 0;
@@ -546,7 +547,7 @@ int main(int argc, char** argv) {
     paged_attention_state.free_blocks_count = free_blocks_storage.size();
     llama_prefill::prefill(gpu_input_tokens.device_ptr, gpu_input_tokens.count, input_embeddings, hidden_state, rms_norms, q_proj,
                            k_proj_batched_buffer, v_proj_batched_buffer, mlp_gate, mlp_up, prefill_weights,
-                           &paged_attention_state, prefill_attn_scores, embed_proj);
+                           &paged_attention_state, prefill_attn_scores, embed_proj, embed_proj_cpu.data());
     std::cout << "Gathered " << gpu_input_tokens.count << " token embeddings into "
               << static_cast<void*>(input_embeddings) << '\n';
 

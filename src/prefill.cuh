@@ -72,6 +72,7 @@ void prefill(const int* gpu_input_tokens,
              const PrefillWeights& weights,
              PagedAttentionState* paged_attention_state,
              __nv_bfloat16* prefill_attn_scores,
-             __nv_bfloat16* embed_proj);
+             __nv_bfloat16* embed_proj,
+             __nv_bfloat16* embed_proj_cpu);
 
 }  // namespace llama_prefill

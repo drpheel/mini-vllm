@@ -342,7 +342,8 @@ void prefill(const int* gpu_input_tokens,
              const PrefillWeights& weights,
              PagedAttentionState* paged_attention_state,
              __nv_bfloat16* prefill_attn_scores,
-             __nv_bfloat16* embed_proj) {
+             __nv_bfloat16* embed_proj,
+             __nv_bfloat16* embed_proj_cpu) {
   if (prompt_len == 0) {
     return;
   }
@@ -690,6 +691,19 @@ void prefill(const int* gpu_input_tokens,
                                              CUBLAS_COMPUTE_32F,
                                              CUBLAS_GEMM_DEFAULT);
   check_cublas(embed_status, "cublasGemmEx(prefill embed_proj)");
+  check_cuda(cudaMemcpy(embed_proj_cpu, embed_proj, sizeof(__nv_bfloat16) * prompt_len * VOCAB_SIZE, cudaMemcpyDeviceToHost),
+             "cudaMemcpy(prefill embed_proj D2H)");
+
+  const int last_token_offset = static_cast<int>((prompt_len - 1) * static_cast<size_t>(VOCAB_SIZE));
+  float max_token = static_cast<float>(embed_proj_cpu[last_token_offset]);
+  int max_token_idx = 0;
+  for (int token_idx = 0; token_idx < VOCAB_SIZE; ++token_idx) {
+    if (static_cast<float>(embed_proj_cpu[token_idx + last_token_offset]) > max_token) {
+      max_token = static_cast<float>(embed_proj_cpu[token_idx + last_token_offset]);
+      max_token_idx = token_idx;
+    }
+  }
+  std::cout << "Output token: " << max_token << ", token index: " << std::to_string(max_token_idx) << std::endl;
 }
 
 }  // namespace llama_prefill
