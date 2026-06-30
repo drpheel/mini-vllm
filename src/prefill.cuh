@@ -15,6 +15,10 @@ constexpr int NUM_Q_HEADS = HIDDEN_SIZE / HEAD_DIM;
 constexpr int NUM_KV_HEADS = KV_DIM / HEAD_DIM;
 constexpr int GQA_Q_TO_K_RATIO = NUM_Q_HEADS / NUM_KV_HEADS;
 constexpr int VOCAB_SIZE = 128256;
+constexpr int BLOCK_SIZE = 16;
+constexpr int MAX_BLOCKS_PER_SEQ = 32;
+constexpr int MAX_SEQUENCES = 1;
+constexpr int N_LAYERS = 32;
 
 struct PrefillWeights {
   __nv_bfloat16* tok_embeddings = nullptr;
@@ -73,6 +77,11 @@ void prefill(const int* gpu_input_tokens,
              PagedAttentionState* paged_attention_state,
              __nv_bfloat16* prefill_attn_scores,
              __nv_bfloat16* embed_proj,
-             __nv_bfloat16* embed_proj_cpu);
+             __nv_bfloat16* embed_proj_cpu,
+             std::vector<std::vector<int>>& generated_tokens,
+             std::vector<int>& last_generated_tokens,
+             std::vector<int>& current_prompt_len,
+             std::vector<int>& block_table,
+             int* block_table_gpu);
 
 }  // namespace llama_prefill

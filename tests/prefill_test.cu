@@ -201,7 +201,8 @@ int run_prefill_test() {
   llama_prefill::PagedAttentionState paged_attention_state;
   paged_attention_state.slot = 0;
   paged_attention_state.block_size = 16;
-  paged_attention_state.max_blocks_per_seq = 1;
+  paged_attention_state.max_blocks_per_seq = llama_prefill::MAX_BLOCKS_PER_SEQ;
+
   const size_t per_kv_cache_bytes =
       static_cast<size_t>(paged_attention_state.block_size) * llama_prefill::KV_DIM * sizeof(__nv_bfloat16);
   paged_attention_state.v_offset = per_kv_cache_bytes;
@@ -209,16 +210,27 @@ int run_prefill_test() {
   check_cuda(cudaMalloc(&paged_attention_state.kv_cache, paged_attention_state.block_bytes),
              "cudaMalloc(paged_attention_state.kv_cache)");
 
-  std::vector<int> block_table_storage(1, -1);
+  std::vector<int> block_table(
+      static_cast<size_t>(llama_prefill::MAX_SEQUENCES) * llama_prefill::N_LAYERS * llama_prefill::MAX_BLOCKS_PER_SEQ,
+      -1);
+  int* block_table_gpu = nullptr;
+  check_cuda(cudaMalloc(reinterpret_cast<void**>(&block_table_gpu),
+                        llama_prefill::MAX_SEQUENCES * llama_prefill::N_LAYERS * llama_prefill::MAX_BLOCKS_PER_SEQ *
+                            sizeof(int)),
+             "cudaMalloc(block_table_gpu)");
   std::vector<int> free_blocks_storage{0};
-  paged_attention_state.block_table = block_table_storage.data();
+  paged_attention_state.block_table = block_table.data();
   paged_attention_state.free_blocks = free_blocks_storage.data();
   paged_attention_state.free_blocks_count = free_blocks_storage.size();
 
   std::vector<__nv_bfloat16> embed_proj_cpu(prompt_len * static_cast<size_t>(vocab_size));
+  std::vector<std::vector<int>> generated_tokens(1);
+  std::vector<int> last_generated_tokens(1);
+  std::vector<int> current_prompt_len(1);
   llama_prefill::prefill(gpu_prompt_tokens, prompt_len, gpu_input_embeddings, gpu_hidden_state, gpu_rms_norms, gpu_q_proj,
                          gpu_k_proj_batched_buffer, gpu_v_proj_batched_buffer, gpu_mlp_gate, gpu_mlp_up, weights,
-                         &paged_attention_state, gpu_prefill_attn_scores, gpu_embed_proj, embed_proj_cpu.data());
+                         &paged_attention_state, gpu_prefill_attn_scores, gpu_embed_proj, embed_proj_cpu.data(),
+                         generated_tokens, last_generated_tokens, current_prompt_len, block_table, block_table_gpu);
 
   std::vector<__nv_bfloat16> hidden_out(prompt_len * llama_prefill::HIDDEN_SIZE);
   check_cuda(cudaMemcpy(hidden_out.data(), gpu_hidden_state, hidden_bytes, cudaMemcpyDeviceToHost), "cudaMemcpy(hidden D2H)");
@@ -259,6 +271,7 @@ int run_prefill_test() {
   }
 
   check_cuda(cudaFree(paged_attention_state.kv_cache), "cudaFree(paged_attention_state.kv_cache)");
+  check_cuda(cudaFree(block_table_gpu), "cudaFree(block_table_gpu)");
   check_cuda(cudaFree(gpu_embed_proj), "cudaFree(gpu_embed_proj)");
   check_cuda(cudaFree(gpu_prefill_attn_scores), "cudaFree(gpu_prefill_attn_scores)");
   check_cuda(cudaFree(gpu_mlp_up), "cudaFree(gpu_mlp_up)");
