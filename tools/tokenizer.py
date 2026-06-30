@@ -13,7 +13,13 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from transformers import AutoTokenizer
+from huggingface_hub import hf_hub_download
+from tokenizers import Tokenizer
+
+
+def load_tokenizer(model: str) -> Tokenizer:
+    tokenizer_path = hf_hub_download(model, "tokenizer.json")
+    return Tokenizer.from_file(tokenizer_path)
 
 
 def format_token_ids(ids: list[int]) -> str:
@@ -34,7 +40,7 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    tokenizer = AutoTokenizer.from_pretrained(args.model)
+    tokenizer = load_tokenizer(args.model)
 
     if args.decode:
         if not args.ids:
@@ -50,7 +56,7 @@ def main() -> None:
     if not args.text:
         raise SystemExit("Provide text to tokenize")
 
-    ids = tokenizer.encode(args.text)
+    ids = tokenizer.encode(args.text).ids
     output = format_token_ids(ids)
     if args.output:
         args.output.write_text(f"{output}\n", encoding="utf-8")
