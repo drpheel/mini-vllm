@@ -24,6 +24,7 @@ set(LLAMA_MODEL_PATH "/mnt/nvme/models/Llama-3.2-1B-Instruct/model.safetensors"
 
 add_executable(cuda_cublas_json
   src/main.cu
+  src/decode.cu
   src/prefill.cu
 )
 

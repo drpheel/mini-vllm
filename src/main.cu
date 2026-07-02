@@ -1,13 +1,16 @@
+#include <cublas_v2.h>
 #include <cuda_bf16.h>
 #include <cuda_runtime.h>
 #define JSON_USE_IMPLICIT_CONVERSIONS 0
 #include <nlohmann/json.hpp>
 
+#include "decode.cuh"
 #include "prompt_tokens.cuh"
 #include "prefill.cuh"
 
 #include <algorithm>
 #include <cctype>
+#include <cmath>
 #include <cstdint>
 #include <cstring>
 #include <exception>
@@ -38,6 +41,20 @@ void check_cuda(cudaError_t status, const char* call) {
     throw std::runtime_error(std::string(call) + " failed: " + cudaGetErrorString(status));
   }
 }
+
+void check_cublas(cublasStatus_t status, const char* call) {
+  if (status != CUBLAS_STATUS_SUCCESS) {
+    throw std::runtime_error(std::string(call) + " failed with cublas status " + std::to_string(static_cast<int>(status)));
+  }
+}
+
+struct CublasHandleGuard {
+  cublasHandle_t handle = nullptr;
+
+  ~CublasHandleGuard() {
+    (void)cublasDestroy(handle);
+  }
+};
 
 void print_gpu_status() {
   int device_count = 0;
@@ -559,6 +576,76 @@ int main(int argc, char** argv) {
                            generated_tokens, last_generated_tokens, current_prompt_len, block_table, block_table_gpu);
     std::cout << "Gathered " << gpu_input_tokens.count << " token embeddings into "
               << static_cast<void*>(input_embeddings) << '\n';
+    const int slot = paged_attention_state.slot;
+    const int decode_token_id = last_generated_tokens[slot];
+    const size_t decode_token_index = static_cast<size_t>(current_prompt_len[slot]);
+    const size_t decode_token_offset = decode_token_index * static_cast<size_t>(LLAMA_HIDDEN_SIZE);
+    const int embedding_length = LLAMA_HIDDEN_SIZE;
+    const int num_decode_tokens = 1;
+    const float q_proj_alpha = 1.0f;
+    const float q_proj_beta = 0.0f;
+
+    int* decode_token_gpu = nullptr;
+    check_cuda(cudaMalloc(reinterpret_cast<void**>(&decode_token_gpu), sizeof(int)), "cudaMalloc(decode_token_gpu)");
+    check_cuda(cudaMemcpy(decode_token_gpu, &decode_token_id, sizeof(int), cudaMemcpyHostToDevice),
+               "cudaMemcpy(decode_token_gpu H2D)");
+    llama_prefill::embedding_gather(decode_token_gpu, hidden_state + decode_token_offset, weights.tok_embeddings,
+                                    static_cast<size_t>(num_decode_tokens));
+    std::cout << "Gathered decode token " << decode_token_id << " at sequence index " << decode_token_index
+              << " into " << static_cast<void*>(hidden_state + decode_token_offset) << '\n';
+
+    constexpr int DECODE_EMBED_VERIFY_DIMS = 8;
+    std::vector<__nv_bfloat16> decode_embed_sample(DECODE_EMBED_VERIFY_DIMS);
+    std::vector<__nv_bfloat16> expected_embed_sample(DECODE_EMBED_VERIFY_DIMS);
+    check_cuda(cudaMemcpy(decode_embed_sample.data(), hidden_state + decode_token_offset,
+                          decode_embed_sample.size() * sizeof(__nv_bfloat16), cudaMemcpyDeviceToHost),
+               "cudaMemcpy(decode hidden_state sample D2H)");
+    check_cuda(cudaMemcpy(expected_embed_sample.data(),
+                          weights.tok_embeddings +
+                              static_cast<size_t>(decode_token_id) * static_cast<size_t>(LLAMA_HIDDEN_SIZE),
+                          expected_embed_sample.size() * sizeof(__nv_bfloat16), cudaMemcpyDeviceToHost),
+               "cudaMemcpy(expected tok embedding sample D2H)");
+    for (int dim = 0; dim < DECODE_EMBED_VERIFY_DIMS; ++dim) {
+      const float actual = __bfloat162float(decode_embed_sample[static_cast<size_t>(dim)]);
+      const float expected = __bfloat162float(expected_embed_sample[static_cast<size_t>(dim)]);
+      if (std::fabs(actual - expected) > 1.0e-3f) {
+        throw std::runtime_error("Decode token embedding mismatch at dim " + std::to_string(dim) + ": got " +
+                                 std::to_string(actual) + ", expected " + std::to_string(expected));
+      }
+    }
+    std::cout << "Decode token embedding verified for token " << decode_token_id << " at index "
+              << decode_token_index << '\n';
+
+    CublasHandleGuard cublas_guard;
+    check_cublas(cublasCreate(&cublas_guard.handle), "cublasCreate(decode)");
+    for (size_t layer = 0; layer < num_layers; ++layer) {
+      decode::rmsNorm(hidden_state + decode_token_offset, rms_norms + decode_token_offset,
+                      weights.rms_attn[layer], num_decode_tokens);
+
+      // q proj (1, 2048)
+      check_cublas(cublasGemmEx(cublas_guard.handle,
+                                CUBLAS_OP_T,
+                                CUBLAS_OP_N,
+                                embedding_length,
+                                num_decode_tokens,
+                                embedding_length,
+                                &q_proj_alpha,
+                                weights.w_q[layer],
+                                CUDA_R_16BF,
+                                embedding_length,
+                                rms_norms + decode_token_offset,
+                                CUDA_R_16BF,
+                                embedding_length,
+                                &q_proj_beta,
+                                q_proj + decode_token_offset,
+                                CUDA_R_16BF,
+                                embedding_length,
+                                CUBLAS_COMPUTE_32F,
+                                CUBLAS_GEMM_DEFAULT),
+                 "cublasGemmEx(decode q_proj)");
+    }
+
+    check_cuda(cudaFree(decode_token_gpu), "cudaFree(decode_token_gpu)");
 
     print_input_embedding_debug(gpu_input_tokens, input_embeddings);
     print_mapping_debug(weights);

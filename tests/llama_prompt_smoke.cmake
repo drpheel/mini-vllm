@@ -42,4 +42,10 @@ if(NOT stdout MATCHES "Gathered 5 token embeddings into")
   message(FATAL_ERROR "llama model + prompt GPU smoke test did not run embedding gather kernel")
 endif()
 
+if(NOT stdout MATCHES "Decode token embedding verified")
+  message("stdout:\n${stdout}")
+  message("stderr:\n${stderr}")
+  message(FATAL_ERROR "llama model + prompt GPU smoke test did not verify decode token embedding")
+endif()
+
 message("${stdout}")
