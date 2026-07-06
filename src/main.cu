@@ -584,6 +584,11 @@ int main(int argc, char** argv) {
     const int num_decode_tokens = 1;
     const float q_proj_alpha = 1.0f;
     const float q_proj_beta = 0.0f;
+    const float k_proj_alpha = 1.0f;
+    const float k_proj_beta = 0.0f;
+    const float v_proj_alpha = 1.0f;
+    const float v_proj_beta = 0.0f;
+    const int kv_dim = llama_prefill::KV_DIM;
 
     int* decode_token_gpu = nullptr;
     check_cuda(cudaMalloc(reinterpret_cast<void**>(&decode_token_gpu), sizeof(int)), "cudaMalloc(decode_token_gpu)");
@@ -643,6 +648,101 @@ int main(int argc, char** argv) {
                                 CUBLAS_COMPUTE_32F,
                                 CUBLAS_GEMM_DEFAULT),
                  "cublasGemmEx(decode q_proj)");
+
+      // k proj (1, 512), writing output to k_proj_batched_buffer for scatter into K cache
+      // K proj = rms_norms (1, 2048) * W_k (512, 2048)
+      // W_k is stored as (512, 2048) (out features, in features), so we transpose it.
+      // Row-major data appears transposed to cuBLAS (column-major), so GEMM is W_k^T * rms_norms^T
+      // and the column-major output lands as row-major K_proj (1, 512).
+      check_cublas(cublasGemmEx(cublas_guard.handle,
+                                CUBLAS_OP_T,
+                                CUBLAS_OP_N,
+                                kv_dim,
+                                num_decode_tokens,
+                                embedding_length,
+                                &k_proj_alpha,
+                                weights.w_k[layer],
+                                CUDA_R_16BF,
+                                embedding_length,
+                                rms_norms + decode_token_offset,
+                                CUDA_R_16BF,
+                                embedding_length,
+                                &k_proj_beta,
+                                k_proj_batched_buffer,
+                                CUDA_R_16BF,
+                                kv_dim,
+                                CUBLAS_COMPUTE_32F,
+                                CUBLAS_GEMM_DEFAULT),
+                 "cublasGemmEx(decode k_proj)");
+
+      // v proj (1, 512), writing output to v_proj_batched_buffer for scatter into V cache
+      check_cublas(cublasGemmEx(cublas_guard.handle,
+                                CUBLAS_OP_T,
+                                CUBLAS_OP_N,
+                                kv_dim,
+                                num_decode_tokens,
+                                embedding_length,
+                                &v_proj_alpha,
+                                weights.w_v[layer],
+                                CUDA_R_16BF,
+                                embedding_length,
+                                rms_norms + decode_token_offset,
+                                CUDA_R_16BF,
+                                embedding_length,
+                                &v_proj_beta,
+                                v_proj_batched_buffer,
+                                CUDA_R_16BF,
+                                kv_dim,
+                                CUBLAS_COMPUTE_32F,
+                                CUBLAS_GEMM_DEFAULT),
+                 "cublasGemmEx(decode v_proj)");
+      decode::ropeDecode(q_proj + decode_token_offset, static_cast<int>(decode_token_index), embedding_length);
+      decode::ropeDecode(k_proj_batched_buffer, static_cast<int>(decode_token_index), kv_dim);
+
+      // Decode appends one token to the paged KV cache at sequence position current_prompt_len[slot].
+      const int seq_len = current_prompt_len[slot];
+      if (paged_attention_state.block_size <= 0) {
+        throw std::runtime_error("paged attention requires positive block_size");
+      }
+      if (paged_attention_state.max_blocks_per_seq <= 0) {
+        throw std::runtime_error("paged attention requires positive max_blocks_per_seq");
+      }
+      const int logical_block_idx = seq_len / paged_attention_state.block_size;
+      const int token_in_block_idx = seq_len % paged_attention_state.block_size;
+      if (logical_block_idx >= paged_attention_state.max_blocks_per_seq) {
+        throw std::runtime_error("decode paged attention block_idx exceeds max_blocks_per_seq");
+      }
+
+      const size_t block_table_index =
+          static_cast<size_t>(slot) * num_layers * paged_attention_state.max_blocks_per_seq +
+          layer * paged_attention_state.max_blocks_per_seq + static_cast<size_t>(logical_block_idx);
+      int block = block_table[block_table_index];
+      if (token_in_block_idx == 0 && block == -1) {
+        if (paged_attention_state.free_blocks_count == 0) {
+          throw std::runtime_error("paged attention has no free blocks available for decode");
+        }
+        const size_t free_block_idx = paged_attention_state.free_blocks_count - 1;
+        block = paged_attention_state.free_blocks[free_block_idx];
+        paged_attention_state.free_blocks_count = free_block_idx;
+        block_table[block_table_index] = block;
+      }
+      if (block == -1) {
+        throw std::runtime_error("decode paged attention block was not allocated");
+      }
+
+      __nv_bfloat16* k_cache_ptr = reinterpret_cast<__nv_bfloat16*>(
+          reinterpret_cast<char*>(paged_attention_state.kv_cache) + static_cast<size_t>(block) * paged_attention_state.block_bytes +
+          static_cast<size_t>(token_in_block_idx) * static_cast<size_t>(kv_dim) * sizeof(__nv_bfloat16));
+      const __nv_bfloat16* k_proj_ptr = k_proj_batched_buffer;
+      check_cuda(cudaMemcpy(k_cache_ptr, k_proj_ptr, static_cast<size_t>(kv_dim) * sizeof(__nv_bfloat16), cudaMemcpyDeviceToDevice),
+                 "cudaMemcpy(decode paged attention K)");
+
+      __nv_bfloat16* v_cache_ptr = reinterpret_cast<__nv_bfloat16*>(
+          reinterpret_cast<char*>(paged_attention_state.kv_cache) + static_cast<size_t>(block) * paged_attention_state.block_bytes +
+          paged_attention_state.v_offset + static_cast<size_t>(token_in_block_idx) * static_cast<size_t>(kv_dim) * sizeof(__nv_bfloat16));
+      const __nv_bfloat16* v_proj_ptr = v_proj_batched_buffer;
+      check_cuda(cudaMemcpy(v_cache_ptr, v_proj_ptr, static_cast<size_t>(kv_dim) * sizeof(__nv_bfloat16), cudaMemcpyDeviceToDevice),
+                 "cudaMemcpy(decode paged attention V)");
     }
 
     check_cuda(cudaFree(decode_token_gpu), "cudaFree(decode_token_gpu)");
