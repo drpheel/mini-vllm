@@ -582,12 +582,15 @@ int main(int argc, char** argv) {
     const size_t decode_token_offset = decode_token_index * static_cast<size_t>(LLAMA_HIDDEN_SIZE);
     const int embedding_length = LLAMA_HIDDEN_SIZE;
     const int num_decode_tokens = 1;
+    const int num_active_slots = 1;
     const float q_proj_alpha = 1.0f;
     const float q_proj_beta = 0.0f;
     const float k_proj_alpha = 1.0f;
     const float k_proj_beta = 0.0f;
     const float v_proj_alpha = 1.0f;
     const float v_proj_beta = 0.0f;
+    const float o_proj_alpha = 1.0f;
+    const float o_proj_beta = 0.0f;
     const int kv_dim = llama_prefill::KV_DIM;
 
     int* decode_token_gpu = nullptr;
@@ -623,6 +626,17 @@ int main(int argc, char** argv) {
 
     CublasHandleGuard cublas_guard;
     check_cublas(cublasCreate(&cublas_guard.handle), "cublasCreate(decode)");
+
+    int* gpu_seq_lens = nullptr;
+    int* gpu_active_slots = nullptr;
+    check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_seq_lens), sizeof(int)), "cudaMalloc(gpu_seq_lens)");
+    check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_active_slots), sizeof(int)), "cudaMalloc(gpu_active_slots)");
+    const int decode_seq_len = current_prompt_len[slot] + 1;
+    check_cuda(cudaMemcpy(gpu_seq_lens, &decode_seq_len, sizeof(int), cudaMemcpyHostToDevice),
+               "cudaMemcpy(gpu_seq_lens H2D)");
+    check_cuda(cudaMemcpy(gpu_active_slots, &slot, sizeof(int), cudaMemcpyHostToDevice),
+               "cudaMemcpy(gpu_active_slots H2D)");
+
     for (size_t layer = 0; layer < num_layers; ++layer) {
       decode::rmsNorm(hidden_state + decode_token_offset, rms_norms + decode_token_offset,
                       weights.rms_attn[layer], num_decode_tokens);
@@ -743,8 +757,57 @@ int main(int argc, char** argv) {
       const __nv_bfloat16* v_proj_ptr = v_proj_batched_buffer;
       check_cuda(cudaMemcpy(v_cache_ptr, v_proj_ptr, static_cast<size_t>(kv_dim) * sizeof(__nv_bfloat16), cudaMemcpyDeviceToDevice),
                  "cudaMemcpy(decode paged attention V)");
+
+      // Synchronize block table on CPU with block table on GPU (for attention).
+      check_cuda(cudaMemcpy(block_table_gpu,
+                            block_table.data(),
+                            llama_prefill::MAX_SEQUENCES * llama_prefill::N_LAYERS *
+                                llama_prefill::MAX_BLOCKS_PER_SEQ * sizeof(int),
+                            cudaMemcpyHostToDevice),
+                 "cudaMemcpy(decode block_table H2D)");
+
+      // pagedAttention expects q/output at active_slot * HIDDEN_SIZE; copy decode Q to slot 0.
+      check_cuda(cudaMemcpy(q_proj,
+                            q_proj + decode_token_offset,
+                            static_cast<size_t>(embedding_length) * sizeof(__nv_bfloat16),
+                            cudaMemcpyDeviceToDevice),
+                 "cudaMemcpy(decode q_proj to slot 0)");
+      decode::pagedAttention(static_cast<int>(layer),
+                             1,
+                             q_proj,
+                             reinterpret_cast<__nv_bfloat16*>(paged_attention_state.kv_cache),
+                             block_table_gpu,
+                             gpu_seq_lens,
+                             gpu_active_slots,
+                             q_proj);
+
+      // O proj = (attention output) * W_o^T -> (1, 2048)
+      __nv_bfloat16* o_proj = rms_norms + decode_token_offset;
+      check_cublas(cublasGemmEx(cublas_guard.handle,
+                                CUBLAS_OP_T,
+                                CUBLAS_OP_N,
+                                embedding_length,
+                                num_decode_tokens,
+                                embedding_length,
+                                &o_proj_alpha,
+                                weights.w_o[layer],
+                                CUDA_R_16BF,
+                                embedding_length,
+                                q_proj,
+                                CUDA_R_16BF,
+                                embedding_length,
+                                &o_proj_beta,
+                                o_proj,
+                                CUDA_R_16BF,
+                                embedding_length,
+                                CUBLAS_COMPUTE_32F,
+                                CUBLAS_GEMM_DEFAULT),
+                 "cublasGemmEx(decode o_proj)");
+      decode::residualAdd(hidden_state + decode_token_offset, o_proj, num_active_slots);
     }
 
+    check_cuda(cudaFree(gpu_seq_lens), "cudaFree(gpu_seq_lens)");
+    check_cuda(cudaFree(gpu_active_slots), "cudaFree(gpu_active_slots)");
     check_cuda(cudaFree(decode_token_gpu), "cudaFree(decode_token_gpu)");
 
     print_input_embedding_debug(gpu_input_tokens, input_embeddings);
