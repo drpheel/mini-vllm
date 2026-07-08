@@ -580,7 +580,9 @@ int main(int argc, char** argv) {
     const int decode_token_id = last_generated_tokens[slot];
     const size_t decode_token_index = static_cast<size_t>(current_prompt_len[slot]);
     const size_t decode_token_offset = decode_token_index * static_cast<size_t>(LLAMA_HIDDEN_SIZE);
+    const size_t decode_mlp_offset = decode_token_index * static_cast<size_t>(llama_prefill::MLP_INTERMEDIATE_SIZE);
     const int embedding_length = LLAMA_HIDDEN_SIZE;
+    const int mlp_intermediate_size = llama_prefill::MLP_INTERMEDIATE_SIZE;
     const int num_decode_tokens = 1;
     const int num_active_slots = 1;
     const float q_proj_alpha = 1.0f;
@@ -591,6 +593,12 @@ int main(int argc, char** argv) {
     const float v_proj_beta = 0.0f;
     const float o_proj_alpha = 1.0f;
     const float o_proj_beta = 0.0f;
+    const float gate_alpha = 1.0f;
+    const float gate_beta = 0.0f;
+    const float up_alpha = 1.0f;
+    const float up_beta = 0.0f;
+    const float down_alpha = 1.0f;
+    const float down_beta = 0.0f;
     const int kv_dim = llama_prefill::KV_DIM;
 
     int* decode_token_gpu = nullptr;
@@ -804,7 +812,85 @@ int main(int argc, char** argv) {
                                 CUBLAS_GEMM_DEFAULT),
                  "cublasGemmEx(decode o_proj)");
       decode::residualAdd(hidden_state + decode_token_offset, o_proj, num_active_slots);
+      decode::rmsNorm(hidden_state + decode_token_offset, rms_norms + decode_token_offset,
+                      weights.rms_ffn[layer], num_active_slots);
+
+      // MLP gate proj = rms_norms (1, 2048) * W_gate^T -> (1, 8192)
+      check_cublas(cublasGemmEx(cublas_guard.handle,
+                                CUBLAS_OP_T,
+                                CUBLAS_OP_N,
+                                mlp_intermediate_size,
+                                num_active_slots,
+                                embedding_length,
+                                &gate_alpha,
+                                weights.w_gate[layer],
+                                CUDA_R_16BF,
+                                embedding_length,
+                                rms_norms + decode_token_offset,
+                                CUDA_R_16BF,
+                                embedding_length,
+                                &gate_beta,
+                                mlp_gate + decode_mlp_offset,
+                                CUDA_R_16BF,
+                                mlp_intermediate_size,
+                                CUBLAS_COMPUTE_32F,
+                                CUBLAS_GEMM_DEFAULT),
+                 "cublasGemmEx(decode mlp_gate)");
+
+      // MLP up proj = rms_norms (1, 2048) * W_up^T -> (1, 8192)
+      check_cublas(cublasGemmEx(cublas_guard.handle,
+                                CUBLAS_OP_T,
+                                CUBLAS_OP_N,
+                                mlp_intermediate_size,
+                                num_active_slots,
+                                embedding_length,
+                                &up_alpha,
+                                weights.w_up[layer],
+                                CUDA_R_16BF,
+                                embedding_length,
+                                rms_norms + decode_token_offset,
+                                CUDA_R_16BF,
+                                embedding_length,
+                                &up_beta,
+                                mlp_up + decode_mlp_offset,
+                                CUDA_R_16BF,
+                                mlp_intermediate_size,
+                                CUBLAS_COMPUTE_32F,
+                                CUBLAS_GEMM_DEFAULT),
+                 "cublasGemmEx(decode mlp_up)");
+      llama_prefill::silu(mlp_gate + decode_mlp_offset, mlp_up + decode_mlp_offset,
+                          static_cast<size_t>(num_active_slots));
+
+      // MLP down proj = silu(gate) * up (1, 8192) * W_down^T -> (1, 2048)
+      __nv_bfloat16* down = q_proj + decode_token_offset;
+      check_cublas(cublasGemmEx(cublas_guard.handle,
+                                CUBLAS_OP_T,
+                                CUBLAS_OP_N,
+                                embedding_length,
+                                num_active_slots,
+                                mlp_intermediate_size,
+                                &down_alpha,
+                                weights.w_down[layer],
+                                CUDA_R_16BF,
+                                mlp_intermediate_size,
+                                mlp_gate + decode_mlp_offset,
+                                CUDA_R_16BF,
+                                mlp_intermediate_size,
+                                &down_beta,
+                                down,
+                                CUDA_R_16BF,
+                                embedding_length,
+                                CUBLAS_COMPUTE_32F,
+                                CUBLAS_GEMM_DEFAULT),
+                 "cublasGemmEx(decode mlp_down)");
+      decode::residualAdd(hidden_state + decode_token_offset, down, num_active_slots);
     }
+
+    decode::rmsNorm(hidden_state + decode_token_offset, rms_norms + decode_token_offset,
+                    weights.final_norm, num_active_slots);
+
+    std::cout << "Decode forward pass completed: prompt_len=" << current_prompt_len[slot]
+              << " decode_token=" << decode_token_id << " layers=" << num_layers << '\n';
 
     check_cuda(cudaFree(gpu_seq_lens), "cudaFree(gpu_seq_lens)");
     check_cuda(cudaFree(gpu_active_slots), "cudaFree(gpu_active_slots)");
