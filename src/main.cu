@@ -34,6 +34,14 @@ constexpr double B_TO_MB = 1024.0 * 1024.0;
 constexpr double B_TO_GB = 1024.0 * 1024.0 * 1024.0;
 constexpr size_t COPY_CHUNK_BYTES = 64 * 1024 * 1024;
 constexpr int LLAMA_HIDDEN_SIZE = llama_prefill::HIDDEN_SIZE;
+constexpr int END_OF_TEXT_TOKEN_ID = 128001;  // <|end_of_text|>
+constexpr int EOT_ID_TOKEN_ID = 128009;       // <|eot_id|>
+constexpr int MAX_SEQ_LEN = llama_prefill::BLOCK_SIZE * llama_prefill::MAX_BLOCKS_PER_SEQ;
+constexpr int MAX_NEW_TOKENS = 64;
+constexpr float REPETITION_PENALTY = 1.2f;
+// Only discourage immediate re-use of the last few tokens (anti-stutter), so
+// answers like "2 + 2 = 4" are not broken by penalizing earlier digits.
+constexpr int REPETITION_WINDOW = 2;
 constexpr const char* DEFAULT_MODEL_PATH = "/mnt/nvme/models/Llama-3.2-1B-Instruct/model.safetensors";
 
 void check_cuda(cudaError_t status, const char* call) {
@@ -567,9 +575,10 @@ int main(int argc, char** argv) {
     paged_attention_state.block_table = block_table.data();
     paged_attention_state.free_blocks = free_blocks_storage.data();
     paged_attention_state.free_blocks_count = free_blocks_storage.size();
-    std::vector<std::vector<int>> generated_tokens(1);
-    std::vector<int> last_generated_tokens(1);
-    std::vector<int> current_prompt_len(1);
+    std::vector<std::vector<int>> generated_tokens(llama_prefill::MAX_SEQUENCES);
+    std::vector<int> last_generated_tokens(llama_prefill::MAX_SEQUENCES);
+    std::vector<int> current_prompt_len(llama_prefill::MAX_SEQUENCES);
+    std::vector<char> is_slot_free(llama_prefill::MAX_SEQUENCES, 1);
     llama_prefill::prefill(gpu_input_tokens.device_ptr, gpu_input_tokens.count, input_embeddings, hidden_state, rms_norms, q_proj,
                            k_proj_batched_buffer, v_proj_batched_buffer, mlp_gate, mlp_up, prefill_weights,
                            &paged_attention_state, prefill_attn_scores, embed_proj, embed_proj_cpu.data(),
@@ -577,10 +586,7 @@ int main(int argc, char** argv) {
     std::cout << "Gathered " << gpu_input_tokens.count << " token embeddings into "
               << static_cast<void*>(input_embeddings) << '\n';
     const int slot = paged_attention_state.slot;
-    const int decode_token_id = last_generated_tokens[slot];
-    const size_t decode_token_index = static_cast<size_t>(current_prompt_len[slot]);
-    const size_t decode_token_offset = decode_token_index * static_cast<size_t>(LLAMA_HIDDEN_SIZE);
-    const size_t decode_mlp_offset = decode_token_index * static_cast<size_t>(llama_prefill::MLP_INTERMEDIATE_SIZE);
+    is_slot_free[static_cast<size_t>(slot)] = 0;
     const int embedding_length = LLAMA_HIDDEN_SIZE;
     const int mlp_intermediate_size = llama_prefill::MLP_INTERMEDIATE_SIZE;
     const int num_decode_tokens = 1;
@@ -599,38 +605,13 @@ int main(int argc, char** argv) {
     const float up_beta = 0.0f;
     const float down_alpha = 1.0f;
     const float down_beta = 0.0f;
+    const float embed_alpha = 1.0f;
+    const float embed_beta = 0.0f;
+    const int vocab_size = prefill_weights.vocab_size;
     const int kv_dim = llama_prefill::KV_DIM;
 
     int* decode_token_gpu = nullptr;
     check_cuda(cudaMalloc(reinterpret_cast<void**>(&decode_token_gpu), sizeof(int)), "cudaMalloc(decode_token_gpu)");
-    check_cuda(cudaMemcpy(decode_token_gpu, &decode_token_id, sizeof(int), cudaMemcpyHostToDevice),
-               "cudaMemcpy(decode_token_gpu H2D)");
-    llama_prefill::embedding_gather(decode_token_gpu, hidden_state + decode_token_offset, weights.tok_embeddings,
-                                    static_cast<size_t>(num_decode_tokens));
-    std::cout << "Gathered decode token " << decode_token_id << " at sequence index " << decode_token_index
-              << " into " << static_cast<void*>(hidden_state + decode_token_offset) << '\n';
-
-    constexpr int DECODE_EMBED_VERIFY_DIMS = 8;
-    std::vector<__nv_bfloat16> decode_embed_sample(DECODE_EMBED_VERIFY_DIMS);
-    std::vector<__nv_bfloat16> expected_embed_sample(DECODE_EMBED_VERIFY_DIMS);
-    check_cuda(cudaMemcpy(decode_embed_sample.data(), hidden_state + decode_token_offset,
-                          decode_embed_sample.size() * sizeof(__nv_bfloat16), cudaMemcpyDeviceToHost),
-               "cudaMemcpy(decode hidden_state sample D2H)");
-    check_cuda(cudaMemcpy(expected_embed_sample.data(),
-                          weights.tok_embeddings +
-                              static_cast<size_t>(decode_token_id) * static_cast<size_t>(LLAMA_HIDDEN_SIZE),
-                          expected_embed_sample.size() * sizeof(__nv_bfloat16), cudaMemcpyDeviceToHost),
-               "cudaMemcpy(expected tok embedding sample D2H)");
-    for (int dim = 0; dim < DECODE_EMBED_VERIFY_DIMS; ++dim) {
-      const float actual = __bfloat162float(decode_embed_sample[static_cast<size_t>(dim)]);
-      const float expected = __bfloat162float(expected_embed_sample[static_cast<size_t>(dim)]);
-      if (std::fabs(actual - expected) > 1.0e-3f) {
-        throw std::runtime_error("Decode token embedding mismatch at dim " + std::to_string(dim) + ": got " +
-                                 std::to_string(actual) + ", expected " + std::to_string(expected));
-      }
-    }
-    std::cout << "Decode token embedding verified for token " << decode_token_id << " at index "
-              << decode_token_index << '\n';
 
     CublasHandleGuard cublas_guard;
     check_cublas(cublasCreate(&cublas_guard.handle), "cublasCreate(decode)");
@@ -639,11 +620,55 @@ int main(int argc, char** argv) {
     int* gpu_active_slots = nullptr;
     check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_seq_lens), sizeof(int)), "cudaMalloc(gpu_seq_lens)");
     check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_active_slots), sizeof(int)), "cudaMalloc(gpu_active_slots)");
-    const int decode_seq_len = current_prompt_len[slot] + 1;
-    check_cuda(cudaMemcpy(gpu_seq_lens, &decode_seq_len, sizeof(int), cudaMemcpyHostToDevice),
-               "cudaMemcpy(gpu_seq_lens H2D)");
     check_cuda(cudaMemcpy(gpu_active_slots, &slot, sizeof(int), cudaMemcpyHostToDevice),
                "cudaMemcpy(gpu_active_slots H2D)");
+
+    bool verified_first_decode_embed = false;
+    while (!is_slot_free[static_cast<size_t>(slot)] &&
+           generated_tokens[static_cast<size_t>(slot)].size() < static_cast<size_t>(MAX_NEW_TOKENS)) {
+    const int decode_token_id = last_generated_tokens[static_cast<size_t>(slot)];
+    const size_t decode_token_index = static_cast<size_t>(current_prompt_len[static_cast<size_t>(slot)]);
+    const size_t decode_token_offset = decode_token_index * static_cast<size_t>(LLAMA_HIDDEN_SIZE);
+    const size_t decode_mlp_offset = decode_token_index * static_cast<size_t>(llama_prefill::MLP_INTERMEDIATE_SIZE);
+    if (decode_token_index >= static_cast<size_t>(prompt_tokens::MAX_PROMPT_LEN)) {
+      throw std::runtime_error("decode token index exceeds MAX_PROMPT_LEN");
+    }
+
+    check_cuda(cudaMemcpy(decode_token_gpu, &decode_token_id, sizeof(int), cudaMemcpyHostToDevice),
+               "cudaMemcpy(decode_token_gpu H2D)");
+    llama_prefill::embedding_gather(decode_token_gpu, hidden_state + decode_token_offset, weights.tok_embeddings,
+                                    static_cast<size_t>(num_decode_tokens));
+    std::cout << "Gathered decode token " << decode_token_id << " at sequence index " << decode_token_index
+              << " into " << static_cast<void*>(hidden_state + decode_token_offset) << '\n';
+
+    if (!verified_first_decode_embed) {
+      constexpr int DECODE_EMBED_VERIFY_DIMS = 8;
+      std::vector<__nv_bfloat16> decode_embed_sample(DECODE_EMBED_VERIFY_DIMS);
+      std::vector<__nv_bfloat16> expected_embed_sample(DECODE_EMBED_VERIFY_DIMS);
+      check_cuda(cudaMemcpy(decode_embed_sample.data(), hidden_state + decode_token_offset,
+                            decode_embed_sample.size() * sizeof(__nv_bfloat16), cudaMemcpyDeviceToHost),
+                 "cudaMemcpy(decode hidden_state sample D2H)");
+      check_cuda(cudaMemcpy(expected_embed_sample.data(),
+                            weights.tok_embeddings +
+                                static_cast<size_t>(decode_token_id) * static_cast<size_t>(LLAMA_HIDDEN_SIZE),
+                            expected_embed_sample.size() * sizeof(__nv_bfloat16), cudaMemcpyDeviceToHost),
+                 "cudaMemcpy(expected tok embedding sample D2H)");
+      for (int dim = 0; dim < DECODE_EMBED_VERIFY_DIMS; ++dim) {
+        const float actual = __bfloat162float(decode_embed_sample[static_cast<size_t>(dim)]);
+        const float expected = __bfloat162float(expected_embed_sample[static_cast<size_t>(dim)]);
+        if (std::fabs(actual - expected) > 1.0e-3f) {
+          throw std::runtime_error("Decode token embedding mismatch at dim " + std::to_string(dim) + ": got " +
+                                   std::to_string(actual) + ", expected " + std::to_string(expected));
+        }
+      }
+      std::cout << "Decode token embedding verified for token " << decode_token_id << " at index "
+                << decode_token_index << '\n';
+      verified_first_decode_embed = true;
+    }
+
+    const int decode_seq_len = current_prompt_len[static_cast<size_t>(slot)] + 1;
+    check_cuda(cudaMemcpy(gpu_seq_lens, &decode_seq_len, sizeof(int), cudaMemcpyHostToDevice),
+               "cudaMemcpy(gpu_seq_lens H2D)");
 
     for (size_t layer = 0; layer < num_layers; ++layer) {
       decode::rmsNorm(hidden_state + decode_token_offset, rms_norms + decode_token_offset,
@@ -889,8 +914,139 @@ int main(int argc, char** argv) {
     decode::rmsNorm(hidden_state + decode_token_offset, rms_norms + decode_token_offset,
                     weights.final_norm, num_active_slots);
 
-    std::cout << "Decode forward pass completed: prompt_len=" << current_prompt_len[slot]
-              << " decode_token=" << decode_token_id << " layers=" << num_layers << '\n';
+    // logits = rms_norm * E^T  (same layout as prefill LM head / tied embeddings)
+    check_cublas(cublasGemmEx(cublas_guard.handle,
+                              CUBLAS_OP_T,
+                              CUBLAS_OP_N,
+                              vocab_size,
+                              num_active_slots,
+                              embedding_length,
+                              &embed_alpha,
+                              weights.tok_embeddings,
+                              CUDA_R_16BF,
+                              embedding_length,
+                              rms_norms + decode_token_offset,
+                              CUDA_R_16BF,
+                              embedding_length,
+                              &embed_beta,
+                              embed_proj,
+                              CUDA_R_16BF,
+                              vocab_size,
+                              CUBLAS_COMPUTE_32F,
+                              CUBLAS_GEMM_DEFAULT),
+                 "cublasGemmEx(decode lm_head)");
+
+    check_cuda(cudaMemcpy(embed_proj_cpu.data(),
+                          embed_proj,
+                          sizeof(__nv_bfloat16) * static_cast<size_t>(num_active_slots) *
+                              static_cast<size_t>(vocab_size),
+                          cudaMemcpyDeviceToHost),
+               "cudaMemcpy(decode embed_proj D2H)");
+
+    // Single active stream for now (num_active_slots == 1); layout matches multi-slot batching.
+    const int active_slot = slot;
+    const std::vector<int>& prior_tokens = generated_tokens[static_cast<size_t>(active_slot)];
+    auto apply_repetition_penalty = [&](int token_idx, float logit) -> float {
+      if (REPETITION_PENALTY == 1.0f || prior_tokens.empty() || REPETITION_WINDOW <= 0) {
+        return logit;
+      }
+      const size_t window_start =
+          prior_tokens.size() > static_cast<size_t>(REPETITION_WINDOW)
+              ? prior_tokens.size() - static_cast<size_t>(REPETITION_WINDOW)
+              : 0;
+      const bool seen = std::find(prior_tokens.begin() + static_cast<std::ptrdiff_t>(window_start),
+                                  prior_tokens.end(),
+                                  token_idx) != prior_tokens.end();
+      if (!seen) {
+        return logit;
+      }
+      // HuggingFace-style: shrink positive logits, enlarge magnitude of negative ones.
+      return logit < 0.0f ? logit * REPETITION_PENALTY : logit / REPETITION_PENALTY;
+    };
+
+    float max_token = apply_repetition_penalty(0, __bfloat162float(embed_proj_cpu[0]));
+    int max_token_idx = 0;
+    for (int token_idx = 1; token_idx < vocab_size; ++token_idx) {
+      const float logit =
+          apply_repetition_penalty(token_idx, __bfloat162float(embed_proj_cpu[static_cast<size_t>(token_idx)]));
+      if (logit > max_token) {
+        max_token = logit;
+        max_token_idx = token_idx;
+      }
+    }
+    std::cout << "Output token: " << max_token << ", token index: " << max_token_idx << '\n';
+
+    const bool hit_max_seq = current_prompt_len[static_cast<size_t>(active_slot)] == MAX_SEQ_LEN - 1;
+    if (max_token_idx == END_OF_TEXT_TOKEN_ID || max_token_idx == EOT_ID_TOKEN_ID || hit_max_seq) {
+      is_slot_free[static_cast<size_t>(active_slot)] = 1;
+      for (size_t layer = 0; layer < num_layers; ++layer) {
+        for (int logical_block_idx = 0; logical_block_idx < paged_attention_state.max_blocks_per_seq;
+             ++logical_block_idx) {
+          const size_t block_idx =
+              static_cast<size_t>(active_slot) * num_layers * paged_attention_state.max_blocks_per_seq +
+              layer * paged_attention_state.max_blocks_per_seq + static_cast<size_t>(logical_block_idx);
+          if (block_table[block_idx] != -1) {
+            if (paged_attention_state.free_blocks_count >= free_blocks_storage.size()) {
+              throw std::runtime_error("paged attention free_blocks overflow while releasing slot");
+            }
+            paged_attention_state.free_blocks[paged_attention_state.free_blocks_count++] = block_table[block_idx];
+            block_table[block_idx] = -1;
+          }
+        }
+      }
+      check_cuda(cudaMemcpy(block_table_gpu,
+                            block_table.data(),
+                            llama_prefill::MAX_SEQUENCES * llama_prefill::N_LAYERS *
+                                llama_prefill::MAX_BLOCKS_PER_SEQ * sizeof(int),
+                            cudaMemcpyHostToDevice),
+                 "cudaMemcpy(decode free slot block_table H2D)");
+      std::cout << "Decode stopped (EOS/EOT/max len); freed slot " << active_slot << '\n';
+    } else {
+      last_generated_tokens[static_cast<size_t>(active_slot)] = max_token_idx;
+      generated_tokens[static_cast<size_t>(active_slot)].push_back(max_token_idx);
+      current_prompt_len[static_cast<size_t>(active_slot)] =
+          current_prompt_len[static_cast<size_t>(active_slot)] + 1;
+      std::cout << "Decode continue: next_token=" << max_token_idx
+                << " prompt_len=" << current_prompt_len[static_cast<size_t>(active_slot)]
+                << " new_tokens=" << generated_tokens[static_cast<size_t>(active_slot)].size() << '\n';
+    }
+
+    std::cout << "Decode forward pass completed: prompt_len=" << current_prompt_len[static_cast<size_t>(slot)]
+              << " decode_token=" << decode_token_id << " layers=" << num_layers
+              << " slot_free=" << static_cast<int>(is_slot_free[static_cast<size_t>(slot)]) << '\n';
+    }  // while (!is_slot_free[slot] && generated < MAX_NEW_TOKENS)
+
+    if (!is_slot_free[static_cast<size_t>(slot)]) {
+      is_slot_free[static_cast<size_t>(slot)] = 1;
+      for (size_t layer = 0; layer < num_layers; ++layer) {
+        for (int logical_block_idx = 0; logical_block_idx < paged_attention_state.max_blocks_per_seq;
+             ++logical_block_idx) {
+          const size_t block_idx =
+              static_cast<size_t>(slot) * num_layers * paged_attention_state.max_blocks_per_seq +
+              layer * paged_attention_state.max_blocks_per_seq + static_cast<size_t>(logical_block_idx);
+          if (block_table[block_idx] != -1) {
+            if (paged_attention_state.free_blocks_count >= free_blocks_storage.size()) {
+              throw std::runtime_error("paged attention free_blocks overflow while releasing slot");
+            }
+            paged_attention_state.free_blocks[paged_attention_state.free_blocks_count++] = block_table[block_idx];
+            block_table[block_idx] = -1;
+          }
+        }
+      }
+      check_cuda(cudaMemcpy(block_table_gpu,
+                            block_table.data(),
+                            llama_prefill::MAX_SEQUENCES * llama_prefill::N_LAYERS *
+                                llama_prefill::MAX_BLOCKS_PER_SEQ * sizeof(int),
+                            cudaMemcpyHostToDevice),
+                 "cudaMemcpy(decode max_new_tokens block_table H2D)");
+      std::cout << "Decode stopped (max_new_tokens=" << MAX_NEW_TOKENS << "); freed slot " << slot << '\n';
+    }
+
+    std::cout << "Generated tokens:";
+    for (int token_id : generated_tokens[static_cast<size_t>(slot)]) {
+      std::cout << ' ' << token_id;
+    }
+    std::cout << '\n';
 
     check_cuda(cudaFree(gpu_seq_lens), "cudaFree(gpu_seq_lens)");
     check_cuda(cudaFree(gpu_active_slots), "cudaFree(gpu_active_slots)");
