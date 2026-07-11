@@ -343,12 +343,9 @@ void prefill(const int* gpu_input_tokens,
              PagedAttentionState* paged_attention_state,
              __nv_bfloat16* prefill_attn_scores,
              __nv_bfloat16* embed_proj,
-             __nv_bfloat16* embed_proj_cpu,
              std::vector<std::vector<int>>& generated_tokens,
              std::vector<int>& last_generated_tokens,
-             std::vector<int>& current_prompt_len,
-             std::vector<int>& block_table,
-             int* block_table_gpu) {
+             std::vector<int>& current_prompt_len) {
   if (prompt_len == 0) {
     return;
   }
@@ -696,15 +693,16 @@ void prefill(const int* gpu_input_tokens,
                                              CUBLAS_COMPUTE_32F,
                                              CUBLAS_GEMM_DEFAULT);
   check_cublas(embed_status, "cublasGemmEx(prefill embed_proj)");
-  check_cuda(cudaMemcpy(embed_proj_cpu, embed_proj, sizeof(__nv_bfloat16) * prompt_len * vocab_size, cudaMemcpyDeviceToHost),
-             "cudaMemcpy(prefill embed_proj D2H)");
+  // Managed/zero-copy embed_proj: sync once, then sample on the host without D2H memcpy.
+  check_cuda(cudaDeviceSynchronize(), "cudaDeviceSynchronize(prefill embed_proj)");
 
   const int last_token_offset = static_cast<int>((prompt_len - 1) * static_cast<size_t>(vocab_size));
-  float max_token = static_cast<float>(embed_proj_cpu[last_token_offset]);
+  float max_token = __bfloat162float(embed_proj[last_token_offset]);
   int max_token_idx = 0;
   for (int token_idx = 0; token_idx < vocab_size; ++token_idx) {
-    if (static_cast<float>(embed_proj_cpu[token_idx + last_token_offset]) > max_token) {
-      max_token = static_cast<float>(embed_proj_cpu[token_idx + last_token_offset]);
+    const float logit = __bfloat162float(embed_proj[token_idx + last_token_offset]);
+    if (logit > max_token) {
+      max_token = logit;
       max_token_idx = token_idx;
     }
   }
@@ -714,12 +712,7 @@ void prefill(const int* gpu_input_tokens,
   generated_tokens[slot].push_back(max_token_idx);
   last_generated_tokens[slot] = max_token_idx;
   current_prompt_len[slot] = static_cast<int>(prompt_len);
-
-  check_cuda(cudaMemcpy(block_table_gpu,
-                        block_table.data(),
-                        MAX_SEQUENCES * N_LAYERS * MAX_BLOCKS_PER_SEQ * sizeof(int),
-                        cudaMemcpyHostToDevice),
-             "cudaMemcpy(prefill block_table H2D)");
+  // block_table lives in managed memory and is already visible to decode kernels.
 }
 
 }  // namespace llama_prefill

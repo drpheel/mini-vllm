@@ -39,9 +39,9 @@ constexpr int EOT_ID_TOKEN_ID = 128009;       // <|eot_id|>
 constexpr int MAX_SEQ_LEN = llama_prefill::BLOCK_SIZE * llama_prefill::MAX_BLOCKS_PER_SEQ;
 constexpr int MAX_NEW_TOKENS = 64;
 constexpr float REPETITION_PENALTY = 1.2f;
-// Only discourage immediate re-use of the last few tokens (anti-stutter), so
-// answers like "2 + 2 = 4" are not broken by penalizing earlier digits.
-constexpr int REPETITION_WINDOW = 2;
+// Penalize reuse of recent tokens to reduce phrase-level loops. Keep this
+// modest so answers that reuse digits (e.g. "2 + 2 = 4") still work.
+constexpr int REPETITION_WINDOW = 16;
 constexpr const char* DEFAULT_MODEL_PATH = "/mnt/nvme/models/Llama-3.2-1B-Instruct/model.safetensors";
 
 void check_cuda(cudaError_t status, const char* call) {
@@ -54,6 +54,22 @@ void check_cublas(cublasStatus_t status, const char* call) {
   if (status != CUBLAS_STATUS_SUCCESS) {
     throw std::runtime_error(std::string(call) + " failed with cublas status " + std::to_string(static_cast<int>(status)));
   }
+}
+
+// Jetson UMA zero-copy: host-mapped pages are GPU-visible without H2D/D2H memcpy.
+// Prefer this over cudaMallocManaged for CPU-mutated control buffers (more reliable under
+// heavy device allocations). Free with cudaFreeHost.
+void* alloc_mapped_host(size_t bytes, const char* what) {
+  void* host_ptr = nullptr;
+  check_cuda(cudaHostAlloc(&host_ptr, bytes, cudaHostAllocMapped), what);
+  void* device_ptr = nullptr;
+  check_cuda(cudaHostGetDevicePointer(&device_ptr, host_ptr, 0), "cudaHostGetDevicePointer");
+  if (device_ptr != host_ptr) {
+    // Discrete GPUs can return a different device mapping; this path assumes Jetson UMA.
+    cudaFreeHost(host_ptr);
+    throw std::runtime_error(std::string(what) + ": expected unified host/device pointer on Jetson");
+  }
+  return host_ptr;
 }
 
 struct CublasHandleGuard {
@@ -546,8 +562,8 @@ int main(int argc, char** argv) {
                "cudaMalloc(prefill_attn_scores)");
     const size_t embed_proj_bytes =
         prompt_len * static_cast<size_t>(prefill_weights.vocab_size) * sizeof(__nv_bfloat16);
-    check_cuda(cudaMalloc(reinterpret_cast<void**>(&embed_proj), embed_proj_bytes), "cudaMalloc(embed_proj)");
-    std::vector<__nv_bfloat16> embed_proj_cpu(prompt_len * static_cast<size_t>(prefill_weights.vocab_size));
+    // Mapped host memory: GPU writes logits, CPU samples in place (no vocab-sized D2H).
+    embed_proj = static_cast<__nv_bfloat16*>(alloc_mapped_host(embed_proj_bytes, "cudaHostAlloc(embed_proj)"));
 
     llama_prefill::PagedAttentionState paged_attention_state;
     paged_attention_state.slot = 0;
@@ -562,17 +578,15 @@ int main(int argc, char** argv) {
                           static_cast<size_t>(total_blocks) * paged_attention_state.block_bytes),
                "cudaMalloc(paged_attention_state.kv_cache)");
 
-    std::vector<int> block_table(
-        static_cast<size_t>(llama_prefill::MAX_SEQUENCES) * llama_prefill::N_LAYERS * llama_prefill::MAX_BLOCKS_PER_SEQ,
-        -1);
-    int* block_table_gpu = nullptr;
-    check_cuda(cudaMalloc(reinterpret_cast<void**>(&block_table_gpu),
-                          llama_prefill::MAX_SEQUENCES * llama_prefill::N_LAYERS * llama_prefill::MAX_BLOCKS_PER_SEQ *
-                              sizeof(int)),
-               "cudaMalloc(block_table_gpu)");
+    // One mapped block table shared by CPU page allocator and GPU attention kernels.
+    const size_t block_table_elems = static_cast<size_t>(llama_prefill::MAX_SEQUENCES) *
+                                     llama_prefill::N_LAYERS * llama_prefill::MAX_BLOCKS_PER_SEQ;
+    int* block_table =
+        static_cast<int*>(alloc_mapped_host(block_table_elems * sizeof(int), "cudaHostAlloc(block_table)"));
+    std::fill_n(block_table, block_table_elems, -1);
     std::vector<int> free_blocks_storage(static_cast<size_t>(total_blocks));
     std::iota(free_blocks_storage.begin(), free_blocks_storage.end(), 0);
-    paged_attention_state.block_table = block_table.data();
+    paged_attention_state.block_table = block_table;
     paged_attention_state.free_blocks = free_blocks_storage.data();
     paged_attention_state.free_blocks_count = free_blocks_storage.size();
     std::vector<std::vector<int>> generated_tokens(llama_prefill::MAX_SEQUENCES);
@@ -581,8 +595,8 @@ int main(int argc, char** argv) {
     std::vector<char> is_slot_free(llama_prefill::MAX_SEQUENCES, 1);
     llama_prefill::prefill(gpu_input_tokens.device_ptr, gpu_input_tokens.count, input_embeddings, hidden_state, rms_norms, q_proj,
                            k_proj_batched_buffer, v_proj_batched_buffer, mlp_gate, mlp_up, prefill_weights,
-                           &paged_attention_state, prefill_attn_scores, embed_proj, embed_proj_cpu.data(),
-                           generated_tokens, last_generated_tokens, current_prompt_len, block_table, block_table_gpu);
+                           &paged_attention_state, prefill_attn_scores, embed_proj, generated_tokens,
+                           last_generated_tokens, current_prompt_len);
     std::cout << "Gathered " << gpu_input_tokens.count << " token embeddings into "
               << static_cast<void*>(input_embeddings) << '\n';
     const int slot = paged_attention_state.slot;
@@ -610,18 +624,15 @@ int main(int argc, char** argv) {
     const int vocab_size = prefill_weights.vocab_size;
     const int kv_dim = llama_prefill::KV_DIM;
 
-    int* decode_token_gpu = nullptr;
-    check_cuda(cudaMalloc(reinterpret_cast<void**>(&decode_token_gpu), sizeof(int)), "cudaMalloc(decode_token_gpu)");
+    int* decode_token_gpu =
+        static_cast<int*>(alloc_mapped_host(sizeof(int), "cudaHostAlloc(decode_token_gpu)"));
 
     CublasHandleGuard cublas_guard;
     check_cublas(cublasCreate(&cublas_guard.handle), "cublasCreate(decode)");
 
-    int* gpu_seq_lens = nullptr;
-    int* gpu_active_slots = nullptr;
-    check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_seq_lens), sizeof(int)), "cudaMalloc(gpu_seq_lens)");
-    check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_active_slots), sizeof(int)), "cudaMalloc(gpu_active_slots)");
-    check_cuda(cudaMemcpy(gpu_active_slots, &slot, sizeof(int), cudaMemcpyHostToDevice),
-               "cudaMemcpy(gpu_active_slots H2D)");
+    int* gpu_seq_lens = static_cast<int*>(alloc_mapped_host(sizeof(int), "cudaHostAlloc(gpu_seq_lens)"));
+    int* gpu_active_slots = static_cast<int*>(alloc_mapped_host(sizeof(int), "cudaHostAlloc(gpu_active_slots)"));
+    *gpu_active_slots = slot;
 
     bool verified_first_decode_embed = false;
     while (!is_slot_free[static_cast<size_t>(slot)] &&
@@ -634,8 +645,7 @@ int main(int argc, char** argv) {
       throw std::runtime_error("decode token index exceeds MAX_PROMPT_LEN");
     }
 
-    check_cuda(cudaMemcpy(decode_token_gpu, &decode_token_id, sizeof(int), cudaMemcpyHostToDevice),
-               "cudaMemcpy(decode_token_gpu H2D)");
+    *decode_token_gpu = decode_token_id;
     llama_prefill::embedding_gather(decode_token_gpu, hidden_state + decode_token_offset, weights.tok_embeddings,
                                     static_cast<size_t>(num_decode_tokens));
     std::cout << "Gathered decode token " << decode_token_id << " at sequence index " << decode_token_index
@@ -667,8 +677,7 @@ int main(int argc, char** argv) {
     }
 
     const int decode_seq_len = current_prompt_len[static_cast<size_t>(slot)] + 1;
-    check_cuda(cudaMemcpy(gpu_seq_lens, &decode_seq_len, sizeof(int), cudaMemcpyHostToDevice),
-               "cudaMemcpy(gpu_seq_lens H2D)");
+    *gpu_seq_lens = decode_seq_len;
 
     for (size_t layer = 0; layer < num_layers; ++layer) {
       decode::rmsNorm(hidden_state + decode_token_offset, rms_norms + decode_token_offset,
@@ -791,14 +800,6 @@ int main(int argc, char** argv) {
       check_cuda(cudaMemcpy(v_cache_ptr, v_proj_ptr, static_cast<size_t>(kv_dim) * sizeof(__nv_bfloat16), cudaMemcpyDeviceToDevice),
                  "cudaMemcpy(decode paged attention V)");
 
-      // Synchronize block table on CPU with block table on GPU (for attention).
-      check_cuda(cudaMemcpy(block_table_gpu,
-                            block_table.data(),
-                            llama_prefill::MAX_SEQUENCES * llama_prefill::N_LAYERS *
-                                llama_prefill::MAX_BLOCKS_PER_SEQ * sizeof(int),
-                            cudaMemcpyHostToDevice),
-                 "cudaMemcpy(decode block_table H2D)");
-
       // pagedAttention expects q/output at active_slot * HIDDEN_SIZE; copy decode Q to slot 0.
       check_cuda(cudaMemcpy(q_proj,
                             q_proj + decode_token_offset,
@@ -809,7 +810,7 @@ int main(int argc, char** argv) {
                              1,
                              q_proj,
                              reinterpret_cast<__nv_bfloat16*>(paged_attention_state.kv_cache),
-                             block_table_gpu,
+                             block_table,
                              gpu_seq_lens,
                              gpu_active_slots,
                              q_proj);
@@ -936,12 +937,8 @@ int main(int argc, char** argv) {
                               CUBLAS_GEMM_DEFAULT),
                  "cublasGemmEx(decode lm_head)");
 
-    check_cuda(cudaMemcpy(embed_proj_cpu.data(),
-                          embed_proj,
-                          sizeof(__nv_bfloat16) * static_cast<size_t>(num_active_slots) *
-                              static_cast<size_t>(vocab_size),
-                          cudaMemcpyDeviceToHost),
-               "cudaMemcpy(decode embed_proj D2H)");
+    // Managed embed_proj: wait for lm_head, then sample on the host in place.
+    check_cuda(cudaDeviceSynchronize(), "cudaDeviceSynchronize(decode embed_proj)");
 
     // Single active stream for now (num_active_slots == 1); layout matches multi-slot batching.
     const int active_slot = slot;
@@ -964,11 +961,11 @@ int main(int argc, char** argv) {
       return logit < 0.0f ? logit * REPETITION_PENALTY : logit / REPETITION_PENALTY;
     };
 
-    float max_token = apply_repetition_penalty(0, __bfloat162float(embed_proj_cpu[0]));
+    float max_token = apply_repetition_penalty(0, __bfloat162float(embed_proj[0]));
     int max_token_idx = 0;
     for (int token_idx = 1; token_idx < vocab_size; ++token_idx) {
       const float logit =
-          apply_repetition_penalty(token_idx, __bfloat162float(embed_proj_cpu[static_cast<size_t>(token_idx)]));
+          apply_repetition_penalty(token_idx, __bfloat162float(embed_proj[static_cast<size_t>(token_idx)]));
       if (logit > max_token) {
         max_token = logit;
         max_token_idx = token_idx;
@@ -994,12 +991,6 @@ int main(int argc, char** argv) {
           }
         }
       }
-      check_cuda(cudaMemcpy(block_table_gpu,
-                            block_table.data(),
-                            llama_prefill::MAX_SEQUENCES * llama_prefill::N_LAYERS *
-                                llama_prefill::MAX_BLOCKS_PER_SEQ * sizeof(int),
-                            cudaMemcpyHostToDevice),
-                 "cudaMemcpy(decode free slot block_table H2D)");
       std::cout << "Decode stopped (EOS/EOT/max len); freed slot " << active_slot << '\n';
     } else {
       last_generated_tokens[static_cast<size_t>(active_slot)] = max_token_idx;
@@ -1033,12 +1024,6 @@ int main(int argc, char** argv) {
           }
         }
       }
-      check_cuda(cudaMemcpy(block_table_gpu,
-                            block_table.data(),
-                            llama_prefill::MAX_SEQUENCES * llama_prefill::N_LAYERS *
-                                llama_prefill::MAX_BLOCKS_PER_SEQ * sizeof(int),
-                            cudaMemcpyHostToDevice),
-                 "cudaMemcpy(decode max_new_tokens block_table H2D)");
       std::cout << "Decode stopped (max_new_tokens=" << MAX_NEW_TOKENS << "); freed slot " << slot << '\n';
     }
 
@@ -1048,16 +1033,16 @@ int main(int argc, char** argv) {
     }
     std::cout << '\n';
 
-    check_cuda(cudaFree(gpu_seq_lens), "cudaFree(gpu_seq_lens)");
-    check_cuda(cudaFree(gpu_active_slots), "cudaFree(gpu_active_slots)");
-    check_cuda(cudaFree(decode_token_gpu), "cudaFree(decode_token_gpu)");
+    check_cuda(cudaFreeHost(gpu_seq_lens), "cudaFreeHost(gpu_seq_lens)");
+    check_cuda(cudaFreeHost(gpu_active_slots), "cudaFreeHost(gpu_active_slots)");
+    check_cuda(cudaFreeHost(decode_token_gpu), "cudaFreeHost(decode_token_gpu)");
 
     print_input_embedding_debug(gpu_input_tokens, input_embeddings);
     print_mapping_debug(weights);
 
     check_cuda(cudaFree(paged_attention_state.kv_cache), "cudaFree(paged_attention_state.kv_cache)");
-    check_cuda(cudaFree(block_table_gpu), "cudaFree(block_table_gpu)");
-    check_cuda(cudaFree(embed_proj), "cudaFree(embed_proj)");
+    check_cuda(cudaFreeHost(block_table), "cudaFreeHost(block_table)");
+    check_cuda(cudaFreeHost(embed_proj), "cudaFreeHost(embed_proj)");
     check_cuda(cudaFree(prefill_attn_scores), "cudaFree(prefill_attn_scores)");
     check_cuda(cudaFree(mlp_up), "cudaFree(mlp_up)");
     check_cuda(cudaFree(mlp_gate), "cudaFree(mlp_gate)");

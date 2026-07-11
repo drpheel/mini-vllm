@@ -63,6 +63,9 @@ void residual_add(__nv_bfloat16* input, const __nv_bfloat16* input_embeds, size_
 
 void silu(__nv_bfloat16* a, const __nv_bfloat16* b, size_t num_tokens);
 
+// embed_proj must be host-accessible (e.g. cudaHostAllocMapped) when CPU sampling reads it.
+// paged_attention_state->block_table should likewise be mapped/zero-copy so decode can
+// read the same table the CPU updates without an explicit H2D mirror.
 void prefill(const int* gpu_input_tokens,
              size_t prompt_len,
              __nv_bfloat16* input_embeddings,
@@ -77,11 +80,8 @@ void prefill(const int* gpu_input_tokens,
              PagedAttentionState* paged_attention_state,
              __nv_bfloat16* prefill_attn_scores,
              __nv_bfloat16* embed_proj,
-             __nv_bfloat16* embed_proj_cpu,
              std::vector<std::vector<int>>& generated_tokens,
              std::vector<int>& last_generated_tokens,
-             std::vector<int>& current_prompt_len,
-             std::vector<int>& block_table,
-             int* block_table_gpu);
+             std::vector<int>& current_prompt_len);
 
 }  // namespace llama_prefill

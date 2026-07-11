@@ -2,9 +2,11 @@
 
 #include <cuda_runtime.h>
 
+#include <algorithm>
 #include <cmath>
 #include <iostream>
 #include <stdexcept>
+#include <string>
 #include <vector>
 
 namespace {
@@ -117,7 +119,8 @@ int run_prefill_test() {
   check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_mlp_up), mlp_intermediate_bytes), "cudaMalloc(gpu_mlp_up)");
   check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_prefill_attn_scores), prefill_scores_bytes),
              "cudaMalloc(gpu_prefill_attn_scores)");
-  check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_embed_proj), embed_proj_bytes), "cudaMalloc(gpu_embed_proj)");
+  check_cuda(cudaHostAlloc(reinterpret_cast<void**>(&gpu_embed_proj), embed_proj_bytes, cudaHostAllocMapped),
+             "cudaHostAlloc(gpu_embed_proj)");
   check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_layernorm_weights), layernorm_cpu.size() * sizeof(__nv_bfloat16)),
              "cudaMalloc(gpu_layernorm_weights)");
   check_cuda(cudaMalloc(reinterpret_cast<void**>(&gpu_ffn_layernorm_weights), layernorm_cpu.size() * sizeof(__nv_bfloat16)),
@@ -210,27 +213,24 @@ int run_prefill_test() {
   check_cuda(cudaMalloc(&paged_attention_state.kv_cache, paged_attention_state.block_bytes),
              "cudaMalloc(paged_attention_state.kv_cache)");
 
-  std::vector<int> block_table(
-      static_cast<size_t>(llama_prefill::MAX_SEQUENCES) * llama_prefill::N_LAYERS * llama_prefill::MAX_BLOCKS_PER_SEQ,
-      -1);
-  int* block_table_gpu = nullptr;
-  check_cuda(cudaMalloc(reinterpret_cast<void**>(&block_table_gpu),
-                        llama_prefill::MAX_SEQUENCES * llama_prefill::N_LAYERS * llama_prefill::MAX_BLOCKS_PER_SEQ *
-                            sizeof(int)),
-             "cudaMalloc(block_table_gpu)");
+  const size_t block_table_elems =
+      static_cast<size_t>(llama_prefill::MAX_SEQUENCES) * llama_prefill::N_LAYERS * llama_prefill::MAX_BLOCKS_PER_SEQ;
+  int* block_table = nullptr;
+  check_cuda(cudaHostAlloc(reinterpret_cast<void**>(&block_table), block_table_elems * sizeof(int), cudaHostAllocMapped),
+             "cudaHostAlloc(block_table)");
+  std::fill_n(block_table, block_table_elems, -1);
   std::vector<int> free_blocks_storage{0};
-  paged_attention_state.block_table = block_table.data();
+  paged_attention_state.block_table = block_table;
   paged_attention_state.free_blocks = free_blocks_storage.data();
   paged_attention_state.free_blocks_count = free_blocks_storage.size();
 
-  std::vector<__nv_bfloat16> embed_proj_cpu(prompt_len * static_cast<size_t>(vocab_size));
   std::vector<std::vector<int>> generated_tokens(1);
   std::vector<int> last_generated_tokens(1);
   std::vector<int> current_prompt_len(1);
   llama_prefill::prefill(gpu_prompt_tokens, prompt_len, gpu_input_embeddings, gpu_hidden_state, gpu_rms_norms, gpu_q_proj,
                          gpu_k_proj_batched_buffer, gpu_v_proj_batched_buffer, gpu_mlp_gate, gpu_mlp_up, weights,
-                         &paged_attention_state, gpu_prefill_attn_scores, gpu_embed_proj, embed_proj_cpu.data(),
-                         generated_tokens, last_generated_tokens, current_prompt_len, block_table, block_table_gpu);
+                         &paged_attention_state, gpu_prefill_attn_scores, gpu_embed_proj, generated_tokens,
+                         last_generated_tokens, current_prompt_len);
 
   std::vector<__nv_bfloat16> hidden_out(prompt_len * llama_prefill::HIDDEN_SIZE);
   check_cuda(cudaMemcpy(hidden_out.data(), gpu_hidden_state, hidden_bytes, cudaMemcpyDeviceToHost), "cudaMemcpy(hidden D2H)");
@@ -271,8 +271,8 @@ int run_prefill_test() {
   }
 
   check_cuda(cudaFree(paged_attention_state.kv_cache), "cudaFree(paged_attention_state.kv_cache)");
-  check_cuda(cudaFree(block_table_gpu), "cudaFree(block_table_gpu)");
-  check_cuda(cudaFree(gpu_embed_proj), "cudaFree(gpu_embed_proj)");
+  check_cuda(cudaFreeHost(block_table), "cudaFreeHost(block_table)");
+  check_cuda(cudaFreeHost(gpu_embed_proj), "cudaFreeHost(gpu_embed_proj)");
   check_cuda(cudaFree(gpu_prefill_attn_scores), "cudaFree(gpu_prefill_attn_scores)");
   check_cuda(cudaFree(gpu_mlp_up), "cudaFree(gpu_mlp_up)");
   check_cuda(cudaFree(gpu_mlp_gate), "cudaFree(gpu_mlp_gate)");

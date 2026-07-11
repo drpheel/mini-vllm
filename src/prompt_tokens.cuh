@@ -4,6 +4,7 @@
 
 #include <cctype>
 #include <cstdint>
+#include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <limits>
@@ -57,7 +58,7 @@ struct GpuPromptTokens {
 
   void reset() noexcept {
     if (device_ptr != nullptr) {
-      cudaFree(device_ptr);
+      cudaFreeHost(device_ptr);
       device_ptr = nullptr;
     }
     count = 0;
@@ -128,18 +129,21 @@ inline GpuPromptTokens copy_token_ids_to_gpu(const std::vector<int>& input_token
     throw std::runtime_error("Prompt token count exceeds MAX_PROMPT_LEN=" + std::to_string(MAX_PROMPT_LEN));
   }
 
+  // Jetson UMA: mapped host memory lets the host fill token IDs without a H2D memcpy.
   void* raw_device_tokens = nullptr;
   const size_t byte_count = input_tokens.size() * sizeof(int);
-  check_cuda(cudaMalloc(&raw_device_tokens, byte_count), "cudaMalloc(prompt tokens)");
+  check_cuda(cudaHostAlloc(&raw_device_tokens, byte_count, cudaHostAllocMapped),
+             "cudaHostAlloc(prompt tokens)");
+  void* device_alias = nullptr;
+  check_cuda(cudaHostGetDevicePointer(&device_alias, raw_device_tokens, 0),
+             "cudaHostGetDevicePointer(prompt tokens)");
+  if (device_alias != raw_device_tokens) {
+    cudaFreeHost(raw_device_tokens);
+    throw std::runtime_error("prompt tokens: expected unified host/device pointer on Jetson");
+  }
 
   auto* device_tokens = static_cast<int*>(raw_device_tokens);
-  try {
-    check_cuda(cudaMemcpy(device_tokens, input_tokens.data(), byte_count, cudaMemcpyHostToDevice),
-               "cudaMemcpy(prompt tokens H2D)");
-  } catch (...) {
-    cudaFree(device_tokens);
-    throw;
-  }
+  std::memcpy(device_tokens, input_tokens.data(), byte_count);
 
   return GpuPromptTokens(device_tokens, input_tokens.size());
 }
