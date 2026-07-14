@@ -20,6 +20,7 @@
 #include <iostream>
 #include <limits>
 #include <numeric>
+#include <random>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -38,10 +39,13 @@ constexpr int END_OF_TEXT_TOKEN_ID = 128001;  // <|end_of_text|>
 constexpr int EOT_ID_TOKEN_ID = 128009;       // <|eot_id|>
 constexpr int MAX_SEQ_LEN = llama_prefill::BLOCK_SIZE * llama_prefill::MAX_BLOCKS_PER_SEQ;
 constexpr int MAX_NEW_TOKENS = 64;
-constexpr float REPETITION_PENALTY = 1.2f;
-// Penalize reuse of recent tokens to reduce phrase-level loops. Keep this
-// modest so answers that reuse digits (e.g. "2 + 2 = 4") still work.
-constexpr int REPETITION_WINDOW = 16;
+constexpr int BEST_OF_N = 4;
+// Temperature multinomial sampling. TEMPERATURE <= 0 falls back to greedy argmax.
+constexpr float TEMPERATURE = 0.7f;
+// Nucleus sampling: keep smallest set of tokens with cumulative prob >= TOP_P.
+// TOP_P >= 1 disables the cutoff (sample full softmax).
+constexpr float TOP_P = 0.9f;
+constexpr uint32_t SAMPLE_SEED = 42;
 constexpr const char* DEFAULT_MODEL_PATH = "/mnt/nvme/models/Llama-3.2-1B-Instruct/model.safetensors";
 
 void check_cuda(cudaError_t status, const char* call) {
@@ -54,6 +58,124 @@ void check_cublas(cublasStatus_t status, const char* call) {
   if (status != CUBLAS_STATUS_SUCCESS) {
     throw std::runtime_error(std::string(call) + " failed with cublas status " + std::to_string(static_cast<int>(status)));
   }
+}
+
+// Softmax(logits / temperature), optional top-p nucleus filter, then multinomial sample.
+// temperature <= 0 => greedy argmax. top_p >= 1 => no nucleus cutoff.
+// If out_logprob != nullptr, writes log-prob of the chosen token under the sampling distribution.
+int sample_token(const std::vector<float>& logits,
+                 float temperature,
+                 float top_p,
+                 std::mt19937& rng,
+                 double* out_logprob = nullptr) {
+  if (logits.empty()) {
+    throw std::runtime_error("sample_token requires non-empty logits");
+  }
+
+  int best_idx = 0;
+  float best_logit = logits[0];
+  for (size_t i = 1; i < logits.size(); ++i) {
+    if (logits[i] > best_logit) {
+      best_logit = logits[i];
+      best_idx = static_cast<int>(i);
+    }
+  }
+  if (temperature <= 0.0f) {
+    if (out_logprob != nullptr) {
+      *out_logprob = 0.0;
+    }
+    return best_idx;
+  }
+
+  // Numerically stable softmax in float64, shifted by max logit.
+  double sum = 0.0;
+  std::vector<double> probs(logits.size());
+  const double inv_temp = 1.0 / static_cast<double>(temperature);
+  for (size_t i = 0; i < logits.size(); ++i) {
+    const double weight = std::exp((static_cast<double>(logits[i]) - static_cast<double>(best_logit)) * inv_temp);
+    probs[i] = weight;
+    sum += weight;
+  }
+  if (!(sum > 0.0) || !std::isfinite(sum)) {
+    if (out_logprob != nullptr) {
+      *out_logprob = 0.0;
+    }
+    return best_idx;
+  }
+  for (double& p : probs) {
+    p /= sum;
+  }
+
+  auto set_logprob = [&](size_t idx, double p) {
+    if (out_logprob != nullptr) {
+      *out_logprob = (p > 0.0 && std::isfinite(p)) ? std::log(p) : -1.0e9;
+    }
+  };
+
+  // Nucleus (top-p): sort by prob descending, keep until cumulative >= top_p, renorm, sample.
+  std::vector<size_t> order(probs.size());
+  std::iota(order.begin(), order.end(), 0);
+  if (top_p > 0.0f && top_p < 1.0f) {
+    std::sort(order.begin(), order.end(), [&](size_t a, size_t b) { return probs[a] > probs[b]; });
+    double cumulative = 0.0;
+    size_t nucleus = 0;
+    for (; nucleus < order.size(); ++nucleus) {
+      cumulative += probs[order[nucleus]];
+      if (cumulative >= static_cast<double>(top_p)) {
+        ++nucleus;
+        break;
+      }
+    }
+    if (nucleus == 0) {
+      nucleus = 1;
+    }
+    order.resize(nucleus);
+    double nucleus_sum = 0.0;
+    for (size_t idx : order) {
+      nucleus_sum += probs[idx];
+    }
+    if (!(nucleus_sum > 0.0) || !std::isfinite(nucleus_sum)) {
+      set_logprob(static_cast<size_t>(best_idx), probs[static_cast<size_t>(best_idx)]);
+      return best_idx;
+    }
+    std::uniform_real_distribution<double> dist(0.0, nucleus_sum);
+    double needle = dist(rng);
+    for (size_t idx : order) {
+      needle -= probs[idx];
+      if (needle <= 0.0) {
+        set_logprob(idx, probs[idx] / nucleus_sum);
+        return static_cast<int>(idx);
+      }
+    }
+    set_logprob(order.back(), probs[order.back()] / nucleus_sum);
+    return static_cast<int>(order.back());
+  }
+
+  std::uniform_real_distribution<double> dist(0.0, 1.0);
+  double needle = dist(rng);
+  for (size_t i = 0; i < probs.size(); ++i) {
+    needle -= probs[i];
+    if (needle <= 0.0) {
+      set_logprob(i, probs[i]);
+      return static_cast<int>(i);
+    }
+  }
+  set_logprob(probs.size() - 1, probs.back());
+  return static_cast<int>(logits.size() - 1);
+}
+
+// Rank best-of-N candidates: avg decode logprob + light length prior.
+double score_generation_candidate(const std::vector<int>& tokens, double sum_logprob, int decode_steps) {
+  const int n = static_cast<int>(tokens.size());
+  const double avg_lp = decode_steps > 0 ? (sum_logprob / static_cast<double>(decode_steps)) : -1.0e9;
+  double score = avg_lp;
+  if (n >= 4 && n <= 40) {
+    score += 0.5;
+  }
+  if (n <= 2) {
+    score -= 2.0;  // Discourage one/two-token shortcuts.
+  }
+  return score;
 }
 
 // Jetson UMA zero-copy: host-mapped pages are GPU-visible without H2D/D2H memcpy.
@@ -635,6 +757,80 @@ int main(int argc, char** argv) {
     *gpu_active_slots = slot;
 
     bool verified_first_decode_embed = false;
+    const bool verbose_decode = (BEST_OF_N == 1);
+    std::cout << "Decode sampling: temperature=" << TEMPERATURE << " top_p=" << TOP_P
+              << " max_new_tokens=" << MAX_NEW_TOKENS << " best_of_n=" << BEST_OF_N
+              << " sample_first_token=1 seed=" << SAMPLE_SEED << '\n';
+
+    // Prefill KV covers the prompt only; the greedy first token is not in cache yet.
+    // Capture last-position logits and resample the first token per best-of-N candidate.
+    const int prompt_len_snapshot = current_prompt_len[static_cast<size_t>(slot)];
+    const size_t first_logit_offset =
+        static_cast<size_t>(prompt_len_snapshot - 1) * static_cast<size_t>(vocab_size);
+    std::vector<float> first_token_logits(static_cast<size_t>(vocab_size));
+    for (int token_idx = 0; token_idx < vocab_size; ++token_idx) {
+      first_token_logits[static_cast<size_t>(token_idx)] =
+          __bfloat162float(embed_proj[first_logit_offset + static_cast<size_t>(token_idx)]);
+    }
+    std::cout << "Prefill greedy first token was " << last_generated_tokens[static_cast<size_t>(slot)]
+              << "; best-of-N will resample first token\n";
+
+    const size_t kv_cache_bytes =
+        static_cast<size_t>(total_blocks) * paged_attention_state.block_bytes;
+    void* kv_snapshot = nullptr;
+    check_cuda(cudaMalloc(&kv_snapshot, kv_cache_bytes), "cudaMalloc(kv_snapshot)");
+    check_cuda(cudaMemcpy(kv_snapshot, paged_attention_state.kv_cache, kv_cache_bytes, cudaMemcpyDeviceToDevice),
+               "cudaMemcpy(kv_snapshot D2D)");
+    std::vector<int> block_table_snapshot(block_table, block_table + block_table_elems);
+    std::vector<int> free_blocks_snapshot = free_blocks_storage;
+    const size_t free_blocks_count_snapshot = paged_attention_state.free_blocks_count;
+
+    std::vector<int> best_tokens;
+    double best_score = -std::numeric_limits<double>::infinity();
+    int best_candidate = -1;
+
+    for (int candidate = 0; candidate < BEST_OF_N; ++candidate) {
+      check_cuda(cudaMemcpy(paged_attention_state.kv_cache, kv_snapshot, kv_cache_bytes, cudaMemcpyDeviceToDevice),
+                 "cudaMemcpy(kv_cache restore D2D)");
+      std::copy(block_table_snapshot.begin(), block_table_snapshot.end(), block_table);
+      free_blocks_storage = free_blocks_snapshot;
+      paged_attention_state.free_blocks = free_blocks_storage.data();
+      paged_attention_state.free_blocks_count = free_blocks_count_snapshot;
+      current_prompt_len[static_cast<size_t>(slot)] = prompt_len_snapshot;
+      generated_tokens[static_cast<size_t>(slot)].clear();
+      is_slot_free[static_cast<size_t>(slot)] = 0;
+
+      std::mt19937 sample_rng(SAMPLE_SEED + static_cast<uint32_t>(candidate) * 10007u);
+      double sum_logprob = 0.0;
+      int decode_steps = 0;
+
+      double first_logprob = 0.0;
+      const int first_token =
+          sample_token(first_token_logits, TEMPERATURE, TOP_P, sample_rng, &first_logprob);
+      sum_logprob += first_logprob;
+      ++decode_steps;
+      generated_tokens[static_cast<size_t>(slot)].push_back(first_token);
+      last_generated_tokens[static_cast<size_t>(slot)] = first_token;
+      std::cout << "Best-of-N candidate " << candidate << " start (seed="
+                << (SAMPLE_SEED + static_cast<uint32_t>(candidate) * 10007u)
+                << " first_token=" << first_token << ")\n";
+
+      if (first_token == END_OF_TEXT_TOKEN_ID || first_token == EOT_ID_TOKEN_ID) {
+        is_slot_free[static_cast<size_t>(slot)] = 1;
+        generated_tokens[static_cast<size_t>(slot)].clear();  // stop tokens are not kept as answer text
+        const double cand_score =
+            score_generation_candidate(generated_tokens[static_cast<size_t>(slot)], sum_logprob, decode_steps);
+        std::cout << "Best-of-N candidate " << candidate << ": tokens=0 decode_steps=" << decode_steps
+                  << " avg_logprob=" << (sum_logprob / static_cast<double>(decode_steps))
+                  << " score=" << cand_score << " (immediate EOT)\n";
+        if (cand_score > best_score) {
+          best_score = cand_score;
+          best_tokens = generated_tokens[static_cast<size_t>(slot)];
+          best_candidate = candidate;
+        }
+        continue;
+      }
+
     while (!is_slot_free[static_cast<size_t>(slot)] &&
            generated_tokens[static_cast<size_t>(slot)].size() < static_cast<size_t>(MAX_NEW_TOKENS)) {
     const int decode_token_id = last_generated_tokens[static_cast<size_t>(slot)];
@@ -648,8 +844,10 @@ int main(int argc, char** argv) {
     *decode_token_gpu = decode_token_id;
     llama_prefill::embedding_gather(decode_token_gpu, hidden_state + decode_token_offset, weights.tok_embeddings,
                                     static_cast<size_t>(num_decode_tokens));
-    std::cout << "Gathered decode token " << decode_token_id << " at sequence index " << decode_token_index
-              << " into " << static_cast<void*>(hidden_state + decode_token_offset) << '\n';
+    if (verbose_decode) {
+      std::cout << "Gathered decode token " << decode_token_id << " at sequence index " << decode_token_index
+                << " into " << static_cast<void*>(hidden_state + decode_token_offset) << '\n';
+    }
 
     if (!verified_first_decode_embed) {
       constexpr int DECODE_EMBED_VERIFY_DIMS = 8;
@@ -942,36 +1140,21 @@ int main(int argc, char** argv) {
 
     // Single active stream for now (num_active_slots == 1); layout matches multi-slot batching.
     const int active_slot = slot;
-    const std::vector<int>& prior_tokens = generated_tokens[static_cast<size_t>(active_slot)];
-    auto apply_repetition_penalty = [&](int token_idx, float logit) -> float {
-      if (REPETITION_PENALTY == 1.0f || prior_tokens.empty() || REPETITION_WINDOW <= 0) {
-        return logit;
-      }
-      const size_t window_start =
-          prior_tokens.size() > static_cast<size_t>(REPETITION_WINDOW)
-              ? prior_tokens.size() - static_cast<size_t>(REPETITION_WINDOW)
-              : 0;
-      const bool seen = std::find(prior_tokens.begin() + static_cast<std::ptrdiff_t>(window_start),
-                                  prior_tokens.end(),
-                                  token_idx) != prior_tokens.end();
-      if (!seen) {
-        return logit;
-      }
-      // HuggingFace-style: shrink positive logits, enlarge magnitude of negative ones.
-      return logit < 0.0f ? logit * REPETITION_PENALTY : logit / REPETITION_PENALTY;
-    };
-
-    float max_token = apply_repetition_penalty(0, __bfloat162float(embed_proj[0]));
-    int max_token_idx = 0;
-    for (int token_idx = 1; token_idx < vocab_size; ++token_idx) {
-      const float logit =
-          apply_repetition_penalty(token_idx, __bfloat162float(embed_proj[static_cast<size_t>(token_idx)]));
-      if (logit > max_token) {
-        max_token = logit;
-        max_token_idx = token_idx;
-      }
+    std::vector<float> sampled_logits(static_cast<size_t>(vocab_size));
+    for (int token_idx = 0; token_idx < vocab_size; ++token_idx) {
+      sampled_logits[static_cast<size_t>(token_idx)] =
+          __bfloat162float(embed_proj[static_cast<size_t>(token_idx)]);
     }
-    std::cout << "Output token: " << max_token << ", token index: " << max_token_idx << '\n';
+    double chosen_logprob = 0.0;
+    const int max_token_idx =
+        sample_token(sampled_logits, TEMPERATURE, TOP_P, sample_rng, &chosen_logprob);
+    const float max_token = sampled_logits[static_cast<size_t>(max_token_idx)];
+    sum_logprob += chosen_logprob;
+    ++decode_steps;
+    if (verbose_decode) {
+      std::cout << "Output token: " << max_token << ", token index: " << max_token_idx
+                << " logprob=" << chosen_logprob << '\n';
+    }
 
     const bool hit_max_seq = current_prompt_len[static_cast<size_t>(active_slot)] == MAX_SEQ_LEN - 1;
     if (max_token_idx == END_OF_TEXT_TOKEN_ID || max_token_idx == EOT_ID_TOKEN_ID || hit_max_seq) {
@@ -991,20 +1174,26 @@ int main(int argc, char** argv) {
           }
         }
       }
-      std::cout << "Decode stopped (EOS/EOT/max len); freed slot " << active_slot << '\n';
+      if (verbose_decode) {
+        std::cout << "Decode stopped (EOS/EOT/max len); freed slot " << active_slot << '\n';
+      }
     } else {
       last_generated_tokens[static_cast<size_t>(active_slot)] = max_token_idx;
       generated_tokens[static_cast<size_t>(active_slot)].push_back(max_token_idx);
       current_prompt_len[static_cast<size_t>(active_slot)] =
           current_prompt_len[static_cast<size_t>(active_slot)] + 1;
-      std::cout << "Decode continue: next_token=" << max_token_idx
-                << " prompt_len=" << current_prompt_len[static_cast<size_t>(active_slot)]
-                << " new_tokens=" << generated_tokens[static_cast<size_t>(active_slot)].size() << '\n';
+      if (verbose_decode) {
+        std::cout << "Decode continue: next_token=" << max_token_idx
+                  << " prompt_len=" << current_prompt_len[static_cast<size_t>(active_slot)]
+                  << " new_tokens=" << generated_tokens[static_cast<size_t>(active_slot)].size() << '\n';
+      }
     }
 
-    std::cout << "Decode forward pass completed: prompt_len=" << current_prompt_len[static_cast<size_t>(slot)]
-              << " decode_token=" << decode_token_id << " layers=" << num_layers
-              << " slot_free=" << static_cast<int>(is_slot_free[static_cast<size_t>(slot)]) << '\n';
+    if (verbose_decode) {
+      std::cout << "Decode forward pass completed: prompt_len=" << current_prompt_len[static_cast<size_t>(slot)]
+                << " decode_token=" << decode_token_id << " layers=" << num_layers
+                << " slot_free=" << static_cast<int>(is_slot_free[static_cast<size_t>(slot)]) << '\n';
+    }
     }  // while (!is_slot_free[slot] && generated < MAX_NEW_TOKENS)
 
     if (!is_slot_free[static_cast<size_t>(slot)]) {
@@ -1024,8 +1213,28 @@ int main(int argc, char** argv) {
           }
         }
       }
-      std::cout << "Decode stopped (max_new_tokens=" << MAX_NEW_TOKENS << "); freed slot " << slot << '\n';
+      if (verbose_decode) {
+        std::cout << "Decode stopped (max_new_tokens=" << MAX_NEW_TOKENS << "); freed slot " << slot << '\n';
+      }
     }
+
+      const std::vector<int>& cand_tokens = generated_tokens[static_cast<size_t>(slot)];
+      const double cand_score = score_generation_candidate(cand_tokens, sum_logprob, decode_steps);
+      const double avg_lp =
+          decode_steps > 0 ? (sum_logprob / static_cast<double>(decode_steps)) : -1.0e9;
+      std::cout << "Best-of-N candidate " << candidate << ": tokens=" << cand_tokens.size()
+                << " decode_steps=" << decode_steps << " avg_logprob=" << avg_lp
+                << " score=" << cand_score << '\n';
+      if (cand_score > best_score) {
+        best_score = cand_score;
+        best_tokens = cand_tokens;
+        best_candidate = candidate;
+      }
+    }  // for candidate
+
+    check_cuda(cudaFree(kv_snapshot), "cudaFree(kv_snapshot)");
+    generated_tokens[static_cast<size_t>(slot)] = best_tokens;
+    std::cout << "Best-of-N selected candidate " << best_candidate << " with score=" << best_score << '\n';
 
     std::cout << "Generated tokens:";
     for (int token_id : generated_tokens[static_cast<size_t>(slot)]) {
