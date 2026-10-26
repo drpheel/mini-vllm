@@ -87,7 +87,28 @@ cublasGemmEx(OP_T, OP_N,
              C = Y, ldc = out)
 ```
 
-cuBLAS computes `C_col = W * X^T`, which is `(X * W^T)^T`. Written column-major with leading dimension `out`, those bytes are row-major `Y [tokens, out]`. Accumulation is FP32 (`CUBLAS_COMPUTE_32F`); the inputs and the store are BF16. Every Q, K, V, O, gate, up, down, and LM-head GEMM in both passes uses this pattern. Attention scores and `scores * V` use the same idea with a head stride, described below.
+cuBLAS computes `C_col = W * X^T`, which is `(X * W^T)^T`. Written column-major with leading dimension `out`, those bytes are row-major `Y [tokens, out]`. Accumulation is FP32 (`CUBLAS_COMPUTE_32F`); the inputs and the store are BF16. Every Q, K, V, O, gate, up, down, and LM-head GEMM in both passes uses this pattern. Attention scores and `scores * V` use the same idea with a head stride. The call shapes for those two are in the kernel section below.
+
+## What each GEMM is for
+
+A GEMM here is one `cublasGemmEx` call. Inputs and outputs are BF16. The product accumulates in FP32. `alpha` is 1 and `beta` is 0 for every call except the prefill attention scores, which scale by `1/sqrt(64)`. `beta = 0` means the call overwrites its output buffer.
+
+Prefill multiplies every prompt token in one call, so the token dimension is `P`. Decode and the benchmark multiply the single new token, so that dimension is 1. The weight matrix and the math are the same in both passes. Per layer, in order:
+
+| GEMM | Math | Result shape | What it is doing |
+| --- | --- | --- | --- |
+| Q projection | `Q = RMSNorm(h) * W_q^T` | `[tokens, 2048]` | Turns the normalized residual into queries. `W_q` is `[2048, 2048]`. Each group of 64 columns is one query head. RoPE runs on this buffer next. |
+| K projection | `K = RMSNorm(h) * W_k^T` | `[tokens, 512]` | Turns the same normalized residual into keys. `W_k` is `[512, 2048]`, eight heads of 64. RoPE runs on K, then the rows are copied into the KV cache. |
+| V projection | `V = RMSNorm(h) * W_v^T` | `[tokens, 512]` | Turns that residual into values. `W_v` matches `W_k`. V is not rotated. It is copied into the cache beside K. |
+| Attention scores | `scores_i = Q_head_i * K_head_(i/4)^T / 8` | `[P, P]` per query head | Prefill only. One call per query head, 32 calls per layer. Measures how much each prompt token matches each earlier token for that head. Four query heads share one key head. The mask kernel and the softmax kernel run on this matrix before it is used. Decode does not launch these calls. `pagedAttentionKernel` computes the same dots from the paged cache. |
+| Scores times V | `attn_head_i = scores_i * V_head_(i/4)` | `[P, 64]`, packed into `[P, 2048]` | Prefill only. One call per query head. Mixes the value vectors with the softmax weights, which is the attention output for that head. The 32 head slices are written back into `q_proj` at columns `i*64`. Decode folds this mix into `pagedAttentionKernel`. |
+| O projection | `O = attn * W_o^T` | `[tokens, 2048]` | Joins the 32 head slices back into one residual-sized vector. `W_o` is `[2048, 2048]`. The residual kernel then adds O onto the residual stream saved before this sublayer. |
+| MLP gate | `gate = RMSNorm(h) * W_gate^T` | `[tokens, 8192]` | First linear step of the MLP, from the post-attention normalized residual. `W_gate` is `[8192, 2048]`. `siluKernel` overwrites this buffer with `silu(gate) * up`. |
+| MLP up | `up = RMSNorm(h) * W_up^T` | `[tokens, 8192]` | The content vector that the gate multiplies. `W_up` matches `W_gate`. It is read by `siluKernel` and then left alone. |
+| MLP down | `down = (silu(gate) * up) * W_down^T` | `[tokens, 2048]` | Projects the gated intermediate back to the residual width. `W_down` is `[2048, 8192]`. The residual kernel adds it onto the post-attention stream. |
+| LM head | `logits = RMSNorm_final(h) * E^T` | prefill `[P, vocab]`, decode `[1, vocab]` | After all 32 layers. Scores every vocabulary id. `E` is `model.embed_tokens.weight`, shape `[vocab, 2048]`, the same table the embedding gather reads. Prefill writes a row per prompt token and the sampler reads the last row. Decode writes one row into the front of `embed_proj`. |
+
+That is 9 projection GEMMs per layer, plus 64 attention GEMMs per layer in prefill (32 score calls and 32 value mixes), plus one LM head after the last layer. Decode launches the 9 projections and the LM head, and no attention GEMMs. The benchmark in `src/bench.cu` launches that same decode set through one helper. Its `m`, `n`, and `k` match the table with `tokens = 1`.
 
 ## Activation buffers
 
@@ -151,7 +172,7 @@ Weights, activations, and the KV pool are ordinary device allocations.
 
 ## What each kernel is for
 
-A kernel is a function this repo launches on the GPU. The projections, the prefill score matrix, `scores * V`, and the LM head are cuBLAS GEMMs, so they are not in this list. Everything else in the forward pass is one of the kernels below. Two of them exist only so the decode benchmark can replay a CUDA graph at a new position and a new cache slot.
+A kernel is a function this repo launches on the GPU. The projections, the prefill score matrix, `scores * V`, and the LM head are the cuBLAS GEMMs in the previous section, so they are not in this list. Everything else in the forward pass is one of the kernels below. Two of them exist only so the decode benchmark can replay a CUDA graph at a new position and a new cache slot.
 
 | Kernel | Where | What it does | Why it is there |
 | --- | --- | --- | --- |
