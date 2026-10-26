@@ -111,7 +111,7 @@ Logits, the block table, and the token ids live in mapped host memory, which is 
 
 ## Benchmark
 
-Greedy timings and an Nsight Systems profile of every kernel are in [docs/benchmark.md](docs/benchmark.md). On this Orin, a 128-token prefill is 165 ms and eager decode is 37.5 ms/token. A CUDA graph of the decode step matches those tokens and is about 1.16× the eager step. The GEMMs are most of the time.
+Greedy timings, an Nsight Systems trace, and Nsight Compute counters are in [docs/benchmark.md](docs/benchmark.md). On this Orin, a 128-token prefill is 165 ms and eager decode is 37.5 ms/token. A CUDA graph of the decode step matches those tokens and is about 1.16× the eager step. The GEMMs are most of the time, and they already run at about 53–79% of L2 peak.
 
 ```bash
 ./build/cuda_cublas_json /path/to/model.safetensors bench/prompt_128.txt --bench --steps 32

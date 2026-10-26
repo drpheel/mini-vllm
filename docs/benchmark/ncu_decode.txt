@@ -1,0 +1,37 @@
+Nsight Compute 2024.3.1  SpeedOfLight + LaunchStats
+Range: NVTX push/pop decode_eager
+Command: one eager decode step, prompt 128, --bench-eager --no-warmup --steps 1
+Clocks: --clock-control none. SM clock during these kernels 810-890 MHz.
+Device max SM clock 1.02 GHz. L2 2 MB. DRAM throughput counters returned n/a.
+243 kernel launches. Sum of average durations 44.71 ms.
+
+Memory% is the Speed of Light memory throughput (the busiest of L1 and L2).
+For every GEMM below, Memory% equals L2%.
+
+kernel                          n  grid          block      us     Mem%   L1%    L2%    SM%   occ%   th%   waves  regs
+gemm 64x64 stages_64x5 (gate+up) 32 (128,1,1)    (128,1,1)  521.8  67.0   29.5   67.0   29.9  16.51  16.67  8.00  146
+gemm 64x64 stages_64x5 (down)    16 (32,1,3)     (128,1,1)  546.8  63.5   28.0   63.5   29.4  16.54  16.67  6.00  146
+gemm 64x64 stages_64x5 (lm head)  1 (2004,1,1)   (128,1,1) 7831.4  78.6   31.7   78.6   32.2  16.61  16.67 125.25 146
+gemm 128x64 stages_32x6 (Q+O)    32 (16,1,2)     (128,1,1)  143.6  67.5   27.7   67.5   28.3  15.97  16.67  2.00  142
+gemm 64x64 stages_64x5 (K+V)     32 (8,1,1)      (128,1,1)   44.7  52.9   30.4   52.9   23.4   8.33  16.67  0.50  102
+pagedAttentionKernel             16 (1,32,1)     (64,1,1)   235.4   8.6    8.7    1.9    7.5  16.66  66.67  0.25   35
+rmsNormKernel                    33 (1,1,1)      (1024,1,1)  17.2   1.8   17.2    1.3    1.7  54.97  66.67  0.12   27
+residualAddKernel                32 (1,1,1)      (1024,1,1)  10.8   1.7    6.4    1.7    1.4  63.81  66.67  0.12   16
+siluKernel                       16 (1,1,1)      (1024,1,1)  17.4   3.7    8.8    3.7    2.8  65.23  66.67  0.12   26
+ropeKernelDecode (Q)             16 (1,1,1)      (1024,1,1)  13.9   2.1    5.4    2.1    3.3  65.43  66.67  0.12   26
+ropeKernelDecode (K)             16 (1,1,1)      (256,1,1)   12.7   1.6    1.9    1.6    1.0  16.61 100.00  0.02   26
+embeddingGatherKernel             1 (1,1,1)      (1024,1,1)  26.2   1.5    9.8    1.5    1.7  64.80  66.67  0.12   16
+
+Duration spread (min-max) and memory% spread:
+gate+up     517.3-531.6 us   mem 63.1-71.3
+down        540.5-554.6 us   mem 59.8-68.3
+lm head     7831.4 us        mem 78.6
+Q+O         142.1-147.3 us   mem 63.4-71.4
+K+V          44.0-46.6 us    mem 50.2-56.9
+paged       228.8-243.6 us   mem  8.3-8.8
+
+Time-weighted across the step: memory 60.6%, SM 26.9%.
+GEMM names are matched by output rows (tile M * grid.x) and by how many times the shape launches per token.
+
+A one-launch metric query of the Q GEMM (128x64, grid (16,1,2)) returned
+dram__bytes and dram__throughput = n/a, lts__throughput = 88.02%, sm__throughput = 35.06%.
