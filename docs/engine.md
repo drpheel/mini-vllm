@@ -1,0 +1,389 @@
+# How the engine runs Llama 3.2 1B
+
+This engine loads a Llama 3.2 1B Instruct checkpoint (`model.safetensors`, BF16) and generates token IDs on a Jetson-class GPU. Matrix multiplies go through cuBLAS. Everything else — embeddings, RMSNorm, RoPE, the attention mask, softmax, SwiGLU, the residual adds, and decode-time attention — is a small CUDA kernel in `src/prefill.cu` or `src/decode.cu`. The host loop in `src/main.cu` owns weight loading, the paged KV cache, sampling, and the best-of-N decode loop.
+
+The model shape is compiled in:
+
+| Constant | Value | Meaning |
+| --- | --- | --- |
+| `HIDDEN_SIZE` | 2048 | Residual width |
+| `NUM_Q_HEADS` | 32 | Query heads, `2048 / 64` |
+| `NUM_KV_HEADS` | 8 | Key and value heads |
+| `HEAD_DIM` | 64 | Per-head width |
+| `KV_DIM` | 512 | Packed KV width, `8 * 64` |
+| `GQA_Q_TO_K_RATIO` | 4 | Query heads that share one KV head |
+| `MLP_INTERMEDIATE_SIZE` | 8192 | SwiGLU hidden width |
+| `VOCAB_SIZE` | 128256 | Read from `model.embed_tokens.weight` at runtime |
+| `N_LAYERS` | 32 | Transformer blocks |
+| `BLOCK_SIZE` | 16 | Tokens per KV page |
+| `MAX_BLOCKS_PER_SEQ` | 32 | Pages per sequence per layer |
+| `MAX_SEQ_LEN` | 512 | `16 * 32`, prompt plus generated tokens |
+| `MAX_SEQUENCES` | 1 | One live sequence slot |
+
+RoPE uses Llama 3's base of `500000`. RMSNorm uses `eps = 1e-5`. The LM head is tied to the token embedding table. `lm_head.weight` is loaded if the file contains it, and generation never reads it.
+
+## Where each step lives
+
+| Step | Owner |
+| --- | --- |
+| Safetensors load, buffer allocation, best-of-N loop, decode KV append, decode GEMMs, sampling | `src/main.cu` |
+| Prefill forward, and the gather / RoPE / mask / softmax / SiLU / residual kernels | `src/prefill.cu` |
+| Decode RMSNorm, decode RoPE, paged attention, decode residual | `src/decode.cu` |
+| Prompt token file and mapped token buffer | `src/prompt_tokens.cuh` |
+
+Decode calls `llama_prefill::embedding_gather` and `llama_prefill::silu` directly. The RMSNorm, RoPE, and residual kernels are duplicated. The math matches. The decode versions take a position or a short token count instead of a whole prompt.
+
+## Two passes, one cache
+
+Prefill consumes the whole prompt in one forward pass. Every token attends to earlier tokens in the prompt. At each layer, the K and V projections are copied into a paged cache. Prefill attention itself does not read that cache. It multiplies the full Q, K, and V activations for the prompt. The cache exists so decode does not have to replay the prompt.
+
+Decode then runs once per new token. It embeds that one token, projects Q, K, and V, rotates Q and K, appends K and V to the cache, and runs paged attention over every cached token, including the one just written. There is no separate causal mask in decode: the cache only contains positions `0 .. seq_len-1`.
+
+```text
+prompt tokens
+    |
+    v
+embedding gather
+    |
+    v
+for each of 32 layers:
+    RMSNorm -> Q,K,V -> RoPE(Q,K) -> write K,V into pages
+    attention over the prompt (prefill) or over the pages (decode)
+    O proj -> residual add
+    RMSNorm -> gate, up -> SiLU -> down -> residual add
+    |
+    v
+final RMSNorm -> tied embedding GEMM -> logits
+    |
+    v
+host sampler picks the next token id
+```
+
+After prefill, `current_prompt_len[slot]` is the prompt length `P`. Pages hold positions `0 .. P-1`. The first sampled token is not in the cache yet. The first decode step embeds it at sequence index `P`, writes its K and V at that position, and attends over `P+1` tokens.
+
+## Weight loading
+
+`read_safetensors_metadata` reads the 8-byte little-endian header length, parses the JSON header, and checks that every tensor is BF16 and that `shape * dtype size` matches `data_offsets`. `copy_payload_to_gpu` then copies the raw payload into one `cudaMalloc` block in 64 MiB chunks. `build_llama_weight_views` points each tensor at `base + data_offset`. No transpose happens on the way in.
+
+Per layer, the views are the Hugging Face names:
+
+- `input_layernorm.weight`, `post_attention_layernorm.weight`
+- `self_attn.{q,k,v,o}_proj.weight`
+- `mlp.{gate,up,down}_proj.weight`
+
+PyTorch stores each projection as row-major `[out_features, in_features]`. Q and O are `[2048, 2048]`. K and V are `[512, 2048]`. Gate and up are `[8192, 2048]`. Down is `[2048, 8192]`. The embedding table is `[vocab, 2048]`.
+
+## Why every GEMM looks transposed
+
+cuBLAS addresses matrices as column-major. The activations and weights in this engine are row-major. Those two layouts are transposes of each other in the same bytes, and the GEMM flags are chosen so the stored result is the row-major product we want.
+
+For a projection `Y = X * W^T` with `X` row-major `[tokens, in]` and `W` row-major `[out, in]`:
+
+```text
+cublasGemmEx(OP_T, OP_N,
+             m = out, n = tokens, k = in,
+             A = W, lda = in,
+             B = X, ldb = in,
+             C = Y, ldc = out)
+```
+
+cuBLAS computes `C_col = W * X^T`, which is `(X * W^T)^T`. Written column-major with leading dimension `out`, those bytes are row-major `Y [tokens, out]`. Accumulation is FP32 (`CUBLAS_COMPUTE_32F`); the inputs and the store are BF16. Every Q, K, V, O, gate, up, down, and LM-head GEMM in both passes uses this pattern. Attention scores and `scores * V` use the same idea with a head stride, described below.
+
+## Activation buffers
+
+`main` allocates the working set before either pass. Lengths are in elements.
+
+| Buffer | Shape | Role |
+| --- | --- | --- |
+| `input_embeddings` | `[512, 2048]` | Prompt embeddings. During prefill, also the saved attention residual. |
+| `hidden_state` | `[512, 2048]` | Residual stream. Decode writes only the current token's row. |
+| `rms_norms` | `[512, 2048]` | RMSNorm output. Decode also parks the O projection here. |
+| `q_proj` | `[512, 2048]` | Q, then attention output, then the MLP down projection. |
+| `k_proj_batched_buffer` | `[512, 512]` | K for the whole prompt, or the single decode token at row 0. |
+| `v_proj_batched_buffer` | `[512, 512]` | Same for V. |
+| `mlp_gate`, `mlp_up` | `[512, 8192]` | SwiGLU intermediates. SiLU overwrites `mlp_gate`. |
+| `prefill_attn_scores` | `[32, 32, P, P]` | One `[P, P]` score matrix per query head per layer. Sized to the real prompt. |
+| `embed_proj` | `[P, vocab]` mapped | Logits. Decode rewrites row 0 only. |
+
+`P` is the prompt length. The other activation buffers are sized to `MAX_PROMPT_LEN` (512) so decode can address a row by sequence index up to that limit.
+
+Several buffers are intentionally overwritten inside a layer:
+
+- Prefill copies `hidden_state` into `input_embeddings` before attention, then the O projection overwrites `hidden_state`, then the residual kernel adds `input_embeddings` back.
+- `scores * V` is stored on top of `q_proj`. Q is dead after the score GEMMs.
+- The MLP down projection is also stored in `q_proj`, then added into `hidden_state`.
+- Decode computes Q at `q_proj + position * 2048`, copies that row to `q_proj[0]` because paged attention indexes `active_slot * 2048`, and writes the attention output back to `q_proj[0]`.
+
+## Paged KV cache
+
+The cache is a pool of fixed pages, not a `[layers, seq, kv]` tensor.
+
+```text
+physical block b
+  bytes [0, v_offset):              K for 16 tokens, each token 512 BF16
+  bytes [v_offset, block_bytes):    V for the same 16 tokens
+```
+
+`v_offset` is `16 * 512 * 2` bytes. `block_bytes` is twice that (32 KiB). A token inside the K region is `token_in_block * 512` BF16 values, and head `h` occupies the slice `[h * 64, (h + 1) * 64)`. V uses the same layout after `v_offset`.
+
+The pool has `num_layers * MAX_BLOCKS_PER_SEQ` blocks (1024 for this model). One sequence that reaches 512 tokens uses every block: 32 pages per layer, 32 layers, and pages are not shared across layers.
+
+The block table is an `int` array shaped `[MAX_SEQUENCES, N_LAYERS, MAX_BLOCKS_PER_SEQ]`, initialized to `-1`. The index is:
+
+```text
+slot * num_layers * max_blocks_per_seq + layer * max_blocks_per_seq + logical_block
+```
+
+`logical_block = position / 16`. The value is the physical block id, or `-1` if that page has not been allocated. A host-side free stack is filled with `0 .. total_blocks-1` and popped from the back. The table lives in mapped host memory (`cudaHostAlloc` + `cudaHostAllocMapped`) so the CPU allocator and the attention kernel see the same ints without a copy. The free stack stays ordinary host memory. Only the CPU pops and pushes it.
+
+The decode kernel indexes the table with the compile-time constants `N_LAYERS` and `MAX_BLOCKS_PER_SEQ`. Those match the host formula only while the checkpoint has 32 layers and the constants stay 32.
+
+## Mapped memory
+
+The engine assumes a unified GPU/CPU address space, as on Jetson. `alloc_mapped_host` allocates with `cudaHostAllocMapped` and requires `cudaHostGetDevicePointer` to return the same address. These buffers are mapped:
+
+- prompt token ids
+- `embed_proj` logits, so the CPU can sample without a device-to-host copy of the vocabulary
+- the block table
+- the decode token id, `gpu_seq_lens`, and `gpu_active_slots`
+
+Weights, activations, and the KV pool are ordinary device allocations.
+
+## Kernels
+
+Launch bounds are hard. A block never has more than 1024 threads. Several kernels split a 2048-wide row across 1024 threads by having each thread touch `threadIdx.x` and `threadIdx.x + 1024`. Softmax and the causal mask launch `prompt_len` threads per block, so a prompt longer than 1024 tokens is skipped with a message rather than tiled. RoPE on Q launches `2048 / 2 = 1024` threads, which is exactly the limit.
+
+### `embeddingGatherKernel`
+
+```text
+grid  = prompt_len          (decode launches 1)
+block = 1024
+```
+
+Block `b` is token `b`. Thread `t` copies hidden dimensions `t` and `t + 1024` from `embed_tokens[token_id * 2048]` into the output row. The token ids are the mapped prompt buffer, or a one-element mapped buffer during decode.
+
+### `rmsNormKernel`
+
+```text
+grid  = num_tokens
+block = 1024
+```
+
+One block normalizes one token. Each thread writes the sum of squares of its two dimensions into shared memory. A tree reduction over 1024 threads sums them. Thread 0 turns that into
+
+```text
+rms = sqrt(sum_of_squares / 2048 + 1e-5)
+```
+
+Every thread then writes `x / rms * weight` for both of its dimensions. The norm weight is the layer's `input_layernorm`, `post_attention_layernorm`, or the final `model.norm`. Output is a different buffer from the input, so the residual row can stay intact.
+
+The decode copy in `decode.cu` is the same reduction. Its bounds check is true for every thread when the grid is one block per token, which is how it is launched.
+
+### `ropeKernel` and `ropeKernelDecode`
+
+Llama RoPE, applied to adjacent pairs inside each head. V is not rotated.
+
+```text
+pair i in 0..31
+theta = 1 / 500000 ^ (2i / 64)
+angle = position * theta
+(x, y) -> (x cos - y sin, x sin + y cos)
+```
+
+`pair_index = threadIdx.x % 32`, so the same 32 frequencies repeat for every head.
+
+Prefill launches one block per token and `proj_dim / 2` threads. For Q, `proj_dim` is 2048 (32 heads). For K, it is 512 (8 heads). Position is `blockIdx.x`, which is the token's index in the prompt.
+
+Decode launches a single block on the one vector it was given. Position is the host argument `decode_token_index`, the absolute index in the sequence, not zero. Q is rotated at `q_proj + position * 2048`. K is rotated at the start of `k_proj_batched_buffer`, because the decode K GEMM always writes row 0.
+
+### `scatter` into pages (host `cudaMemcpy`, not a kernel)
+
+Prefill walks the prompt in chunks of 16. For each chunk at layer `L`:
+
+1. The block-table entry must still be `-1`. Prefill expects a fresh table.
+2. Pop a physical block from the free stack and store it in the table.
+3. Copy `min(16, tokens_left) * 512` BF16 values of K into the start of that block.
+4. Copy the same number of V values to `block + v_offset`.
+
+A short final page is a short copy. The rest of the page is left untouched, and attention never reads past `seq_len`.
+
+Decode appends one token. `logical_block = position / 16` and `token_in_block = position % 16`. A new page is popped only when `token_in_block == 0` and the entry is still `-1`. Otherwise the page allocated during prefill (or by an earlier decode step) is reused. One `cudaMemcpy` of 512 BF16 values writes K, and another writes V, at `token_in_block` inside that page.
+
+### Prefill attention scores (cuBLAS, per query head)
+
+Q and K are row-major with heads packed in the last dimension. Head `i` of Q starts at column `i * 64` and the next token is 2048 elements later. Head `i / 4` of K has stride 512. The GEMM for head `i` is:
+
+```text
+cublasGemmEx(OP_T, OP_N,
+             m = P, n = P, k = 64,
+             alpha = 1/sqrt(64),
+             A = K_head, lda = 512,
+             B = Q_head, lda = 2048,
+             C = scores_head, ldc = P)
+```
+
+The stored result is row-major `scores[query, key] = dot(Q[query], K[key]) / 8`. Grouped-query attention is the integer division `k_head = q_head / 4`: query heads 0–3 read KV head 0, heads 4–7 read KV head 1, and so on.
+
+### `causalMaskKernel`
+
+```text
+grid  = P * 32          (one block per query row per query head)
+block = P
+```
+
+`row = blockIdx.x % P` is the query position. `threadIdx.x` is the key position. If `key > query`, that score becomes `-inf` (`-HUGE_VALF` converted to BF16). Diagonal and past positions stay as the GEMM wrote them.
+
+### `softmaxKernel`
+
+Same launch as the mask. Each block owns one score row. In shared memory it reduces the row max, computes `exp(score - max)`, reduces the sum, and writes `exp / sum` back. Masked positions are ~0 after the exp. This is a full `[P, P]` softmax, not the online softmax used in decode.
+
+### `scores * V` (cuBLAS, per query head)
+
+```text
+cublasGemmEx(OP_N, OP_N,
+             m = 64, n = P, k = P,
+             A = V_head, lda = 512,
+             B = scores_head, lda = P,
+             C = q_proj + head * 64, ldc = 2048)
+```
+
+The stored result is row-major attention output `[P, 2048]`, head `i` in columns `[i*64, (i+1)*64)`. Each query position is `sum_key softmax(scores)[query, key] * V[key]`, using V head `i / 4`.
+
+### O projection and the first residual
+
+`hidden_state = attn_out * W_o^T` through the standard GEMM, then `residualKernel`:
+
+```text
+grid = num_tokens, block = 1024
+hidden[t] += residual[t]     for dims t and t+1024
+```
+
+In prefill the residual is the snapshot saved in `input_embeddings`. In decode, `decode::residualAdd` adds the O projection onto the hidden row that still holds this token's input to the layer. Same operation, two kernels.
+
+### SwiGLU
+
+Post-attention RMSNorm writes `rms_norms` and leaves `hidden_state` alone. Two GEMMs produce
+
+```text
+gate = rms * W_gate^T     [tokens, 8192]
+up   = rms * W_up^T       [tokens, 8192]
+```
+
+`siluKernel` then overwrites gate in place:
+
+```text
+grid = num_tokens, block = 1024
+for i in 0, 1024, 2048, ... 7168:
+    a = gate[i]
+    gate[i] = a * sigmoid(a) * up[i]
+```
+
+Each thread covers eight of the 8192 intermediate values. The down GEMM is `hidden_delta = gate * W_down^T` into `q_proj`, and a second residual add folds it into `hidden_state`.
+
+### `pagedAttentionKernel` (decode only)
+
+```text
+grid  = dim3(num_active_slots, 32)    main launches (1, 32)
+block = 64                            one thread per head dimension
+```
+
+Block `(active_slot, q_head)` produces one 64-wide output slice. `slot = gpu_active_slots[active_slot]` selects the sequence. `kv_head = q_head / 4`. The query element for this thread is `q_proj[active_slot * 2048 + q_head * 64 + thread]`, which is why decode copied Q to the front of the buffer.
+
+The kernel walks every logical page up to `ceil(seq_len / 16)`, translates it through the block table, and walks the valid tokens in that page. For each token, the thread loads its own K dimension and V dimension from the page. The 64 threads are two warps. Each warp reduces `q[d] * k[d]` with `__shfl_down_sync` offsets 16, 8, 4, 2, 1. Thread 0 and thread 32 write the two warp sums to shared memory, thread 0 adds them and divides by `sqrt(64) == 8`, and every thread reads that scalar score.
+
+The score updates an online softmax (the running-max form used by FlashAttention) so the full key row is never stored:
+
+```text
+m'   = max(m, score)
+corr = exp(m - m')
+p    = exp(score - m')
+d    = d * corr + p
+acc  = acc * corr + p * V[d]
+m    = m'
+```
+
+`acc` and `d` start at 0 and `m` starts at `-inf`, so the first token sets `acc = p * V[d]` and `d = p`. After the last token the thread writes `acc / d` to the same Q-head slot it read. Every thread holds its own `acc` (one output dimension) and the same scalar `m` and `d`, because they all observe the same score.
+
+This reduction is hardcoded for 64 threads in two warps. A different `HEAD_DIM` would need a different kernel.
+
+## Prefill, layer by layer
+
+`llama_prefill::prefill` is one function. It creates its own cuBLAS handle and synchronizes after every custom kernel.
+
+1. Gather embeddings for all prompt tokens. Copy them into `hidden_state`. That copy is the residual stream entering layer 0.
+2. For each layer:
+   1. Snapshot `hidden_state` into `input_embeddings`.
+   2. RMSNorm with `input_layernorm`. Copy the normalized rows back over `hidden_state` so the Q GEMM's layout comments match the buffer that is live. The GEMM itself reads `rms_norms`.
+   3. Q, K, V GEMMs from `rms_norms`.
+   4. RoPE on Q and on K. Positions are `0 .. P-1`.
+   5. Copy K and V into new pages.
+   6. Score GEMM per query head into this layer's slice of `prefill_attn_scores`.
+   7. Causal mask, then softmax, over that slice.
+   8. `scores * V` back into `q_proj`.
+   9. O GEMM into `hidden_state`, then residual add from the snapshot.
+   10. RMSNorm with `post_attention_layernorm` into `rms_norms`.
+   11. Gate and up GEMMs, SiLU, down GEMM into `q_proj`, residual add into `hidden_state`.
+3. Final RMSNorm with `model.norm.weight`.
+4. LM-head GEMM: `logits = hidden * E^T` with `E = model.embed_tokens.weight`, written to mapped `embed_proj` shaped `[P, vocab]`.
+5. Synchronize, then argmax the last row on the CPU. Print that greedy id. Record it in `generated_tokens` and `last_generated_tokens`, and set `current_prompt_len = P`.
+
+The greedy id is a debug sample of the prefill distribution. The best-of-N loop replaces it before any decode step, and it is not written into the KV cache. Cache contents after prefill are the prompt only.
+
+## Decode, one token
+
+`main` keeps a single slot (`slot = 0`). After prefill it copies the last-row logits into a host vector and calls `select_diverse_first_tokens`. That builds a temperature-0.7 softmax, drops `<|end_of_text|>` (128001) and `<|eot_id|>` (128009) so a candidate cannot start by stopping, applies top-p 0.9, and takes the highest-probability remaining ids, up to `BEST_OF_N` (4). These are ranked nucleus tokens, not independent random draws.
+
+It then snapshots the KV pool, the block table, and the free stack. Each candidate restores that snapshot, so every candidate attends to the same prompt cache and writes its own continuation on top.
+
+For candidate `c` the RNG is `mt19937(42 + c * 10007)`. The chosen first token is pushed as already generated, with its log-prob taken from the prefill softmax. The decode loop then runs while the slot is live and fewer than `MAX_NEW_TOKENS` (64) ids have been kept.
+
+One iteration, for the token id currently in `last_generated_tokens`, at sequence index `position = current_prompt_len`:
+
+1. Write the id into mapped memory and gather its embedding into `hidden_state[position]`. The first time through, compare eight dimensions against the embedding table and abort on a mismatch.
+2. Set `gpu_seq_lens = position + 1`. That count includes the token whose K and V this step is about to append. `gpu_active_slots[0]` stays 0.
+3. For each layer:
+   1. RMSNorm the one hidden row.
+   2. Q GEMM into `q_proj[position]`. K and V GEMMs into row 0 of the K and V buffers.
+   3. RoPE at absolute position `position`.
+   4. Append that K and V into the page for `position`.
+   5. Copy Q to `q_proj[0]`. Run paged attention. The output replaces Q there.
+   6. O GEMM from `q_proj[0]` into `rms_norms[position]`. Residual-add onto `hidden_state[position]`.
+   7. RMSNorm, gate, up, SiLU, down, residual-add. Gate and up use row `position` of the MLP buffers. Down is stored at `q_proj[position]`.
+4. Final RMSNorm of this row.
+5. LM-head GEMM of this one row. `n = 1`, so the logits occupy `embed_proj[0 .. vocab)`.
+6. Synchronize and convert that row to FP32 on the host.
+7. `sample_token`: if temperature is `<= 0`, argmax. Otherwise a FP64 softmax divided by temperature 0.7, optional top-p 0.9 with a renormalized nucleus, then one multinomial draw. The draw's log-prob under that distribution is kept for scoring.
+
+If the draw is 128001, 128009, or `position` is already the last legal index (`511`), the slot is freed: every block-table entry for the slot goes back on the free stack and is set to `-1`. The stopping id is not appended. Otherwise the id is appended, `last_generated_tokens` is updated, and `current_prompt_len` increments by one. The next iteration embeds that new id at the next index.
+
+Leaving the loop because `MAX_NEW_TOKENS` was hit also frees the slot. The candidate score is the mean per-token log-prob, plus `0.5` when the kept length is between 4 and 40 inclusive, and minus `2` when the length is 0, 1, or 2. The highest score wins. Its token ids are what `main` prints as `Generated tokens`.
+
+With `BEST_OF_N == 1`, the decode loop also prints each step. With the default of 4, that per-step log is off, and the four candidates run one after another on the same slot rather than as a batched `num_active_slots`.
+
+## Worked sequence index
+
+Prompt length 10, one candidate, first token `T0`.
+
+| Event | `current_prompt_len` | Cache positions | What attention sees |
+| --- | --- | --- | --- |
+| After prefill | 10 | `0..9` across pages | Prompt scores, masked causally. `T0` is not cached. |
+| Decode step for `T0` | 10 during the step | Writes position 10, which is page 0, slot 10 | `gpu_seq_lens = 11`, keys `0..10` |
+| `T0` accepted, next id is `T1` | 11 | `0..10` | |
+| Decode step for `T1` | 11 during the step | Writes position 11 | 12 keys |
+| Position 16 | 16 during the step | `token_in_block == 0`, pop a new page | 17 keys |
+
+Page 0 was allocated in prefill and still has room at slots 10–15. The next page appears only when the sequence index crosses a multiple of 16.
+
+## What is synchronized
+
+Prefill synchronizes the device after every custom kernel launch, and again after the LM-head GEMM before the host argmax. Decode custom kernels launch on the default stream and do not synchronize themselves. Order still holds: cuBLAS and the kernels share that stream, and the host synchronizes after the LM head before it reads logits. The K and V `cudaMemcpy` calls are synchronous, so a page is fully written before `pagedAttention` is launched for that layer.
+
+## Limits that fall out of the kernels
+
+- One sequence. `MAX_SEQUENCES` is 1, and a full 512-token context consumes the entire block pool.
+- Prompt length is at most 512, and the mask and softmax also refuse `P > 1024`.
+- Decode indexing uses the sequence position as a row index into buffers sized for 512, and refuses a position at or past 512.
+- Paged attention is correct for `HEAD_DIM == 64` and for the GQA ratio 4 baked into the kernel.
+- The block-table index in the kernel uses compile-time `N_LAYERS == 32`.
+- Mapped-pointer equality is required. A discrete GPU that returns a different device mapping fails allocation.
+- Generation stops on token 128001, token 128009, 64 new tokens, or a full 512-length context.
