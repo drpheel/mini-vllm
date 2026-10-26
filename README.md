@@ -108,3 +108,11 @@ cmake --preset default -DCMAKE_CUDA_ARCHITECTURES=87
 ```
 
 Logits, the block table, and the token ids live in mapped host memory, which is the right fit for Jetson's shared CPU/GPU memory. A discrete GPU that returns a separate device address for that mapping will fail at startup.
+
+## Benchmark
+
+Greedy timings and an Nsight Systems profile of every kernel are in [docs/benchmark.md](docs/benchmark.md). On this Orin, a 128-token prefill is 165 ms and eager decode is 37.5 ms/token. A CUDA graph of the decode step matches those tokens and is about 1.16× the eager step. The GEMMs are most of the time.
+
+```bash
+./build/cuda_cublas_json /path/to/model.safetensors bench/prompt_128.txt --bench --steps 32
+```

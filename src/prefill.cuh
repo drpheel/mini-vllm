@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cuda_bf16.h>
+#include <cuda_runtime.h>
 
 #include <cstddef>
 #include <vector>
@@ -62,6 +63,14 @@ void rope(__nv_bfloat16* input, size_t num_tokens, int proj_dim, int head_dim = 
 void residual_add(__nv_bfloat16* input, const __nv_bfloat16* input_embeds, size_t num_tokens);
 
 void silu(__nv_bfloat16* a, const __nv_bfloat16* b, size_t num_tokens);
+
+// No device synchronize. Safe to call while a CUDA graph is being captured.
+void embedding_gather_async(const int* gpu_input_tokens,
+                            __nv_bfloat16* input_embeddings,
+                            const __nv_bfloat16* embed_tokens,
+                            size_t prompt_len,
+                            cudaStream_t stream);
+void silu_async(__nv_bfloat16* a, const __nv_bfloat16* b, size_t num_tokens, cudaStream_t stream);
 
 // embed_proj must be host-accessible (e.g. cudaHostAllocMapped) when CPU sampling reads it.
 // paged_attention_state->block_table should likewise be mapped/zero-copy so decode can

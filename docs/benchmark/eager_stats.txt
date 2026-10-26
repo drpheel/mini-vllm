@@ -1,0 +1,104 @@
+Generating SQLite file /home/ameyades/cuda-cublas-json-project/docs/benchmark/eager.sqlite from /home/ameyades/cuda-cublas-json-project/docs/benchmark/eager.nsys-rep
+Processing [/home/ameyades/cuda-cublas-json-project/docs/benchmark/eager.sqlite] with [/tmp/nsys-extract/opt/nvidia/nsight-systems/2024.5.4/host-linux-armv8/reports/cuda_gpu_kern_sum.py]... 
+
+ ** CUDA GPU Kernel Summary (cuda_gpu_kern_sum):
+
+ Time (%)  Total Time (ns)  Instances    Avg (ns)      Med (ns)     Min (ns)    Max (ns)   StdDev (ns)                                                  Name                                                
+ --------  ---------------  ---------  ------------  ------------  ----------  ----------  -----------  ----------------------------------------------------------------------------------------------------
+     48.4      279,753,056        392     713,655.8     570,496.0     530,528   7,835,456  1,026,450.9  ampere_bf16_s16816gemm_bf16_64x64_sliced1x2_ldg8_f2f_stages_64x5_tn                                 
+     17.6      101,521,952         96   1,057,520.3     624,640.0     132,448   2,416,064    982,112.6  ampere_bf16_s16816gemm_bf16_128x64_ldg8_f2f_stages_64x3_tn                                          
+      6.8       39,083,712         16   2,442,732.0   2,447,536.0   2,413,152   2,468,224     21,688.3  void cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_relu_bf16_256x64_32x4_tn_align8>(T1::Para…
+      6.2       35,817,408        256     139,911.8     139,312.0     137,728     149,376      1,851.4  ampere_bf16_s16816gemm_bf16_128x64_ldg8_f2f_stages_32x6_tn                                          
+      5.1       29,204,096        128     228,157.0     226,304.0     219,168     250,144      8,337.5  decode::<unnamed>::pagedAttentionKernel(int, int, __nv_bfloat16 *, __nv_bfloat16 *, int *, int *, i…
+      3.3       19,102,048          1  19,102,048.0  19,102,048.0  19,102,048  19,102,048          0.0  ampere_bf16_s16816gemm_bf16_128x128_ldg8_f2f_stages_32x5_tn                                         
+      3.0       17,618,336         16   1,101,146.0   1,100,576.0   1,099,360   1,111,232      2,766.4  llama_prefill::<unnamed>::softmaxKernel(__nv_bfloat16 *, int, int)                                  
+      1.9       10,791,552        256      42,154.5      42,112.0      39,744      45,984      1,053.5  ampere_bf16_s16816gemm_bf16_64x64_ldg8_f2f_stages_64x5_tn                                           
+      1.5        8,749,664        512      17,089.2      16,960.0      16,288      20,928        699.0  void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_32x32_64x1_nn_align8>(T1::Para…
+      1.4        7,906,336        512      15,442.1      15,328.0      14,912      20,192        516.1  void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_32x32_64x1_tn_align8>(T1::Para…
+      1.2        7,076,832        144      49,144.7      13,056.0      12,864     338,912    101,740.1  llama_prefill::<unnamed>::siluKernel(__nv_bfloat16 *, const __nv_bfloat16 *)                        
+      1.1        6,510,976         33     197,302.3     197,312.0     192,960     206,656      2,255.2  llama_prefill::<unnamed>::rmsNormKernel(const __nv_bfloat16 *, __nv_bfloat16 *, const __nv_bfloat16…
+      0.7        3,850,080         32     120,315.0     119,744.0      45,280     196,608     75,174.9  llama_prefill::<unnamed>::ropeKernel(__nv_bfloat16 *, int, int, int)                                
+      0.6        3,426,848         32     107,089.0     106,736.0     105,312     117,632      2,162.0  llama_prefill::<unnamed>::residualKernel(__nv_bfloat16 *, const __nv_bfloat16 *)                    
+      0.4        2,364,576        264       8,956.7       8,672.0       8,000      13,632        876.7  decode::<unnamed>::rmsNormKernel(__nv_bfloat16 *, __nv_bfloat16 *, __nv_bfloat16 *, int)            
+      0.3        1,776,256         16     111,016.0     110,848.0     110,240     113,120        686.2  llama_prefill::<unnamed>::causalMaskKernel(__nv_bfloat16 *, int, int)                               
+      0.3        1,696,544        256       6,627.1       6,496.0       6,304       7,936        392.4  decode::<unnamed>::residualAddKernel(__nv_bfloat16 *, const __nv_bfloat16 *)                        
+      0.3        1,659,328        256       6,481.8       6,368.0       3,488      11,200      1,586.6  decode::<unnamed>::ropeKernelDecode(__nv_bfloat16 *, int, int, int)                                 
+      0.0          182,720          9      20,302.2      12,480.0       9,600      84,192     23,990.4  llama_prefill::<unnamed>::embeddingGatherKernel(const int *, __nv_bfloat16 *, const __nv_bfloat16 *)
+
+Processing [/home/ameyades/cuda-cublas-json-project/docs/benchmark/eager.sqlite] with [/tmp/nsys-extract/opt/nvidia/nsight-systems/2024.5.4/host-linux-armv8/reports/cuda_gpu_mem_time_sum.py]... 
+
+ ** CUDA GPU MemOps Summary (by Time) (cuda_gpu_mem_time_sum):
+
+ Time (%)  Total Time (ns)  Count    Avg (ns)      Med (ns)    Min (ns)    Max (ns)   StdDev (ns)            Operation           
+ --------  ---------------  -----  ------------  ------------  ---------  ----------  -----------  ------------------------------
+     98.5      413,460,416     37  11,174,605.8  11,202,336.0  9,287,872  11,409,248    331,160.4  [CUDA memcpy Host-to-Device]  
+      1.4        5,908,736    676       8,740.7       3,456.0      2,176     654,048     34,153.5  [CUDA memcpy Device-to-Device]
+      0.1          256,128    384         667.0         512.0        448       1,408        239.0  [CUDA memset]                 
+
+Processing [/home/ameyades/cuda-cublas-json-project/docs/benchmark/eager.sqlite] with [/tmp/nsys-extract/opt/nvidia/nsight-systems/2024.5.4/host-linux-armv8/reports/cuda_api_sum.py]... 
+
+ ** CUDA API Summary (cuda_api_sum):
+
+ Time (%)  Total Time (ns)  Num Calls    Avg (ns)      Med (ns)     Min (ns)    Max (ns)     StdDev (ns)                  Name               
+ --------  ---------------  ---------  ------------  ------------  ----------  -----------  -------------  ----------------------------------
+     28.4      577,120,192         18  32,062,232.9   1,072,000.0       6,304  542,103,456  127,309,220.4  cudaMalloc                        
+     26.5      539,872,736        299   1,805,594.4   1,815,104.0       3,712   19,147,520    1,888,394.8  cudaDeviceSynchronize             
+     21.6      439,294,976        713     616,122.0      23,488.0      11,296   11,643,712    2,521,674.0  cudaMemcpy                        
+      9.9      201,320,416         20  10,066,020.8     525,648.0       2,624  187,555,072   41,786,839.3  cudaFree                          
+      4.2       85,449,152          1  85,449,152.0  85,449,152.0  85,449,152   85,449,152            0.0  cudaMemGetInfo                    
+      3.2       65,593,184         10   6,559,318.4   3,361,280.0     111,008   35,547,360   10,365,835.4  cuLibraryLoadData                 
+      2.9       58,715,744      2,187      26,847.6      19,904.0      14,720    8,800,128      188,037.2  cudaLaunchKernel                  
+      1.2       23,400,064      1,040      22,500.1      20,160.0      11,392      264,000       10,101.8  cuLaunchKernel                    
+      0.8       15,377,312          6   2,562,885.3      44,176.0      35,136   14,878,560    6,034,570.7  cudaHostAlloc                     
+      0.5       10,118,944      1,040       9,729.8       1,488.0         768    5,561,440      191,735.0  cuKernelGetFunction               
+      0.4        7,145,376        384      18,607.8      16,080.0      13,856       56,992        5,615.9  cudaMemsetAsync                   
+      0.2        3,919,360      1,920       2,041.3       1,760.0         896       34,464        1,098.9  cudaStreamGetCaptureInfo_v2_v11030
+      0.2        3,068,224          6     511,370.7      35,248.0      11,840    2,516,000      996,783.3  cudaFreeHost                      
+      0.1        2,661,408        402       6,620.4       5,680.0       4,064       46,432        3,461.9  cudaEventRecord                   
+      0.0          415,840          9      46,204.4       6,368.0       4,896      366,080      119,956.6  cudaEventSynchronize              
+      0.0          316,064        812         389.2         288.0         160        9,920          424.7  cuGetProcAddress_v2               
+      0.0          246,528         40       6,163.2       2,128.0       1,184      116,896       18,658.5  cudaEventDestroy                  
+      0.0          125,472          4      31,368.0      13,120.0       2,752       96,480       43,749.8  cudaEventCreate                   
+      0.0          116,864         36       3,246.2       1,824.0         832       17,408        4,120.3  cudaEventCreateWithFlags          
+      0.0           33,664         13       2,589.5       2,432.0         992        5,056        1,075.3  cuLibraryGetKernel                
+      0.0           21,024          3       7,008.0       7,200.0       6,144        7,680          785.8  cuInit                            
+      0.0           10,208          1      10,208.0      10,208.0      10,208       10,208            0.0  cudaEventQuery                    
+      0.0            3,712          3       1,237.3         736.0         576        2,400        1,010.1  cuModuleGetLoadingMode            
+      0.0            2,368          2       1,184.0       1,184.0         736        1,632          633.6  cudaGetDriverEntryPoint_v11030    
+
+Processing [/home/ameyades/cuda-cublas-json-project/docs/benchmark/eager.sqlite] with [/tmp/nsys-extract/opt/nvidia/nsight-systems/2024.5.4/host-linux-armv8/reports/cuda_kern_exec_sum.py]... 
+
+ ** CUDA Kernel Launch & Exec Time Summary (cuda_kern_exec_sum):
+
+  PID     TID    DevId  Count  QCount   TAvg (ns)     TMed (ns)    TMin (ns)   TMax (ns)   TStdDev (ns)   AAvg (ns)   AMed (ns)  AMin (ns)  AMax (ns)  AStdDev (ns)   QAvg (ns)    QMed (ns)   QMin (ns)  QMax (ns)  QStdDev (ns)   KAvg (ns)     KMed (ns)    KMin (ns)   KMax (ns)   KStdDev (ns)      API Name                                                  Kernel Name                                             
+ ------  ------  -----  -----  ------  ------------  ------------  ----------  ----------  ------------  -----------  ---------  ---------  ---------  ------------  -----------  -----------  ---------  ---------  ------------  ------------  ------------  ----------  ----------  ------------  ----------------  ----------------------------------------------------------------------------------------------------
+ 10,935  10,935      0      1       0  19,135,840.0  19,135,840.0  19,135,840  19,135,840           0.0     36,896.0   36,896.0     36,896     36,896           0.0                                                           0.0  19,102,048.0  19,102,048.0  19,102,048  19,102,048           0.0  cudaLaunchKernel  ampere_bf16_s16816gemm_bf16_128x128_ldg8_f2f_stages_32x5_tn                                         
+ 10,935  10,935      0     16      13   2,667,410.0   2,627,936.0   2,445,440   3,173,696     218,964.8     37,960.0   37,216.0     26,560     63,104       9,850.4    229,976.6    297,184.0        224    661,280     213,619.3   2,442,732.0   2,447,536.0   2,413,152   2,468,224      21,688.3  cuLaunchKernel    void cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_relu_bf16_256x64_32x4_tn_align8>(T1::Para…
+ 10,935  10,935      0    144     144   2,179,476.2   1,827,584.0   1,223,840   5,440,096   1,095,948.8     19,587.6   17,888.0     16,416     74,240       5,881.1  2,110,744.0  1,796,448.0  1,184,480  5,081,024     991,194.0      49,144.7      13,056.0      12,864     338,912     101,740.1  cudaLaunchKernel  llama_prefill::<unnamed>::siluKernel(__nv_bfloat16 *, const __nv_bfloat16 *)                        
+ 10,935  10,935      0     96      80   1,846,791.0   1,043,248.0     644,512   5,133,632   1,540,670.7     32,127.0   30,048.0     16,000    112,960      11,234.8    909,113.2    675,440.0         96  2,698,144     877,038.0   1,057,520.3     624,640.0     132,448   2,416,064     982,112.6  cudaLaunchKernel  ampere_bf16_s16816gemm_bf16_128x64_ldg8_f2f_stages_64x3_tn                                          
+ 10,935  10,935      0     32      32   1,740,915.0   1,794,672.0     700,640   3,221,664   1,022,786.4     31,828.0   26,784.0     21,088    102,336      15,318.0  1,601,998.0  1,613,984.0    559,872  3,085,760   1,019,989.1     107,089.0     106,736.0     105,312     117,632       2,162.0  cudaLaunchKernel  llama_prefill::<unnamed>::residualKernel(__nv_bfloat16 *, const __nv_bfloat16 *)                    
+ 10,935  10,935      0      9       8   1,465,596.4     347,072.0      37,472   9,665,280   3,099,478.2  1,009,088.0   34,816.0     29,216  8,800,128   2,921,643.9    491,236.0    305,312.0    276,960  1,384,032     399,132.5      20,302.2      12,480.0       9,600      84,192      23,990.4  cudaLaunchKernel  llama_prefill::<unnamed>::embeddingGatherKernel(const int *, __nv_bfloat16 *, const __nv_bfloat16 *)
+ 10,935  10,935      0    392     265   1,356,194.4   1,289,472.0     551,776   8,347,104   1,124,129.6     23,029.1   18,704.0     16,672     56,544       7,282.0    918,078.2    755,648.0    109,312  1,420,000     308,229.8     713,655.8     570,496.0     530,528   7,835,456   1,026,450.9  cudaLaunchKernel  ampere_bf16_s16816gemm_bf16_64x64_sliced1x2_ldg8_f2f_stages_64x5_tn                                 
+ 10,935  10,935      0     16      10   1,284,856.0   1,167,200.0   1,128,864   1,484,448     165,861.9     42,146.0   40,032.0     28,928     73,184      10,273.9    227,440.0    311,616.0        576    343,840     157,115.0   1,101,146.0   1,100,576.0   1,099,360   1,111,232       2,766.4  cudaLaunchKernel  llama_prefill::<unnamed>::softmaxKernel(__nv_bfloat16 *, int, int)                                  
+ 10,935  10,935      0     32      27     733,855.0     701,632.0      70,880   1,763,680     531,938.9     38,140.0   26,768.0     18,752    264,928      42,611.4    682,440.3    793,568.0      1,024  1,542,912     417,998.2     120,315.0     119,744.0      45,280     196,608      75,174.9  cudaLaunchKernel  llama_prefill::<unnamed>::ropeKernel(__nv_bfloat16 *, int, int, int)                                
+ 10,935  10,935      0    128     127     674,328.5     696,144.0     240,320     889,760     110,719.5     18,376.8   17,664.0     16,384     94,400       6,826.8    431,166.5    452,544.0        224    624,224     105,520.9     228,157.0     226,304.0     219,168     250,144       8,337.5  cudaLaunchKernel  decode::<unnamed>::pagedAttentionKernel(int, int, __nv_bfloat16 *, __nv_bfloat16 *, int *, int *, i…
+ 10,935  10,935      0    256     249     657,403.6     598,928.0     157,664     971,424     145,632.4     20,537.0   19,408.0     16,512     51,680       3,984.8    510,975.1    441,824.0    162,112    811,360     122,471.9     139,911.8     139,312.0     137,728     149,376       1,851.4  cudaLaunchKernel  ampere_bf16_s16816gemm_bf16_128x64_ldg8_f2f_stages_32x6_tn                                          
+ 10,935  10,935      0    256     256     625,739.1     535,712.0     291,136     942,624     131,154.2     23,799.0   21,296.0     17,760     84,192       5,977.9    595,313.0    502,208.0    263,904    914,752     134,897.6       6,627.1       6,496.0       6,304       7,936         392.4  cudaLaunchKernel  decode::<unnamed>::residualAddKernel(__nv_bfloat16 *, const __nv_bfloat16 *)                        
+ 10,935  10,935      0    264     257     595,363.4     515,248.0      28,768     934,272     163,164.5     20,792.6   17,776.0     15,104    224,288      13,915.2    581,125.4    487,744.0     98,592    906,720     141,735.7       8,956.7       8,672.0       8,000      13,632         876.7  cudaLaunchKernel  decode::<unnamed>::rmsNormKernel(__nv_bfloat16 *, __nv_bfloat16 *, __nv_bfloat16 *, int)            
+ 10,935  10,935      0    256     256     555,689.5     578,528.0     140,640     767,520     101,822.2     21,760.8   21,184.0     17,152     76,480       4,211.0    491,774.3    515,408.0     69,728    700,960     102,935.3      42,154.5      42,112.0      39,744      45,984       1,053.5  cudaLaunchKernel  ampere_bf16_s16816gemm_bf16_64x64_ldg8_f2f_stages_64x5_tn                                           
+ 10,935  10,935      0    256     256     537,097.1     562,816.0     101,568     752,704     105,621.3     20,613.4   19,008.0     14,720    192,864      12,480.6    510,002.0    536,096.0     75,840    714,208     107,318.4       6,481.8       6,368.0       3,488      11,200       1,586.6  cudaLaunchKernel  decode::<unnamed>::ropeKernelDecode(__nv_bfloat16 *, int, int, int)                                 
+ 10,935  10,935      0     33      25     399,003.2     237,920.0     223,744     884,960     186,517.1     37,723.2   31,488.0     21,664    180,544      26,587.2    217,053.4    312,416.0        352    497,760     169,278.9     197,302.3     197,312.0     192,960     206,656       2,255.2  cudaLaunchKernel  llama_prefill::<unnamed>::rmsNormKernel(const __nv_bfloat16 *, __nv_bfloat16 *, const __nv_bfloat16…
+ 10,935  10,935      0     16      11     141,308.0     134,448.0     132,192     207,264      18,929.3     29,212.0   22,896.0     18,560     90,944      18,255.9      1,771.6      1,696.0        288      3,200         976.1     111,016.0     110,848.0     110,240     113,120         686.2  cudaLaunchKernel  llama_prefill::<unnamed>::causalMaskKernel(__nv_bfloat16 *, int, int)                               
+ 10,935  10,935      0    512     492      95,009.4      40,272.0      33,216     774,176     134,857.6     22,760.0   20,432.0     12,608     74,496       6,955.3     57,489.2      2,400.0          0    721,312     136,855.0      17,089.2      16,960.0      16,288      20,928         699.0  cuLaunchKernel    void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_32x32_64x1_nn_align8>(T1::Para…
+ 10,935  10,935      0    512     493      50,652.9      36,864.0      31,072     599,872      59,324.1     21,757.0   19,776.0     11,392    264,000      12,172.1     14,033.3      1,920.0          0    536,832      57,530.2      15,442.1      15,328.0      14,912      20,192         516.1  cuLaunchKernel    void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_32x32_64x1_tn_align8>(T1::Para…
+
+Processing [/home/ameyades/cuda-cublas-json-project/docs/benchmark/eager.sqlite] with [/tmp/nsys-extract/opt/nvidia/nsight-systems/2024.5.4/host-linux-armv8/reports/nvtx_pushpop_sum.py]... 
+
+ ** NVTX Push/Pop Range Summary (nvtx_pushpop_sum):
+
+ Time (%)  Total Time (ns)  Instances    Avg (ns)       Med (ns)      Min (ns)     Max (ns)    StdDev (ns)      Range     
+ --------  ---------------  ---------  -------------  -------------  -----------  -----------  -----------  --------------
+     60.6      615,230,912          1  615,230,912.0  615,230,912.0  615,230,912  615,230,912          0.0  :prefill      
+     39.1      397,094,688          8   49,636,836.0   49,217,472.0   49,110,080   52,646,336  1,217,696.9  :decode_eager 
+      0.4        3,564,736          8      445,592.0      302,544.0      300,064      941,696    257,558.9  :sample_logits
+

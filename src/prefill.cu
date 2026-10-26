@@ -275,6 +275,20 @@ void embedding_gather(const int* gpu_input_tokens,
   check_cuda(cudaDeviceSynchronize(), "embeddingGatherKernel");
 }
 
+void embedding_gather_async(const int* gpu_input_tokens,
+                            __nv_bfloat16* input_embeddings,
+                            const __nv_bfloat16* embed_tokens,
+                            size_t prompt_len,
+                            cudaStream_t stream) {
+  if (prompt_len == 0) {
+    return;
+  }
+
+  embeddingGatherKernel<<<static_cast<unsigned int>(prompt_len), 1024, 0, stream>>>(
+      gpu_input_tokens, input_embeddings, embed_tokens);
+  check_cuda(cudaGetLastError(), "embeddingGatherKernel launch");
+}
+
 void rms_norm(const __nv_bfloat16* input,
               __nv_bfloat16* output,
               const __nv_bfloat16* norm_weights,
@@ -327,6 +341,14 @@ void silu(__nv_bfloat16* a, const __nv_bfloat16* b, size_t num_tokens) {
   siluKernel<<<static_cast<unsigned int>(num_tokens), 1024>>>(a, b);
   check_cuda(cudaGetLastError(), "siluKernel launch");
   check_cuda(cudaDeviceSynchronize(), "siluKernel");
+}
+
+void silu_async(__nv_bfloat16* a, const __nv_bfloat16* b, size_t num_tokens, cudaStream_t stream) {
+  if (num_tokens == 0) {
+    return;
+  }
+  siluKernel<<<static_cast<unsigned int>(num_tokens), 1024, 0, stream>>>(a, b);
+  check_cuda(cudaGetLastError(), "siluKernel launch");
 }
 
 void prefill(const int* gpu_input_tokens,

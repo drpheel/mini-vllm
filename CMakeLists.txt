@@ -26,12 +26,14 @@ add_executable(cuda_cublas_json
   src/main.cu
   src/decode.cu
   src/prefill.cu
+  src/bench.cu
 )
 
 target_link_libraries(cuda_cublas_json
   PRIVATE
     CUDA::cudart
     CUDA::cublas
+    CUDA::nvToolsExt
     nlohmann_json::nlohmann_json
 )
 

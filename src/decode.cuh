@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cuda_bf16.h>
+#include <cuda_runtime.h>
 
 namespace decode {
 
@@ -17,8 +18,29 @@ constexpr int BLOCK_BYTES = BLOCK_SIZE * KV_DIM * static_cast<int>(sizeof(__nv_b
 constexpr int V_OFFSET = BLOCK_SIZE * KV_DIM * static_cast<int>(sizeof(__nv_bfloat16));
 constexpr float SQRT_HEAD_DIM = 8.0f;
 
-void rmsNorm(__nv_bfloat16* input, __nv_bfloat16* output, __nv_bfloat16* norm_weights, int num_tokens);
-void ropeDecode(__nv_bfloat16* input, int position_in_sequence, int proj_dim, int head_dim = HEAD_DIM);
+void rmsNorm(__nv_bfloat16* input,
+             __nv_bfloat16* output,
+             __nv_bfloat16* norm_weights,
+             int num_tokens,
+             cudaStream_t stream = nullptr);
+void ropeDecode(__nv_bfloat16* input,
+                int position_in_sequence,
+                int proj_dim,
+                int head_dim = HEAD_DIM,
+                cudaStream_t stream = nullptr);
+// Position is read from device memory at launch time so a captured graph can replay at new positions.
+void ropeDecodeFromDevice(__nv_bfloat16* input,
+                          const int* position,
+                          int proj_dim,
+                          int head_dim,
+                          cudaStream_t stream);
+// Copies one KV row. dsts[layer] is loaded when the kernel runs, so the host can retarget pages
+// between CUDA graph replays without rebuilding the graph.
+void scatterKvIndirect(__nv_bfloat16* const* dsts,
+                       const __nv_bfloat16* src,
+                       int layer,
+                       int n,
+                       cudaStream_t stream);
 void pagedAttention(int layer,
                     int num_active_slots,
                     __nv_bfloat16* q_proj,
@@ -26,7 +48,11 @@ void pagedAttention(int layer,
                     int* block_table_gpu,
                     int* gpu_seq_lens,
                     int* gpu_active_slots,
-                    __nv_bfloat16* output);
-void residualAdd(__nv_bfloat16* hidden_state, const __nv_bfloat16* o_proj, int num_active_slots);
+                    __nv_bfloat16* output,
+                    cudaStream_t stream = nullptr);
+void residualAdd(__nv_bfloat16* hidden_state,
+                 const __nv_bfloat16* o_proj,
+                 int num_active_slots,
+                 cudaStream_t stream = nullptr);
 
 }  // namespace decode

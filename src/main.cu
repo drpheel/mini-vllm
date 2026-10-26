@@ -4,11 +4,15 @@
 #define JSON_USE_IMPLICIT_CONVERSIONS 0
 #include <nlohmann/json.hpp>
 
+#include "bench.cuh"
 #include "decode.cuh"
 #include "prompt_tokens.cuh"
 #include "prefill.cuh"
 
+#include <nvToolsExt.h>
+
 #include <algorithm>
+#include <chrono>
 #include <cctype>
 #include <cmath>
 #include <cstdint>
@@ -176,6 +180,100 @@ double score_generation_candidate(const std::vector<int>& tokens, double sum_log
     score -= 2.0;  // Discourage one/two-token shortcuts.
   }
   return score;
+}
+
+struct RankedToken {
+  int id = 0;
+  double logprob = 0.0;
+};
+
+// Pick up to `count` distinct high-probability first tokens from prefill logits.
+// Uses temperature softmax + top-p nucleus, then takes the top-ranked nucleus tokens
+// (not independent multinomial draws, which often collapse to the same id).
+std::vector<RankedToken> select_diverse_first_tokens(const std::vector<float>& logits,
+                                                    int count,
+                                                    float temperature,
+                                                    float top_p) {
+  if (logits.empty() || count <= 0) {
+    return {};
+  }
+
+  int best_idx = 0;
+  float best_logit = logits[0];
+  for (size_t i = 1; i < logits.size(); ++i) {
+    if (logits[i] > best_logit) {
+      best_logit = logits[i];
+      best_idx = static_cast<int>(i);
+    }
+  }
+
+  std::vector<double> probs(logits.size(), 0.0);
+  if (temperature <= 0.0f) {
+    probs[static_cast<size_t>(best_idx)] = 1.0;
+  } else {
+    double sum = 0.0;
+    const double inv_temp = 1.0 / static_cast<double>(temperature);
+    for (size_t i = 0; i < logits.size(); ++i) {
+      const int token_id = static_cast<int>(i);
+      if (token_id == END_OF_TEXT_TOKEN_ID || token_id == EOT_ID_TOKEN_ID) {
+        continue;  // Never start a best-of-N answer with an immediate stop token.
+      }
+      const double weight =
+          std::exp((static_cast<double>(logits[i]) - static_cast<double>(best_logit)) * inv_temp);
+      probs[i] = weight;
+      sum += weight;
+    }
+    if (!(sum > 0.0) || !std::isfinite(sum)) {
+      probs.assign(logits.size(), 0.0);
+      probs[static_cast<size_t>(best_idx)] = 1.0;
+    } else {
+      for (double& p : probs) {
+        p /= sum;
+      }
+    }
+  }
+
+  std::vector<size_t> order(probs.size());
+  std::iota(order.begin(), order.end(), 0);
+  std::sort(order.begin(), order.end(), [&](size_t a, size_t b) { return probs[a] > probs[b]; });
+
+  size_t nucleus = order.size();
+  if (top_p > 0.0f && top_p < 1.0f) {
+    double cumulative = 0.0;
+    nucleus = 0;
+    for (; nucleus < order.size(); ++nucleus) {
+      if (probs[order[nucleus]] <= 0.0) {
+        break;
+      }
+      cumulative += probs[order[nucleus]];
+      if (cumulative >= static_cast<double>(top_p)) {
+        ++nucleus;
+        break;
+      }
+    }
+    if (nucleus == 0) {
+      nucleus = 1;
+    }
+  }
+
+  std::vector<RankedToken> chosen;
+  chosen.reserve(static_cast<size_t>(count));
+  for (size_t i = 0; i < nucleus && static_cast<int>(chosen.size()) < count; ++i) {
+    const size_t idx = order[i];
+    if (probs[idx] <= 0.0) {
+      continue;
+    }
+    chosen.push_back(RankedToken{static_cast<int>(idx), std::log(probs[idx])});
+  }
+  // If the nucleus is smaller than count, keep filling from the next-highest probs.
+  for (size_t i = nucleus; i < order.size() && static_cast<int>(chosen.size()) < count; ++i) {
+    const size_t idx = order[i];
+    if (probs[idx] <= 0.0) {
+      continue;
+    }
+    chosen.push_back(RankedToken{static_cast<int>(idx), std::log(probs[idx])});
+  }
+  return chosen;
 }
 
 // Jetson UMA zero-copy: host-mapped pages are GPU-visible without H2D/D2H memcpy.
@@ -597,12 +695,68 @@ void print_input_embedding_debug(const prompt_tokens::GpuPromptTokens& gpu_input
 
 int main(int argc, char** argv) {
   try {
-    if (argc > 3) {
-      throw std::runtime_error("usage: cuda_cublas_json [model.safetensors] [prompt_tokens.txt]");
-    }
+    std::string model_path = DEFAULT_MODEL_PATH;
+    std::string prompt_tokens_path;
+    bool bench_mode = false;
+    bool bench_eager = false;
+    bool bench_async = false;
+    bool bench_graph = false;
+    bool bench_warmup = true;
+    int bench_steps = 32;
 
-    const std::string model_path = argc > 1 ? argv[1] : DEFAULT_MODEL_PATH;
-    const std::string prompt_tokens_path = argc > 2 ? argv[2] : "";
+    std::vector<std::string> positional;
+    for (int i = 1; i < argc; ++i) {
+      const std::string arg = argv[i];
+      if (arg == "--bench") {
+        bench_mode = true;
+        bench_eager = true;
+        bench_async = true;
+        bench_graph = true;
+      } else if (arg == "--bench-eager") {
+        bench_mode = true;
+        bench_eager = true;
+      } else if (arg == "--bench-async") {
+        bench_mode = true;
+        bench_async = true;
+      } else if (arg == "--bench-graph") {
+        bench_mode = true;
+        bench_graph = true;
+      } else if (arg == "--no-warmup") {
+        bench_warmup = false;
+      } else if (arg == "--steps") {
+        if (i + 1 >= argc) {
+          throw std::runtime_error("--steps requires a positive integer");
+        }
+        bench_steps = std::stoi(argv[++i]);
+        if (bench_steps <= 0) {
+          throw std::runtime_error("--steps must be positive");
+        }
+      } else if (arg == "--help" || arg == "-h") {
+        std::cout << "usage: cuda_cublas_json [model.safetensors] [prompt_tokens.txt]"
+                     " [--bench | --bench-eager | --bench-async | --bench-graph] [--steps N] [--no-warmup]\n";
+        return 0;
+      } else if (!arg.empty() && arg[0] == '-') {
+        throw std::runtime_error("unknown argument: " + arg);
+      } else {
+        positional.push_back(arg);
+      }
+    }
+    if (positional.size() > 2) {
+      throw std::runtime_error(
+          "usage: cuda_cublas_json [model.safetensors] [prompt_tokens.txt] [--bench] [--steps N]");
+    }
+    if (!positional.empty()) {
+      model_path = positional[0];
+    }
+    if (positional.size() > 1) {
+      prompt_tokens_path = positional[1];
+    }
+    if (bench_mode && prompt_tokens_path.empty()) {
+      throw std::runtime_error("benchmark mode requires a prompt token file");
+    }
+    const int run_best_of_n = bench_mode ? 1 : BEST_OF_N;
+    const float run_temperature = bench_mode ? 0.0f : TEMPERATURE;
+    const float run_top_p = bench_mode ? 1.0f : TOP_P;
 
     print_gpu_status();
     __nv_bfloat16* input_embeddings = nullptr;
@@ -715,10 +869,47 @@ int main(int argc, char** argv) {
     std::vector<int> last_generated_tokens(llama_prefill::MAX_SEQUENCES);
     std::vector<int> current_prompt_len(llama_prefill::MAX_SEQUENCES);
     std::vector<char> is_slot_free(llama_prefill::MAX_SEQUENCES, 1);
-    llama_prefill::prefill(gpu_input_tokens.device_ptr, gpu_input_tokens.count, input_embeddings, hidden_state, rms_norms, q_proj,
-                           k_proj_batched_buffer, v_proj_batched_buffer, mlp_gate, mlp_up, prefill_weights,
-                           &paged_attention_state, prefill_attn_scores, embed_proj, generated_tokens,
-                           last_generated_tokens, current_prompt_len);
+    if (bench_mode && (gpu_input_tokens.count == 0 ||
+                       gpu_input_tokens.count + static_cast<size_t>(bench_steps) >= static_cast<size_t>(MAX_SEQ_LEN))) {
+      throw std::runtime_error("benchmark prompt plus --steps must fit in MAX_SEQ_LEN (512)");
+    }
+    auto reset_kv_allocator = [&]() {
+      std::fill_n(block_table, block_table_elems, -1);
+      std::iota(free_blocks_storage.begin(), free_blocks_storage.end(), 0);
+      paged_attention_state.free_blocks = free_blocks_storage.data();
+      paged_attention_state.free_blocks_count = free_blocks_storage.size();
+      generated_tokens[0].clear();
+    };
+    auto run_prefill = [&]() {
+      llama_prefill::prefill(gpu_input_tokens.device_ptr, gpu_input_tokens.count, input_embeddings, hidden_state, rms_norms,
+                             q_proj, k_proj_batched_buffer, v_proj_batched_buffer, mlp_gate, mlp_up, prefill_weights,
+                             &paged_attention_state, prefill_attn_scores, embed_proj, generated_tokens,
+                             last_generated_tokens, current_prompt_len);
+    };
+    if (bench_mode && bench_warmup) {
+      nvtxRangePushA("prefill_warmup");
+      run_prefill();
+      nvtxRangePop();
+      reset_kv_allocator();
+    }
+    float prefill_ms = 0.0f;
+    if (bench_mode) {
+      cudaEvent_t prefill_start = nullptr;
+      cudaEvent_t prefill_stop = nullptr;
+      check_cuda(cudaEventCreate(&prefill_start), "cudaEventCreate(prefill_start)");
+      check_cuda(cudaEventCreate(&prefill_stop), "cudaEventCreate(prefill_stop)");
+      nvtxRangePushA("prefill");
+      check_cuda(cudaEventRecord(prefill_start), "cudaEventRecord(prefill_start)");
+      run_prefill();
+      check_cuda(cudaEventRecord(prefill_stop), "cudaEventRecord(prefill_stop)");
+      check_cuda(cudaEventSynchronize(prefill_stop), "cudaEventSynchronize(prefill)");
+      nvtxRangePop();
+      check_cuda(cudaEventElapsedTime(&prefill_ms, prefill_start, prefill_stop), "cudaEventElapsedTime(prefill)");
+      check_cuda(cudaEventDestroy(prefill_start), "cudaEventDestroy(prefill_start)");
+      check_cuda(cudaEventDestroy(prefill_stop), "cudaEventDestroy(prefill_stop)");
+    } else {
+      run_prefill();
+    }
     std::cout << "Gathered " << gpu_input_tokens.count << " token embeddings into "
               << static_cast<void*>(input_embeddings) << '\n';
     const int slot = paged_attention_state.slot;
@@ -758,12 +949,12 @@ int main(int argc, char** argv) {
 
     bool verified_first_decode_embed = false;
     const bool verbose_decode = (BEST_OF_N == 1);
-    std::cout << "Decode sampling: temperature=" << TEMPERATURE << " top_p=" << TOP_P
-              << " max_new_tokens=" << MAX_NEW_TOKENS << " best_of_n=" << BEST_OF_N
-              << " sample_first_token=1 seed=" << SAMPLE_SEED << '\n';
+    std::cout << "Decode sampling: temperature=" << run_temperature << " top_p=" << run_top_p
+              << " max_new_tokens=" << (bench_mode ? bench_steps : MAX_NEW_TOKENS) << " best_of_n=" << run_best_of_n
+              << " diverse_first_tokens=1 seed=" << SAMPLE_SEED << '\n';
 
     // Prefill KV covers the prompt only; the greedy first token is not in cache yet.
-    // Capture last-position logits and resample the first token per best-of-N candidate.
+    // Capture last-position logits and choose distinct high-prob first tokens for best-of-N.
     const int prompt_len_snapshot = current_prompt_len[static_cast<size_t>(slot)];
     const size_t first_logit_offset =
         static_cast<size_t>(prompt_len_snapshot - 1) * static_cast<size_t>(vocab_size);
@@ -772,8 +963,17 @@ int main(int argc, char** argv) {
       first_token_logits[static_cast<size_t>(token_idx)] =
           __bfloat162float(embed_proj[first_logit_offset + static_cast<size_t>(token_idx)]);
     }
+    const std::vector<RankedToken> first_token_choices =
+        select_diverse_first_tokens(first_token_logits, run_best_of_n, run_temperature, run_top_p);
+    if (first_token_choices.empty()) {
+      throw std::runtime_error("diverse first-token selection returned no candidates");
+    }
     std::cout << "Prefill greedy first token was " << last_generated_tokens[static_cast<size_t>(slot)]
-              << "; best-of-N will resample first token\n";
+              << "; diverse first tokens:";
+    for (const RankedToken& tok : first_token_choices) {
+      std::cout << ' ' << tok.id;
+    }
+    std::cout << '\n';
 
     const size_t kv_cache_bytes =
         static_cast<size_t>(total_blocks) * paged_attention_state.block_bytes;
@@ -788,8 +988,21 @@ int main(int argc, char** argv) {
     std::vector<int> best_tokens;
     double best_score = -std::numeric_limits<double>::infinity();
     int best_candidate = -1;
+    double bench_gpu_ms = 0.0;
+    double bench_sample_ms = 0.0;
+    int bench_forwards = 0;
+    std::vector<int> bench_eager_outputs;
+    cudaEvent_t bench_step_start = nullptr;
+    cudaEvent_t bench_step_stop = nullptr;
+    if (bench_mode && bench_eager) {
+      check_cuda(cudaEventCreate(&bench_step_start), "cudaEventCreate(bench_step_start)");
+      check_cuda(cudaEventCreate(&bench_step_stop), "cudaEventCreate(bench_step_stop)");
+    }
 
-    for (int candidate = 0; candidate < BEST_OF_N; ++candidate) {
+    const bool run_generation = !bench_mode || bench_eager;
+    const int num_candidates = static_cast<int>(first_token_choices.size());
+    if (run_generation) {
+    for (int candidate = 0; candidate < num_candidates; ++candidate) {
       check_cuda(cudaMemcpy(paged_attention_state.kv_cache, kv_snapshot, kv_cache_bytes, cudaMemcpyDeviceToDevice),
                  "cudaMemcpy(kv_cache restore D2D)");
       std::copy(block_table_snapshot.begin(), block_table_snapshot.end(), block_table);
@@ -804,18 +1017,17 @@ int main(int argc, char** argv) {
       double sum_logprob = 0.0;
       int decode_steps = 0;
 
-      double first_logprob = 0.0;
-      const int first_token =
-          sample_token(first_token_logits, TEMPERATURE, TOP_P, sample_rng, &first_logprob);
+      const int first_token = first_token_choices[static_cast<size_t>(candidate)].id;
+      const double first_logprob = first_token_choices[static_cast<size_t>(candidate)].logprob;
       sum_logprob += first_logprob;
       ++decode_steps;
       generated_tokens[static_cast<size_t>(slot)].push_back(first_token);
       last_generated_tokens[static_cast<size_t>(slot)] = first_token;
       std::cout << "Best-of-N candidate " << candidate << " start (seed="
                 << (SAMPLE_SEED + static_cast<uint32_t>(candidate) * 10007u)
-                << " first_token=" << first_token << ")\n";
+                << " first_token=" << first_token << " first_logprob=" << first_logprob << ")\n";
 
-      if (first_token == END_OF_TEXT_TOKEN_ID || first_token == EOT_ID_TOKEN_ID) {
+      if (!bench_mode && (first_token == END_OF_TEXT_TOKEN_ID || first_token == EOT_ID_TOKEN_ID)) {
         is_slot_free[static_cast<size_t>(slot)] = 1;
         generated_tokens[static_cast<size_t>(slot)].clear();  // stop tokens are not kept as answer text
         const double cand_score =
@@ -832,7 +1044,8 @@ int main(int argc, char** argv) {
       }
 
     while (!is_slot_free[static_cast<size_t>(slot)] &&
-           generated_tokens[static_cast<size_t>(slot)].size() < static_cast<size_t>(MAX_NEW_TOKENS)) {
+           (bench_mode ? bench_forwards < bench_steps
+                       : generated_tokens[static_cast<size_t>(slot)].size() < static_cast<size_t>(MAX_NEW_TOKENS))) {
     const int decode_token_id = last_generated_tokens[static_cast<size_t>(slot)];
     const size_t decode_token_index = static_cast<size_t>(current_prompt_len[static_cast<size_t>(slot)]);
     const size_t decode_token_offset = decode_token_index * static_cast<size_t>(LLAMA_HIDDEN_SIZE);
@@ -841,6 +1054,10 @@ int main(int argc, char** argv) {
       throw std::runtime_error("decode token index exceeds MAX_PROMPT_LEN");
     }
 
+    if (bench_mode) {
+      nvtxRangePushA("decode_eager");
+      check_cuda(cudaEventRecord(bench_step_start), "cudaEventRecord(decode_eager)");
+    }
     *decode_token_gpu = decode_token_id;
     llama_prefill::embedding_gather(decode_token_gpu, hidden_state + decode_token_offset, weights.tok_embeddings,
                                     static_cast<size_t>(num_decode_tokens));
@@ -849,7 +1066,7 @@ int main(int argc, char** argv) {
                 << " into " << static_cast<void*>(hidden_state + decode_token_offset) << '\n';
     }
 
-    if (!verified_first_decode_embed) {
+    if (!bench_mode && !verified_first_decode_embed) {
       constexpr int DECODE_EMBED_VERIFY_DIMS = 8;
       std::vector<__nv_bfloat16> decode_embed_sample(DECODE_EMBED_VERIFY_DIMS);
       std::vector<__nv_bfloat16> expected_embed_sample(DECODE_EMBED_VERIFY_DIMS);
@@ -1137,6 +1354,16 @@ int main(int argc, char** argv) {
 
     // Managed embed_proj: wait for lm_head, then sample on the host in place.
     check_cuda(cudaDeviceSynchronize(), "cudaDeviceSynchronize(decode embed_proj)");
+    if (bench_mode) {
+      check_cuda(cudaEventRecord(bench_step_stop), "cudaEventRecord(decode_eager stop)");
+      check_cuda(cudaEventSynchronize(bench_step_stop), "cudaEventSynchronize(decode_eager)");
+      float step_ms = 0.0f;
+      check_cuda(cudaEventElapsedTime(&step_ms, bench_step_start, bench_step_stop), "cudaEventElapsedTime(decode_eager)");
+      bench_gpu_ms += static_cast<double>(step_ms);
+      nvtxRangePop();
+      nvtxRangePushA("sample_logits");
+    }
+    const auto sample_t0 = std::chrono::steady_clock::now();
 
     // Single active stream for now (num_active_slots == 1); layout matches multi-slot batching.
     const int active_slot = slot;
@@ -1147,17 +1374,23 @@ int main(int argc, char** argv) {
     }
     double chosen_logprob = 0.0;
     const int max_token_idx =
-        sample_token(sampled_logits, TEMPERATURE, TOP_P, sample_rng, &chosen_logprob);
+        sample_token(sampled_logits, run_temperature, run_top_p, sample_rng, &chosen_logprob);
     const float max_token = sampled_logits[static_cast<size_t>(max_token_idx)];
     sum_logprob += chosen_logprob;
     ++decode_steps;
+    if (bench_mode) {
+      bench_sample_ms +=
+          std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - sample_t0).count();
+      bench_eager_outputs.push_back(max_token_idx);
+      nvtxRangePop();
+    }
     if (verbose_decode) {
       std::cout << "Output token: " << max_token << ", token index: " << max_token_idx
                 << " logprob=" << chosen_logprob << '\n';
     }
 
     const bool hit_max_seq = current_prompt_len[static_cast<size_t>(active_slot)] == MAX_SEQ_LEN - 1;
-    if (max_token_idx == END_OF_TEXT_TOKEN_ID || max_token_idx == EOT_ID_TOKEN_ID || hit_max_seq) {
+    if (!bench_mode && (max_token_idx == END_OF_TEXT_TOKEN_ID || max_token_idx == EOT_ID_TOKEN_ID || hit_max_seq)) {
       is_slot_free[static_cast<size_t>(active_slot)] = 1;
       for (size_t layer = 0; layer < num_layers; ++layer) {
         for (int logical_block_idx = 0; logical_block_idx < paged_attention_state.max_blocks_per_seq;
@@ -1193,6 +1426,9 @@ int main(int argc, char** argv) {
       std::cout << "Decode forward pass completed: prompt_len=" << current_prompt_len[static_cast<size_t>(slot)]
                 << " decode_token=" << decode_token_id << " layers=" << num_layers
                 << " slot_free=" << static_cast<int>(is_slot_free[static_cast<size_t>(slot)]) << '\n';
+    }
+    if (bench_mode) {
+      ++bench_forwards;
     }
     }  // while (!is_slot_free[slot] && generated < MAX_NEW_TOKENS)
 
@@ -1231,8 +1467,98 @@ int main(int argc, char** argv) {
         best_candidate = candidate;
       }
     }  // for candidate
+    }  // run_generation
+
+    bool bench_tokens_match = true;
+    if (bench_mode) {
+      std::cout << std::fixed;
+      std::cout.precision(3);
+      const double prefill_tokens_per_s =
+          prefill_ms > 0.0f ? (static_cast<double>(gpu_input_tokens.count) * 1000.0 / static_cast<double>(prefill_ms))
+                            : 0.0;
+      std::cout << "\n== Benchmark ==\n";
+      std::cout << "prompt_tokens=" << gpu_input_tokens.count << " layers=" << num_layers
+                << " decode_steps=" << bench_steps << " sampling=greedy warmup=" << (bench_warmup ? 1 : 0) << '\n';
+      std::cout << "prefill_ms=" << prefill_ms << " prefill_tokens_per_s=" << prefill_tokens_per_s << '\n';
+      if (bench_eager) {
+        if (bench_forwards != bench_steps) {
+          throw std::runtime_error("eager benchmark ran " + std::to_string(bench_forwards) + " steps, expected " +
+                                   std::to_string(bench_steps));
+        }
+        const double gpu_per = bench_gpu_ms / static_cast<double>(bench_steps);
+        const double sample_per = bench_sample_ms / static_cast<double>(bench_steps);
+        const double e2e_per = gpu_per + sample_per;
+        std::cout << "eager: gpu_ms_per_token=" << gpu_per << " tokens_per_s_gpu=" << (1000.0 / gpu_per)
+                  << " sample_ms_per_token=" << sample_per << " e2e_ms_per_token=" << e2e_per
+                  << " tokens_per_s=" << (1000.0 / e2e_per) << '\n';
+        std::cout << "eager tokens:";
+        const size_t shown = std::min<size_t>(bench_eager_outputs.size(), 12);
+        for (size_t i = 0; i < shown; ++i) {
+          std::cout << ' ' << bench_eager_outputs[i];
+        }
+        if (bench_eager_outputs.size() > shown) {
+          std::cout << " ...";
+        }
+        std::cout << '\n';
+      }
+
+      DecodeBenchBuffers bench_buffers;
+      bench_buffers.weights = prefill_weights;
+      bench_buffers.paged = &paged_attention_state;
+      bench_buffers.free_blocks = free_blocks_storage.data();
+      bench_buffers.block_table = block_table;
+      bench_buffers.block_table_elems = block_table_elems;
+      bench_buffers.num_layers = static_cast<int>(num_layers);
+      bench_buffers.vocab_size = vocab_size;
+      bench_buffers.prompt_len = prompt_len_snapshot;
+      bench_buffers.hidden_state = hidden_state;
+      bench_buffers.rms_norms = rms_norms;
+      bench_buffers.q_proj = q_proj;
+      bench_buffers.k_proj = k_proj_batched_buffer;
+      bench_buffers.v_proj = v_proj_batched_buffer;
+      bench_buffers.mlp_gate = mlp_gate;
+      bench_buffers.mlp_up = mlp_up;
+      bench_buffers.logits = embed_proj;
+      bench_buffers.kv_snapshot = kv_snapshot;
+      bench_buffers.kv_cache_bytes = kv_cache_bytes;
+      bench_buffers.block_table_snapshot = &block_table_snapshot;
+      bench_buffers.free_blocks_snapshot = &free_blocks_snapshot;
+      bench_buffers.free_blocks_count_snapshot = free_blocks_count_snapshot;
+
+      const int bench_first_token = first_token_choices.front().id;
+      const std::vector<int>* expected_tokens = bench_eager ? &bench_eager_outputs : nullptr;
+      DecodeBenchResult async_result;
+      if (bench_async) {
+        async_result = bench_async_decode(bench_buffers, bench_steps, bench_first_token);
+        if (!report_decode_bench("async", async_result, bench_steps, expected_tokens)) {
+          bench_tokens_match = false;
+        }
+        if (!bench_eager) {
+          expected_tokens = &async_result.outputs;
+        }
+      }
+      if (bench_graph) {
+        const DecodeBenchResult graph_result = bench_graph_decode(bench_buffers, bench_steps, bench_first_token);
+        if (!report_decode_bench("cuda_graph", graph_result, bench_steps, expected_tokens)) {
+          bench_tokens_match = false;
+        }
+        if (bench_eager && graph_result.gpu_ms > 0.0) {
+          const double eager_per = bench_gpu_ms / static_cast<double>(bench_steps);
+          const double graph_per = graph_result.gpu_ms / static_cast<double>(bench_steps);
+          std::cout << "cuda_graph speedup vs eager (gpu)=" << (eager_per / graph_per) << '\n';
+        }
+        if (bench_async && async_result.gpu_ms > 0.0 && graph_result.gpu_ms > 0.0) {
+          std::cout << "cuda_graph speedup vs async (gpu)=" << (async_result.gpu_ms / graph_result.gpu_ms) << '\n';
+        }
+      }
+      if (bench_step_start != nullptr) {
+        check_cuda(cudaEventDestroy(bench_step_start), "cudaEventDestroy(bench_step_start)");
+        check_cuda(cudaEventDestroy(bench_step_stop), "cudaEventDestroy(bench_step_stop)");
+      }
+    }
 
     check_cuda(cudaFree(kv_snapshot), "cudaFree(kv_snapshot)");
+    if (!bench_mode) {
     generated_tokens[static_cast<size_t>(slot)] = best_tokens;
     std::cout << "Best-of-N selected candidate " << best_candidate << " with score=" << best_score << '\n';
 
@@ -1241,13 +1567,16 @@ int main(int argc, char** argv) {
       std::cout << ' ' << token_id;
     }
     std::cout << '\n';
+    }
 
     check_cuda(cudaFreeHost(gpu_seq_lens), "cudaFreeHost(gpu_seq_lens)");
     check_cuda(cudaFreeHost(gpu_active_slots), "cudaFreeHost(gpu_active_slots)");
     check_cuda(cudaFreeHost(decode_token_gpu), "cudaFreeHost(decode_token_gpu)");
 
-    print_input_embedding_debug(gpu_input_tokens, input_embeddings);
-    print_mapping_debug(weights);
+    if (!bench_mode) {
+      print_input_embedding_debug(gpu_input_tokens, input_embeddings);
+      print_mapping_debug(weights);
+    }
 
     check_cuda(cudaFree(paged_attention_state.kv_cache), "cudaFree(paged_attention_state.kv_cache)");
     check_cuda(cudaFreeHost(block_table), "cudaFreeHost(block_table)");
@@ -1262,6 +1591,10 @@ int main(int argc, char** argv) {
     check_cuda(cudaFree(hidden_state), "cudaFree(hidden_state)");
     check_cuda(cudaFree(model_weights), "cudaFree(model_weights)");
     check_cuda(cudaFree(input_embeddings), "cudaFree(input_embeddings)");
+    if (bench_mode && !bench_tokens_match) {
+      std::cerr << "error: CUDA graph/async decode tokens did not match eager decode\n";
+      return 1;
+    }
   } catch (const std::exception& error) {
     std::cerr << "error: " << error.what() << '\n';
     return 1;

@@ -5,6 +5,8 @@
 #include <cfloat>
 #include <cmath>
 #include <iostream>
+#include <stdexcept>
+#include <string>
 
 namespace decode {
 namespace {
@@ -127,6 +129,31 @@ __global__ void pagedAttentionKernel(int layer,
   output[active_slot * EMBEDDING_LENGTH + q_head_id * HEAD_DIM + thread_id] = acc / d;
 }
 
+__global__ void ropeKernelDecodePtr(__nv_bfloat16* input, const int* position, int proj_dim, int head_dim) {
+  if (2 * threadIdx.x + 1 >= proj_dim) {
+    return;
+  }
+
+  const int pair_index = threadIdx.x % (head_dim / 2);
+  const int double_i = 2 * pair_index;
+  const float theta = 1.0f / powf(500000.0f, static_cast<float>(double_i) / static_cast<float>(head_dim));
+  const float angle = static_cast<float>(*position) * theta;
+  const __nv_bfloat16 prev_2i = input[2 * threadIdx.x];
+  const __nv_bfloat16 prev_2i_1 = input[2 * threadIdx.x + 1];
+  input[2 * threadIdx.x] =
+      static_cast<__nv_bfloat16>(static_cast<float>(prev_2i) * cosf(angle) - static_cast<float>(prev_2i_1) * sinf(angle));
+  input[2 * threadIdx.x + 1] =
+      static_cast<__nv_bfloat16>(static_cast<float>(prev_2i) * sinf(angle) + static_cast<float>(prev_2i_1) * cosf(angle));
+}
+
+__global__ void scatterKvIndirectKernel(__nv_bfloat16* const* dsts, const __nv_bfloat16* src, int layer, int n) {
+  const int i = threadIdx.x;
+  if (i >= n) {
+    return;
+  }
+  dsts[layer][i] = src[i];
+}
+
 __global__ void residualAddKernel(__nv_bfloat16* hidden_state, const __nv_bfloat16* o_proj) {
   const int work_index = threadIdx.x + blockIdx.x * HIDDEN_SIZE;
   hidden_state[work_index] =
@@ -137,11 +164,11 @@ __global__ void residualAddKernel(__nv_bfloat16* hidden_state, const __nv_bfloat
 
 }  // namespace
 
-void rmsNorm(__nv_bfloat16* input, __nv_bfloat16* output, __nv_bfloat16* norm_weights, int num_tokens) {
+void rmsNorm(__nv_bfloat16* input, __nv_bfloat16* output, __nv_bfloat16* norm_weights, int num_tokens, cudaStream_t stream) {
   if (num_tokens <= 0) {
     return;
   }
-  rmsNormKernel<<<num_tokens, 1024>>>(input, output, norm_weights, num_tokens);
+  rmsNormKernel<<<num_tokens, 1024, 0, stream>>>(input, output, norm_weights, num_tokens);
 #ifdef DEBUG
   cudaError error = cudaGetLastError();
   if (error != cudaError::cudaSuccess) {
@@ -150,7 +177,7 @@ void rmsNorm(__nv_bfloat16* input, __nv_bfloat16* output, __nv_bfloat16* norm_we
 #endif
 }
 
-void ropeDecode(__nv_bfloat16* input, int position_in_sequence, int proj_dim, int head_dim) {
+void ropeDecode(__nv_bfloat16* input, int position_in_sequence, int proj_dim, int head_dim, cudaStream_t stream) {
   if (proj_dim <= 0 || proj_dim % 2 != 0) {
     return;
   }
@@ -164,13 +191,37 @@ void ropeDecode(__nv_bfloat16* input, int position_in_sequence, int proj_dim, in
     return;
   }
 
-  ropeKernelDecode<<<1, num_threads>>>(input, position_in_sequence, proj_dim, head_dim);
+  ropeKernelDecode<<<1, num_threads, 0, stream>>>(input, position_in_sequence, proj_dim, head_dim);
 #ifdef DEBUG
   cudaError error = cudaGetLastError();
   if (error != cudaError::cudaSuccess) {
     std::cout << "CUDA last error: " << cudaGetLastError() << std::endl;
   }
 #endif
+}
+
+void ropeDecodeFromDevice(__nv_bfloat16* input, const int* position, int proj_dim, int head_dim, cudaStream_t stream) {
+  if (position == nullptr) {
+    throw std::runtime_error("ropeDecodeFromDevice requires a position pointer");
+  }
+  if (proj_dim <= 0 || proj_dim % 2 != 0 || head_dim <= 0 || head_dim % 2 != 0) {
+    throw std::runtime_error("ropeDecodeFromDevice requires even, positive dimensions");
+  }
+  const int num_threads = proj_dim / 2;
+  if (num_threads > 1024) {
+    throw std::runtime_error("ropeDecodeFromDevice proj_dim exceeds 2048");
+  }
+  ropeKernelDecodePtr<<<1, num_threads, 0, stream>>>(input, position, proj_dim, head_dim);
+}
+
+void scatterKvIndirect(__nv_bfloat16* const* dsts, const __nv_bfloat16* src, int layer, int n, cudaStream_t stream) {
+  if (dsts == nullptr || src == nullptr || n <= 0) {
+    throw std::runtime_error("scatterKvIndirect requires a destination table, source, and positive length");
+  }
+  if (n > 1024) {
+    throw std::runtime_error("scatterKvIndirect length exceeds 1024");
+  }
+  scatterKvIndirectKernel<<<1, n, 0, stream>>>(dsts, src, layer, n);
 }
 
 void pagedAttention(int layer,
@@ -180,11 +231,12 @@ void pagedAttention(int layer,
                     int* block_table_gpu,
                     int* gpu_seq_lens,
                     int* gpu_active_slots,
-                    __nv_bfloat16* output) {
+                    __nv_bfloat16* output,
+                    cudaStream_t stream) {
   if (num_active_slots <= 0) {
     return;
   }
-  pagedAttentionKernel<<<dim3(num_active_slots, NUM_Q_HEADS), HEAD_DIM>>>(
+  pagedAttentionKernel<<<dim3(num_active_slots, NUM_Q_HEADS), HEAD_DIM, 0, stream>>>(
       layer, num_active_slots, q_proj, kv_cache, block_table_gpu, gpu_seq_lens, gpu_active_slots, output);
 #ifdef DEBUG
   cudaError error = cudaGetLastError();
@@ -194,11 +246,11 @@ void pagedAttention(int layer,
 #endif
 }
 
-void residualAdd(__nv_bfloat16* hidden_state, const __nv_bfloat16* o_proj, int num_active_slots) {
+void residualAdd(__nv_bfloat16* hidden_state, const __nv_bfloat16* o_proj, int num_active_slots, cudaStream_t stream) {
   if (num_active_slots <= 0) {
     return;
   }
-  residualAddKernel<<<num_active_slots, 1024>>>(hidden_state, o_proj);
+  residualAddKernel<<<num_active_slots, 1024, 0, stream>>>(hidden_state, o_proj);
 #ifdef DEBUG
   cudaError error = cudaGetLastError();
   if (error != cudaError::cudaSuccess) {
