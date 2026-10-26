@@ -24,7 +24,29 @@ RoPE uses Llama 3's base of `500000`. RMSNorm uses `eps = 1e-5`. The LM head is 
 
 ## Glossary
 
-These are the words the rest of this document uses. Each row is the meaning in this engine, then the reason that piece is in the forward pass.
+These are the words the rest of this document uses. The first table is the literal expansion of each abbreviation. The tables after it are the meaning in this engine, then the reason that piece is in the forward pass.
+
+| Abbreviation | The letters stand for |
+| --- | --- |
+| LM | Language model. The LM head is the language-model head: the last layer, which turns the hidden state into scores over the vocabulary. |
+| MLP | Multi-layer perceptron. |
+| RMS | Root mean square. |
+| RMSNorm | Root-mean-square normalization. |
+| SiLU | Sigmoid linear unit. |
+| GLU | Gated linear unit. |
+| SwiGLU | Swish-gated linear unit. Swish is the same curve as SiLU, `x * sigmoid(x)`. |
+| Q, K, V | Query, key, value. |
+| KV | Key and value. |
+| GQA | Grouped-query attention. |
+| RoPE | Rotary position embedding. |
+| GEMM | General matrix-matrix multiply. |
+| BF16 | Brain float, 16-bit. Brain float is a float format named for the research group that published it. |
+| FP32 | Floating point, 32-bit. |
+| CUDA | Compute Unified Device Architecture. NVIDIA's GPU programming model. |
+| cuBLAS | CUDA Basic Linear Algebra Subprograms. The GPU version of the standard BLAS matrix library. |
+| BLAS | Basic Linear Algebra Subprograms. |
+| GPU | Graphics processing unit. |
+| JSON | JavaScript Object Notation. The text format of the safetensors header. |
 
 ### The vectors
 
@@ -72,7 +94,7 @@ These are the words the rest of this document uses. Each row is the meaning in t
 | Kernel | A CUDA function compiled into this binary and launched on the GPU. | Gather, RMSNorm, RoPE, the mask, softmax, SiLU, the residual add, and decode attention are reductions or elementwise steps. A GEMM does not express them. |
 | BF16 | Brain float16, a 16-bit float with the same exponent range as FP32 and a shorter mantissa. Weights and activations are BF16. Products accumulate in FP32. | The checkpoint is stored in BF16. Keeping activations in that format cuts memory in half relative to FP32. The FP32 accumulation keeps the sums accurate. |
 | Safetensors | The checkpoint file. A JSON header names each tensor and gives its byte offset. The rest of the file is the raw weight bytes. | It is how the named Llama weights are found and copied into one GPU allocation. |
-| LM head | The last GEMM: final normalized hidden state times the embedding table, producing logits. "Tied" means this multiply reuses the embedding weights. A separate `lm_head.weight` in the file is ignored. | It turns the 2048-vector into one score per vocabulary id so a token can be chosen. |
+| LM head | LM stands for language model. This is the language-model head: the last GEMM, final normalized hidden state times the embedding table, producing logits. "Head" means the output layer of the network. "Tied" means this multiply reuses the embedding weights. A separate `lm_head.weight` in the file is ignored. | It turns the 2048-vector into one score per vocabulary id so a token can be chosen. |
 
 ### Choosing the next token
 
