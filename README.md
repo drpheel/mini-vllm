@@ -15,34 +15,42 @@ The deep version of this, with each kernel's launch shape and the KV-cache layou
 
 Prefill exists because the prompt is known up front, so every prompt token can be processed together. Decode exists because each new token depends on the tokens chosen before it, so it has to run after the previous choice.
 
-## One layer, in order
+## Where each operation runs
 
-Each token is a vector of 2048 numbers, called the hidden state. A layer reads that vector and writes an updated one. The same layer runs once per token.
+A token's hidden state is 2048 BF16 numbers. Three regions touch it. The embedding runs once before any layer. Each of the 32 layers then runs the same list of steps on its own weights. The vocabulary scores run once after the last layer.
 
-| Step | What it does |
-| --- | --- |
-| Embedding | Replaces a token id with its row from the embedding table. That row is the 2048-number starting vector. |
-| RMSNorm | Rescales a vector so its overall magnitude stays near 1, then multiplies by a learned per-dimension weight. Done at the start of attention, at the start of the MLP, and once more before the final scores. |
-| Q, K, V projections | Three matrix multiplies. Q is what this token is looking for. K is what this token offers as a match. V is the information this token will pass along if it is matched. |
-| RoPE | Rotates pairs of values inside Q and K by an angle that depends on the token's position. That is how the model tells position 0 from position 10. V is left alone. |
-| Attention scores | Dot product of a token's Q with earlier tokens' K, divided by `sqrt(64)`. A high score means "pay attention to that earlier token." |
-| Causal mask | Sets scores for future positions to a huge negative number so a token can only see itself and tokens before it. |
-| Softmax | Turns one row of scores into weights that add up to 1. |
-| Weighted V | Mixes the V vectors of earlier tokens using those weights. That mix is the attention output. |
-| Output projection | Matrix multiply that joins the 32 attention heads back into one 2048-vector. |
-| Residual add | Adds the layer's input vector back onto its output. The layer learns a change, and the original signal stays available to later layers. |
-| MLP (SwiGLU) | A small network applied independently to each token. Two matrix multiplies produce a "gate" and an "up" vector of length 8192. SiLU keeps the gate's positive parts and zeroes down the negative ones, the gate multiplies the up vector, and a third matrix multiply returns to length 2048. Another residual add follows. |
-| LM head | After the last layer and a final RMSNorm, one more matrix multiply scores every vocabulary id. The highest scores are the tokens the model currently prefers. The weight matrix is the same embedding table. |
+The layer body is the same code 32 times. What makes layer 7 different from layer 8 is the weight tensors `model.layers.7.*` and that layer's own pages in the KV cache. RoPE, the mask, softmax, SiLU, and the residual adds have no learned weights, so they are identical at every layer. Prefill and decode call those same steps. They differ in how many tokens are in each multiply, and in the attention step in the middle of the layer.
 
-Q is split into 32 heads of 64 values. K and V are split into 8 heads. Four query heads share one key/value head. That sharing is grouped-query attention, and it is why the KV cache is 512 wide instead of 2048.
+### Once, before layer 0
 
-## Prefill and decode
+The embedding gather replaces each token id with its row of `model.embed_tokens.weight`. Prefill gathers every prompt token. Decode gathers the single new token. This table is shared by the whole model. It is not inside the layer loop. The LM head reads it again at the end.
 
-During prefill, attention for the whole prompt is a pair of matrix multiplies: all queries against all keys, then those weights against all values. The mask and softmax kernels run over that score matrix. At the same time, K and V are copied into the KV cache.
+### Inside every layer
 
-The KV cache is the memory decode reuses. It stores K and V for every layer and every position already seen. Decode does not rerun the prompt. It embeds the single new token, computes that token's Q, K, and V, appends K and V to the cache, and attends over every cached position.
+Prefill's loop is `for (layer ...)` in `llama_prefill::prefill` in `src/prefill.cu`. Decode's loop is the matching `for (layer ...)` in `src/main.cu`. Both walk layers 0 through 31, and both index that layer's weights.
 
-The cache is paged. Memory is a pool of fixed blocks, 16 tokens each. A block table says which physical block holds positions 0–15, which holds 16–31, and so on, separately for each layer. The decode attention kernel follows that table. Paging is what production engines use so many sequences can share one cache pool without reserving a full maximum length up front. This engine has one live sequence and at most 512 positions (32 blocks).
+| Step | What is unique to this layer | Prefill, all prompt tokens | Decode, the one new token |
+| --- | --- | --- | --- |
+| RMSNorm | `input_layernorm.weight` | Every prompt row | The new token's row |
+| Q, K, V | `q_proj`, `k_proj`, `v_proj` | One GEMM per matrix, over the whole prompt | The same GEMM with a token count of 1 |
+| RoPE | Nothing learned. The angle depends on the token's position. | Positions `0 .. P-1` | The absolute index of the new token |
+| Store K and V | This layer's pages in the block table | Copies the whole prompt into fresh pages | Copies one token into the page for its position |
+| Attention | This layer's stored K and V | Score GEMM, causal mask, softmax, then scores times V, all over the prompt | `pagedAttentionKernel`, told this layer's index, reads every page for this layer |
+| Output projection | `o_proj.weight` | GEMM over the prompt | GEMM of the single attention output |
+| Residual add | Nothing learned | Adds the hidden state saved at the start of this layer | Adds the new token's hidden state |
+| RMSNorm | `post_attention_layernorm.weight` | Every prompt row | The new token's row |
+| MLP | `gate_proj`, `up_proj`, `down_proj` | Gate and up GEMMs, SiLU, down GEMM, over the prompt | The same four steps for one token |
+| Residual add | Nothing learned | Adds the MLP output onto the prompt hidden states | Adds it onto the new token |
+
+Q is split into 32 heads of 64 values. K and V are split into 8 heads. Four query heads share one key/value head. That sharing is grouped-query attention, and it is why each layer's K and V are 512 wide instead of 2048.
+
+Attention is the step that is actually a different operation in the two passes. Prefill still has every key in one dense buffer, so it builds a prompt-by-prompt score matrix, masks future positions, and mixes V with a GEMM. Decode's keys are already scattered through this layer's pages, including the token just written, so one kernel walks those pages. The mask is unnecessary there: the pages only contain positions up to the current token.
+
+The KV cache holds K and V separately for every layer. A page is 16 tokens. The block table maps "layer 7, positions 16–31" to a physical page. Prefill fills a layer's pages while that layer runs. Decode appends to the same pages on later steps and reads them back inside `pagedAttentionKernel`.
+
+### Once, after layer 31
+
+A final RMSNorm uses `model.norm.weight`, one vector for the whole model. The LM head then multiplies by the embedding table and writes a score for every vocabulary id. Prefill keeps a row of scores per prompt token and the sampler reads the last row. Decode writes one row. Sampling happens on the CPU after that, outside the layer loop.
 
 ## Words that show up everywhere
 
