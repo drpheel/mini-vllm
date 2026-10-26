@@ -149,7 +149,28 @@ The engine assumes a unified GPU/CPU address space, as on Jetson. `alloc_mapped_
 
 Weights, activations, and the KV pool are ordinary device allocations.
 
+## What each kernel is for
+
+A kernel is a function this repo launches on the GPU. The projections, the prefill score matrix, `scores * V`, and the LM head are cuBLAS GEMMs, so they are not in this list. Everything else in the forward pass is one of the kernels below. Two of them exist only so the decode benchmark can replay a CUDA graph at a new position and a new cache slot.
+
+| Kernel | Where | What it does | Why it is there |
+| --- | --- | --- | --- |
+| `embeddingGatherKernel` | `prefill.cu` | Copies the embedding-table row for each token id into the hidden state. | The prompt and every new decode token arrive as integer ids. The rest of the model consumes 2048-wide vectors. A gather is an indirect lookup, so it is a kernel rather than a matrix multiply. Prefill launches one block per prompt token. Decode and the benchmark launch one block for the single new id. `embedding_gather_async` is the same kernel on a caller-chosen stream. |
+| `rmsNormKernel` | `prefill.cu` and `decode.cu` | For one token, computes `x / rms(x) * weight` across all 2048 dimensions. | Llama normalizes before attention, before the MLP, and once more before the vocabulary scores. That keeps the scale of the residual stream from drifting across 32 layers. It is a reduction plus an elementwise scale, which a GEMM does not express. The two copies do the same math. Prefill synchronizes after its launch. Decode takes a stream so the benchmark can capture the step. |
+| `ropeKernel` | `prefill.cu` | Rotates adjacent pairs inside Q and K by an angle that depends on the token's position in the prompt. | Q and K projections do not know which position a token occupies. RoPE puts that position into the Q·K dot product. V is left unchanged because the position signal lives in the score, not in the values being mixed. Position is the block index, so one launch covers the whole prompt. |
+| `ropeKernelDecode` | `decode.cu` | The same rotation for one vector. The position is a kernel argument. | Decode rotates one token, and its position is the absolute sequence index (`current_prompt_len`), not zero. Launching the prefill kernel for that one row would treat it as position 0. `main` uses this on every decode step. |
+| `ropeKernelDecodePtr` | `decode.cu` | The same rotation, but the position is loaded from a device `int` when the kernel runs. | A captured CUDA graph freezes ordinary kernel arguments. The benchmark (`src/bench.cu`) replays one graph for many positions, so the position has to be read from memory at replay time. The generation loop does not call this kernel. |
+| `residualKernel` | `prefill.cu` | Adds one 2048-vector onto another, for every token in the launch. | Attention and the MLP are computed from a normalized copy of the residual stream. Their outputs are added back onto the un-normalized stream. That skip connection is how each sublayer learns an update without replacing the token's running representation. Prefill calls it after the output projection and again after the MLP down projection. |
+| `residualAddKernel` | `decode.cu` | The same add, for the one decode token. | Same residual as prefill, kept in `decode.cu` so the decode step can launch it on a stream. Called after the output projection and after the MLP. |
+| `siluKernel` | `prefill.cu` | Writes `silu(gate) * up` over the 8192-wide MLP intermediate, in place in the gate buffer. | Gate and up are linear projections. SiLU is the nonlinearity that makes the MLP a SwiGLU block instead of two matrix multiplies. `silu_async` is the same kernel on a stream, used by the benchmark. |
+| `causalMaskKernel` | `prefill.cu` | Writes `-inf` into `scores[query, key]` wherever `key > query`. | Prefill's score GEMM is a full `[P, P]` product, so each token also receives scores against future tokens. The mask removes those scores before softmax. Decode does not launch it. The cache only contains positions up to the current token, so there is no future key to hide. |
+| `softmaxKernel` | `prefill.cu` | Turns each score row into weights that sum to 1. | The following multiply with V has to be a weighted average of earlier tokens. Softmax is that conversion. Masked positions become about 0. Decode does not launch it. `pagedAttentionKernel` folds the same math into a running sum so it never stores a score per past token. |
+| `pagedAttentionKernel` | `decode.cu` | For each query head of the new token, dots Q with every cached K, applies an online softmax, and accumulates the weighted V. | This is decode's replacement for the prefill score GEMM, the mask, the softmax, and `scores * V`. The keys live in pages rather than in one dense `[seq, 512]` matrix, and the sequence is one token longer every step. One block handles one query head because that head's 64 dimensions reduce to a single score. |
+| `scatterKvIndirectKernel` | `decode.cu` | Copies one K or V row to `dsts[layer]`, a pointer loaded when the kernel runs. | After RoPE, K and V have to be stored or the next token cannot attend to this one. The benchmark keeps a device table of destination pointers and updates it when the token moves to a new slot in a page, so a captured graph stays valid. The generation loop in `main.cu` does the same copy with `cudaMemcpy` and does not launch this kernel. |
+
 ## Kernels
+
+The subsections below are the launch geometry and the reductions. The table above is the reason each launch exists.
 
 Launch bounds are hard. A block never has more than 1024 threads. Several kernels split a 2048-wide row across 1024 threads by having each thread touch `threadIdx.x` and `threadIdx.x + 1024`. Softmax and the causal mask launch `prompt_len` threads per block, so a prompt longer than 1024 tokens is skipped with a message rather than tiled. RoPE on Q launches `2048 / 2 = 1024` threads, which is exactly the limit.
 
@@ -179,9 +200,9 @@ Every thread then writes `x / rms * weight` for both of its dimensions. The norm
 
 The decode copy in `decode.cu` is the same reduction. Its bounds check is true for every thread when the grid is one block per token, which is how it is launched.
 
-### `ropeKernel` and `ropeKernelDecode`
+### `ropeKernel`, `ropeKernelDecode`, and `ropeKernelDecodePtr`
 
-Llama RoPE, applied to adjacent pairs inside each head. V is not rotated.
+Llama RoPE, applied to adjacent pairs inside each head. V is not rotated. `ropeKernelDecodePtr` is the graph-replay form of `ropeKernelDecode`: the angle uses `*position` from device memory instead of a host argument baked into the launch. `src/bench.cu` calls it. `main` calls `ropeKernelDecode`.
 
 ```text
 pair i in 0..31
@@ -196,7 +217,9 @@ Prefill launches one block per token and `proj_dim / 2` threads. For Q, `proj_di
 
 Decode launches a single block on the one vector it was given. Position is the host argument `decode_token_index`, the absolute index in the sequence, not zero. Q is rotated at `q_proj + position * 2048`. K is rotated at the start of `k_proj_batched_buffer`, because the decode K GEMM always writes row 0.
 
-### `scatter` into pages (host `cudaMemcpy`, not a kernel)
+### `scatter` into pages
+
+Prefill and the generation loop copy with `cudaMemcpy`. `scatterKvIndirectKernel` is the benchmark's version of the one-token copy: one thread per element writes `src[i]` to `dsts[layer][i]`. `dsts` is a device array of pointers, so the host can point a layer at a new page slot between graph replays.
 
 Prefill walks the prompt in chunks of 16. For each chunk at layer `L`:
 
