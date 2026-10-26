@@ -22,6 +22,67 @@ The model shape is compiled in:
 
 RoPE uses Llama 3's base of `500000`. RMSNorm uses `eps = 1e-5`. The LM head is tied to the token embedding table. `lm_head.weight` is loaded if the file contains it, and generation never reads it.
 
+## Glossary
+
+These are the words the rest of this document uses. Each row is the meaning in this engine, then the reason that piece is in the forward pass.
+
+### The vectors
+
+| Term | What it means | Why it is needed |
+| --- | --- | --- |
+| Token | An integer id in the vocabulary, about 128,000 possible ids. The program reads and writes ids. Text conversion happens outside, in `tools/tokenizer.py`. | The embedding table is indexed by id. Every later step is arithmetic on the vector that id selects. |
+| Embedding | The 2048-number row stored for one token id. | That row is the token's starting hidden state. The same table is reused at the end to score the vocabulary. |
+| Hidden state | The 2048-number vector carried through the 32 layers for one token. | It is the token's running representation. Each sublayer reads it and writes an updated version. |
+| Activation | Any tensor computed while the model runs: hidden states, Q, scores, gate, logits. Weights are the tensors loaded from the checkpoint. | Activations are the workspace for one forward pass. They are discarded or overwritten. Weights stay for the whole run. |
+| Residual | The add of a sublayer's output back onto the hidden state that entered that sublayer. "Residual width" means the 2048-wide stream those adds travel on. | Attention and the MLP learn an update. Adding that update back keeps the representation from the earlier layers available to the later ones. |
+| Logits | The final score vector, one number per vocabulary id. | Sampling reads these scores and turns them into the next token id. |
+
+### One layer
+
+| Term | What it means | Why it is needed |
+| --- | --- | --- |
+| Layer | One of the 32 stacked blocks. Each block is a norm, an attention sublayer, a residual add, a norm, an MLP, and a residual add. | One block mixes tokens and then mixes features. Stacking 32 of them is the capacity Llama 3.2 1B was trained with. |
+| RMSNorm | Root-mean-square normalization. For a vector `x`, divide every element by `sqrt(mean(x^2) + 1e-5)`, then multiply by a learned per-element weight. RMS is that square-root scale. | Applied before attention, before the MLP, and once before the logits. It keeps the size of the hidden state from drifting as it passes through 32 layers. |
+| Projection | A learned linear map, `Y = X * W^T`, implemented as one GEMM. The named projections are Q, K, V, O, gate, up, and down. | This is how a layer turns the hidden state into queries, keys, values, and the MLP's wide intermediate. The learned `W` is a weight matrix from the checkpoint. |
+| MLP | Multi-layer perceptron. Here it is the feed-forward network applied to each token on its own after attention: gate, up, SiLU, down. | Attention mixes information across tokens. The MLP mixes information across the 2048 features of a single token. |
+| SwiGLU | The MLP formula Llama uses: `down(silu(gate(x)) * up(x))`. Gate and up each expand 2048 values to 8192. Down returns to 2048. | That is the MLP this checkpoint was trained with. The gate chooses which parts of the up vector survive. |
+| SiLU | `x * sigmoid(x)`. Positive values pass through. Negative values shrink toward zero. The kernel writes `silu(gate) * up` in place. | It is the nonlinearity in the MLP. The gate and up projections are linear. SiLU is what keeps them from collapsing into a single linear map. |
+
+### Attention
+
+| Term | What it means | Why it is needed |
+| --- | --- | --- |
+| Q, K, V | Query, key, and value. Q is what this token is looking for. K is what this token offers as a match. V is the content mixed in when the match is strong. | Attention is a lookup. The score is a Q·K dot product. The output is a weighted sum of V. |
+| Head | A slice of 64 values with its own query. This model has 32 query heads and 8 key/value heads. | Separate heads let one token match earlier tokens for several different reasons in the same layer. |
+| GQA | Grouped-query attention. Query heads come in groups of 4 that share one K head and one V head. | Llama 3.2 1B was trained this way. The shared heads make the stored K and V 512 wide per token instead of 2048. |
+| RoPE | Rotary position embedding. Pairs of values inside Q and K are rotated by an angle that grows with the token's position. The base angle is `500000`. | The Q, K, and V projections have no position input. The rotation makes the Q·K score depend on how far apart the two tokens are. |
+| Attention score | `dot(Q, K) / sqrt(64)` for one query position against one key position. | It is the match strength before it becomes a weight. A larger score pulls more of that key's V into the output. |
+| Causal mask | Sets the score to `-inf` when the key sits at a later position than the query. | The model was trained to predict the next token from tokens up to the current one. The mask keeps a prompt token from using tokens that come after it. |
+| Softmax | `exp(score - max) / sum(exp)` across the keys for one query. | It turns match scores into weights that add up to 1, so the mix of V is a weighted average. The `-inf` mask positions contribute about 0. |
+| KV cache | The stored K and V for every layer and every position already seen. | Decode attends to the prompt and to earlier generated tokens by reading this memory. Those positions are not projected again. |
+| Page | A fixed block of 16 tokens of K followed by 16 tokens of V. A block table maps a position range in the sequence to a physical page. | The sequence grows one token at a time. Pages let the cache be allocated in chunks of 16 instead of as one dense tensor of the maximum length. |
+
+### Running a forward pass
+
+| Term | What it means | Why it is needed |
+| --- | --- | --- |
+| Prefill | One forward pass over every prompt token together. It writes K and V for those tokens into the cache. | The prompt is known before any new token is chosen, so its tokens can be scored as a batch and the cache can be filled before generation starts. |
+| Decode | One forward pass for a single new token. It appends that token's K and V and attends over the whole cache. | The next token is chosen from the previous step's logits, so its forward pass has to wait for that choice. |
+| GEMM | A general matrix-matrix multiply. In this repo each one is a `cublasGemmEx` call. | Every projection, the prefill attention products, and the vocabulary scores are matrix multiplies. cuBLAS is the library that runs them on the GPU. |
+| Kernel | A CUDA function compiled into this binary and launched on the GPU. | Gather, RMSNorm, RoPE, the mask, softmax, SiLU, the residual add, and decode attention are reductions or elementwise steps. A GEMM does not express them. |
+| BF16 | Brain float16, a 16-bit float with the same exponent range as FP32 and a shorter mantissa. Weights and activations are BF16. Products accumulate in FP32. | The checkpoint is stored in BF16. Keeping activations in that format cuts memory in half relative to FP32. The FP32 accumulation keeps the sums accurate. |
+| Safetensors | The checkpoint file. A JSON header names each tensor and gives its byte offset. The rest of the file is the raw weight bytes. | It is how the named Llama weights are found and copied into one GPU allocation. |
+| LM head | The last GEMM: final normalized hidden state times the embedding table, producing logits. "Tied" means this multiply reuses the embedding weights. A separate `lm_head.weight` in the file is ignored. | It turns the 2048-vector into one score per vocabulary id so a token can be chosen. |
+
+### Choosing the next token
+
+| Term | What it means | Why it is needed |
+| --- | --- | --- |
+| Temperature | A divisor applied to the logits before softmax. This engine uses `0.7`. A temperature of `0` skips the softmax and takes the largest logit. | It sets how willing the sampler is to pick a strong runner-up along with the top score. |
+| Top-p | Nucleus sampling. After softmax, keep the smallest set of tokens whose probabilities add up to `0.9`, drop the rest, and sample inside what remains. | It removes the long tail of tokens the model currently assigns almost no probability. |
+| Log-probability | The natural log of the probability the sampler assigned to the token it picked. | Best-of-N ranks whole replies by the average of these values, so a reply the model itself considers likely scores higher. |
+| Best of N | Generate 4 full replies from the same prefill cache and keep the one with the best average log-probability, with a small bonus for a medium length. | Extra decode work buys a stronger sample from the same prompt. |
+
 ## Where each step lives
 
 | Step | Owner |
