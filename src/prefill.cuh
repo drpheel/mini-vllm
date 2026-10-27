@@ -17,7 +17,9 @@ constexpr int NUM_KV_HEADS = KV_DIM / HEAD_DIM;
 constexpr int GQA_Q_TO_K_RATIO = NUM_Q_HEADS / NUM_KV_HEADS;
 constexpr int VOCAB_SIZE = 128256;
 constexpr int BLOCK_SIZE = 16;
-constexpr int MAX_BLOCKS_PER_SEQ = 32;
+// 4096 tokens. The pool is allocated up front, and an 8192-token pool does not
+// fit beside the 2.3 GB weights on this 8 GB board.
+constexpr int MAX_BLOCKS_PER_SEQ = 256;
 constexpr int MAX_SEQUENCES = 1;
 constexpr int N_LAYERS = 32;
 

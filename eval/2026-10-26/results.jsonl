@@ -1,0 +1,1401 @@
+{"id": "arc/0", "prompt_tokens": 90, "seconds": 1.322350002, "tokens": [34]}
+{"id": "arc/1", "prompt_tokens": 105, "seconds": 0.21808111, "tokens": [33]}
+{"id": "arc/2", "prompt_tokens": 97, "seconds": 0.179602053, "tokens": [33]}
+{"id": "arc/3", "prompt_tokens": 114, "seconds": 0.171677853, "tokens": [35]}
+{"id": "arc/4", "prompt_tokens": 134, "seconds": 0.153443257, "tokens": [34]}
+{"id": "arc/5", "prompt_tokens": 138, "seconds": 0.148040423, "tokens": [35]}
+{"id": "arc/6", "prompt_tokens": 134, "seconds": 0.144888739, "tokens": [35]}
+{"id": "arc/7", "prompt_tokens": 100, "seconds": 0.170007673, "tokens": [32, 13]}
+{"id": "arc/8", "prompt_tokens": 124, "seconds": 0.137140447, "tokens": [34]}
+{"id": "arc/9", "prompt_tokens": 75, "seconds": 0.166394283, "tokens": [32, 13]}
+{"id": "arc/10", "prompt_tokens": 86, "seconds": 0.137351651, "tokens": [34]}
+{"id": "arc/11", "prompt_tokens": 80, "seconds": 0.129404347, "tokens": [34]}
+{"id": "arc/12", "prompt_tokens": 90, "seconds": 0.302427859, "tokens": [32, 13, 220, 843, 11877, 435]}
+{"id": "arc/13", "prompt_tokens": 86, "seconds": 0.128488519, "tokens": [33]}
+{"id": "arc/14", "prompt_tokens": 63, "seconds": 0.096296795, "tokens": [35]}
+{"id": "arc/15", "prompt_tokens": 63, "seconds": 0.102831142, "tokens": [33]}
+{"id": "arc/16", "prompt_tokens": 117, "seconds": 0.134308514, "tokens": [34]}
+{"id": "arc/17", "prompt_tokens": 108, "seconds": 0.376422324, "tokens": [32, 13, 505, 279, 10054, 311, 279, 15600]}
+{"id": "arc/18", "prompt_tokens": 123, "seconds": 0.135917667, "tokens": [35]}
+{"id": "arc/19", "prompt_tokens": 94, "seconds": 0.13226383, "tokens": [35]}
+{"id": "arc/20", "prompt_tokens": 97, "seconds": 0.132206709, "tokens": [33]}
+{"id": "arc/21", "prompt_tokens": 148, "seconds": 0.147953475, "tokens": [33]}
+{"id": "arc/22", "prompt_tokens": 72, "seconds": 0.163957719, "tokens": [32, 13]}
+{"id": "arc/23", "prompt_tokens": 115, "seconds": 0.170833672, "tokens": [32, 13]}
+{"id": "arc/24", "prompt_tokens": 57, "seconds": 0.106542292, "tokens": [33]}
+{"id": "arc/25", "prompt_tokens": 83, "seconds": 0.267015296, "tokens": [32, 13, 1102, 75826, 13]}
+{"id": "arc/26", "prompt_tokens": 112, "seconds": 0.134190686, "tokens": [35]}
+{"id": "arc/27", "prompt_tokens": 139, "seconds": 0.146370017, "tokens": [35]}
+{"id": "arc/28", "prompt_tokens": 100, "seconds": 0.132354743, "tokens": [35]}
+{"id": "arc/29", "prompt_tokens": 65, "seconds": 0.12833085, "tokens": [33]}
+{"id": "arc/30", "prompt_tokens": 102, "seconds": 0.13229407, "tokens": [33]}
+{"id": "arc/31", "prompt_tokens": 85, "seconds": 0.130007173, "tokens": [35]}
+{"id": "arc/32", "prompt_tokens": 72, "seconds": 0.162589367, "tokens": [32, 13]}
+{"id": "arc/33", "prompt_tokens": 77, "seconds": 0.129731615, "tokens": [34]}
+{"id": "arc/34", "prompt_tokens": 56, "seconds": 0.173705283, "tokens": [32, 13, 64919]}
+{"id": "arc/35", "prompt_tokens": 110, "seconds": 0.134681159, "tokens": [34]}
+{"id": "arc/36", "prompt_tokens": 109, "seconds": 0.168622904, "tokens": [32, 13]}
+{"id": "arc/37", "prompt_tokens": 84, "seconds": 0.131332417, "tokens": [34]}
+{"id": "arc/38", "prompt_tokens": 85, "seconds": 0.130795029, "tokens": [34]}
+{"id": "arc/39", "prompt_tokens": 102, "seconds": 0.157303942, "tokens": [32, 13]}
+{"id": "arc/40", "prompt_tokens": 82, "seconds": 0.131196445, "tokens": [34]}
+{"id": "arc/41", "prompt_tokens": 68, "seconds": 0.130048709, "tokens": [33]}
+{"id": "arc/42", "prompt_tokens": 73, "seconds": 0.129605851, "tokens": [34]}
+{"id": "arc/43", "prompt_tokens": 89, "seconds": 0.130762485, "tokens": [35]}
+{"id": "arc/44", "prompt_tokens": 95, "seconds": 0.132190962, "tokens": [33]}
+{"id": "arc/45", "prompt_tokens": 60, "seconds": 0.214755944, "tokens": [32, 13, 5707, 13]}
+{"id": "arc/46", "prompt_tokens": 61, "seconds": 0.106330029, "tokens": [34]}
+{"id": "arc/47", "prompt_tokens": 65, "seconds": 0.196496645, "tokens": [34, 13, 86672]}
+{"id": "arc/48", "prompt_tokens": 69, "seconds": 0.128433922, "tokens": [35]}
+{"id": "arc/49", "prompt_tokens": 77, "seconds": 0.129138449, "tokens": [34]}
+{"id": "arc/50", "prompt_tokens": 122, "seconds": 0.135467959, "tokens": [32]}
+{"id": "arc/51", "prompt_tokens": 92, "seconds": 0.128959981, "tokens": [34]}
+{"id": "arc/52", "prompt_tokens": 69, "seconds": 0.128056538, "tokens": [34]}
+{"id": "arc/53", "prompt_tokens": 82, "seconds": 0.130663537, "tokens": [35]}
+{"id": "arc/54", "prompt_tokens": 89, "seconds": 0.164889797, "tokens": [32, 13]}
+{"id": "arc/55", "prompt_tokens": 150, "seconds": 0.147547574, "tokens": [34]}
+{"id": "arc/56", "prompt_tokens": 90, "seconds": 0.132288244, "tokens": [35]}
+{"id": "arc/57", "prompt_tokens": 106, "seconds": 0.167854405, "tokens": [32, 13]}
+{"id": "arc/58", "prompt_tokens": 60, "seconds": 0.140895498, "tokens": [33, 13]}
+{"id": "arc/59", "prompt_tokens": 156, "seconds": 0.150378802, "tokens": [35]}
+{"id": "arc/60", "prompt_tokens": 77, "seconds": 0.129813214, "tokens": [33]}
+{"id": "arc/61", "prompt_tokens": 70, "seconds": 0.131217244, "tokens": [33]}
+{"id": "arc/62", "prompt_tokens": 71, "seconds": 0.12850797, "tokens": [35]}
+{"id": "arc/63", "prompt_tokens": 61, "seconds": 0.106284684, "tokens": [34]}
+{"id": "arc/64", "prompt_tokens": 136, "seconds": 0.143372925, "tokens": [35]}
+{"id": "arc/65", "prompt_tokens": 77, "seconds": 0.414614352, "tokens": [32, 13, 68126, 505, 1403, 6699, 527, 11093, 13]}
+{"id": "arc/66", "prompt_tokens": 100, "seconds": 0.127925109, "tokens": [34]}
+{"id": "arc/67", "prompt_tokens": 95, "seconds": 0.138395507, "tokens": [35]}
+{"id": "arc/68", "prompt_tokens": 67, "seconds": 0.128494305, "tokens": [35]}
+{"id": "arc/69", "prompt_tokens": 73, "seconds": 0.13103516, "tokens": [32]}
+{"id": "arc/70", "prompt_tokens": 87, "seconds": 0.132835645, "tokens": [35]}
+{"id": "arc/71", "prompt_tokens": 71, "seconds": 0.129358676, "tokens": [34]}
+{"id": "arc/72", "prompt_tokens": 103, "seconds": 0.132125198, "tokens": [33]}
+{"id": "arc/73", "prompt_tokens": 77, "seconds": 0.129077005, "tokens": [35]}
+{"id": "arc/74", "prompt_tokens": 82, "seconds": 0.132224911, "tokens": [35]}
+{"id": "arc/75", "prompt_tokens": 81, "seconds": 0.269383752, "tokens": [32, 13, 1193, 279, 8219]}
+{"id": "arc/76", "prompt_tokens": 116, "seconds": 0.135685113, "tokens": [33]}
+{"id": "arc/77", "prompt_tokens": 103, "seconds": 0.167341495, "tokens": [32, 13]}
+{"id": "arc/78", "prompt_tokens": 98, "seconds": 0.134211066, "tokens": [34]}
+{"id": "arc/79", "prompt_tokens": 63, "seconds": 0.10671858, "tokens": [33]}
+{"id": "arc/80", "prompt_tokens": 67, "seconds": 0.129302545, "tokens": [34]}
+{"id": "arc/81", "prompt_tokens": 78, "seconds": 0.130667982, "tokens": [35]}
+{"id": "arc/82", "prompt_tokens": 67, "seconds": 0.263804336, "tokens": [32, 13, 264, 6962, 13]}
+{"id": "arc/83", "prompt_tokens": 60, "seconds": 0.114742781, "tokens": [35]}
+{"id": "arc/84", "prompt_tokens": 134, "seconds": 0.143232504, "tokens": [33]}
+{"id": "arc/85", "prompt_tokens": 74, "seconds": 0.129321906, "tokens": [33]}
+{"id": "arc/86", "prompt_tokens": 145, "seconds": 0.150099177, "tokens": [32]}
+{"id": "arc/87", "prompt_tokens": 115, "seconds": 0.172223517, "tokens": [32, 13]}
+{"id": "arc/88", "prompt_tokens": 106, "seconds": 0.133428904, "tokens": [34]}
+{"id": "arc/89", "prompt_tokens": 72, "seconds": 0.1252975, "tokens": [34]}
+{"id": "arc/90", "prompt_tokens": 67, "seconds": 0.163297504, "tokens": [32, 13]}
+{"id": "arc/91", "prompt_tokens": 98, "seconds": 0.166865228, "tokens": [32, 13]}
+{"id": "arc/92", "prompt_tokens": 93, "seconds": 0.131208249, "tokens": [35]}
+{"id": "arc/93", "prompt_tokens": 141, "seconds": 0.181781958, "tokens": [32, 13]}
+{"id": "arc/94", "prompt_tokens": 87, "seconds": 0.129990718, "tokens": [33]}
+{"id": "arc/95", "prompt_tokens": 76, "seconds": 0.128955849, "tokens": [33]}
+{"id": "arc/96", "prompt_tokens": 99, "seconds": 0.128636514, "tokens": [35]}
+{"id": "arc/97", "prompt_tokens": 69, "seconds": 0.128893672, "tokens": [33]}
+{"id": "arc/98", "prompt_tokens": 84, "seconds": 0.439588341, "tokens": [32, 13, 9467, 84, 1286, 11, 37833, 92335, 11, 62607]}
+{"id": "arc/99", "prompt_tokens": 85, "seconds": 0.133221122, "tokens": [33]}
+{"id": "arc/100", "prompt_tokens": 112, "seconds": 0.133213762, "tokens": [34]}
+{"id": "arc/101", "prompt_tokens": 90, "seconds": 0.131293498, "tokens": [35]}
+{"id": "arc/102", "prompt_tokens": 62, "seconds": 0.308976072, "tokens": [32, 13, 3339, 7060, 3709, 6948, 13]}
+{"id": "arc/103", "prompt_tokens": 65, "seconds": 0.128789861, "tokens": [33]}
+{"id": "arc/104", "prompt_tokens": 77, "seconds": 0.128938887, "tokens": [33]}
+{"id": "arc/105", "prompt_tokens": 97, "seconds": 0.131896582, "tokens": [33]}
+{"id": "arc/106", "prompt_tokens": 79, "seconds": 0.129711895, "tokens": [35]}
+{"id": "arc/107", "prompt_tokens": 107, "seconds": 0.133756556, "tokens": [35]}
+{"id": "arc/108", "prompt_tokens": 92, "seconds": 0.132385135, "tokens": [33]}
+{"id": "arc/109", "prompt_tokens": 61, "seconds": 0.108413364, "tokens": [35]}
+{"id": "arc/110", "prompt_tokens": 128, "seconds": 0.136601033, "tokens": [34]}
+{"id": "arc/111", "prompt_tokens": 78, "seconds": 0.130112255, "tokens": [34]}
+{"id": "arc/112", "prompt_tokens": 88, "seconds": 0.131017875, "tokens": [32]}
+{"id": "arc/113", "prompt_tokens": 65, "seconds": 0.227232165, "tokens": [32, 13, 2007, 12290]}
+{"id": "arc/114", "prompt_tokens": 69, "seconds": 0.128592671, "tokens": [32]}
+{"id": "arc/115", "prompt_tokens": 70, "seconds": 0.130990161, "tokens": [35]}
+{"id": "arc/116", "prompt_tokens": 73, "seconds": 0.131913317, "tokens": [35]}
+{"id": "arc/117", "prompt_tokens": 73, "seconds": 0.133837806, "tokens": [34]}
+{"id": "arc/118", "prompt_tokens": 94, "seconds": 0.306654835, "tokens": [34, 13, 220, 5245, 13437, 7682]}
+{"id": "arc/119", "prompt_tokens": 96, "seconds": 0.169519359, "tokens": [32, 13]}
+{"id": "arc/120", "prompt_tokens": 101, "seconds": 0.17882602, "tokens": [32, 13]}
+{"id": "arc/121", "prompt_tokens": 67, "seconds": 0.128653952, "tokens": [34]}
+{"id": "arc/122", "prompt_tokens": 86, "seconds": 0.132032968, "tokens": [33]}
+{"id": "arc/123", "prompt_tokens": 96, "seconds": 0.134674207, "tokens": [32]}
+{"id": "arc/124", "prompt_tokens": 91, "seconds": 0.170412306, "tokens": [32, 13]}
+{"id": "arc/125", "prompt_tokens": 71, "seconds": 0.129126185, "tokens": [35]}
+{"id": "arc/126", "prompt_tokens": 58, "seconds": 0.115856272, "tokens": [33]}
+{"id": "arc/127", "prompt_tokens": 59, "seconds": 0.106354408, "tokens": [33]}
+{"id": "arc/128", "prompt_tokens": 55, "seconds": 0.105863582, "tokens": [35]}
+{"id": "arc/129", "prompt_tokens": 76, "seconds": 0.133386403, "tokens": [35]}
+{"id": "arc/130", "prompt_tokens": 64, "seconds": 0.208118926, "tokens": [35, 13, 5213, 125800]}
+{"id": "arc/131", "prompt_tokens": 70, "seconds": 0.128625215, "tokens": [34]}
+{"id": "arc/132", "prompt_tokens": 65, "seconds": 0.128200053, "tokens": [35]}
+{"id": "arc/133", "prompt_tokens": 75, "seconds": 0.128650334, "tokens": [33]}
+{"id": "arc/134", "prompt_tokens": 97, "seconds": 0.131542844, "tokens": [33]}
+{"id": "arc/135", "prompt_tokens": 96, "seconds": 0.131330007, "tokens": [33]}
+{"id": "arc/136", "prompt_tokens": 109, "seconds": 0.133232512, "tokens": [33]}
+{"id": "arc/137", "prompt_tokens": 87, "seconds": 0.130135933, "tokens": [33]}
+{"id": "arc/138", "prompt_tokens": 90, "seconds": 0.370701271, "tokens": [32, 13, 7340, 2865, 279, 14497, 649, 1862]}
+{"id": "arc/139", "prompt_tokens": 75, "seconds": 0.300212229, "tokens": [32, 13, 1396, 315, 463, 35511]}
+{"id": "arc/140", "prompt_tokens": 92, "seconds": 0.131398936, "tokens": [35]}
+{"id": "arc/141", "prompt_tokens": 89, "seconds": 0.130511909, "tokens": [34]}
+{"id": "arc/142", "prompt_tokens": 73, "seconds": 0.130414019, "tokens": [35]}
+{"id": "arc/143", "prompt_tokens": 104, "seconds": 0.133034138, "tokens": [35]}
+{"id": "arc/144", "prompt_tokens": 65, "seconds": 0.266037299, "tokens": [32, 13, 12466, 39962, 27474]}
+{"id": "arc/145", "prompt_tokens": 119, "seconds": 0.13461446, "tokens": [34]}
+{"id": "arc/146", "prompt_tokens": 68, "seconds": 0.128518459, "tokens": [33]}
+{"id": "arc/147", "prompt_tokens": 75, "seconds": 0.165862255, "tokens": [32, 13]}
+{"id": "arc/148", "prompt_tokens": 57, "seconds": 0.106192803, "tokens": [33]}
+{"id": "arc/149", "prompt_tokens": 76, "seconds": 0.203590732, "tokens": [32, 13, 8271]}
+{"id": "arc/150", "prompt_tokens": 76, "seconds": 0.129247625, "tokens": [35]}
+{"id": "arc/151", "prompt_tokens": 64, "seconds": 0.106638475, "tokens": [35]}
+{"id": "arc/152", "prompt_tokens": 65, "seconds": 0.128495002, "tokens": [34]}
+{"id": "arc/153", "prompt_tokens": 99, "seconds": 0.132323626, "tokens": [34]}
+{"id": "arc/154", "prompt_tokens": 93, "seconds": 0.130973549, "tokens": [35]}
+{"id": "arc/155", "prompt_tokens": 68, "seconds": 0.129737395, "tokens": [34]}
+{"id": "arc/156", "prompt_tokens": 62, "seconds": 0.106331237, "tokens": [33]}
+{"id": "arc/157", "prompt_tokens": 67, "seconds": 0.132309418, "tokens": [33]}
+{"id": "arc/158", "prompt_tokens": 63, "seconds": 0.140804828, "tokens": [33, 13]}
+{"id": "arc/159", "prompt_tokens": 64, "seconds": 0.106712813, "tokens": [34]}
+{"id": "arc/160", "prompt_tokens": 82, "seconds": 0.13043469, "tokens": [33]}
+{"id": "arc/161", "prompt_tokens": 67, "seconds": 0.128154705, "tokens": [35]}
+{"id": "arc/162", "prompt_tokens": 134, "seconds": 0.17849692, "tokens": [32, 13]}
+{"id": "arc/163", "prompt_tokens": 84, "seconds": 0.164604947, "tokens": [32, 13]}
+{"id": "arc/164", "prompt_tokens": 59, "seconds": 0.207047123, "tokens": [32, 13, 17332, 64475]}
+{"id": "arc/165", "prompt_tokens": 54, "seconds": 0.105772728, "tokens": [33]}
+{"id": "arc/166", "prompt_tokens": 76, "seconds": 0.128972802, "tokens": [34]}
+{"id": "arc/167", "prompt_tokens": 83, "seconds": 0.129920598, "tokens": [34]}
+{"id": "arc/168", "prompt_tokens": 68, "seconds": 0.128348309, "tokens": [35]}
+{"id": "arc/169", "prompt_tokens": 95, "seconds": 0.131118287, "tokens": [33]}
+{"id": "arc/170", "prompt_tokens": 186, "seconds": 0.161646995, "tokens": [34]}
+{"id": "arc/171", "prompt_tokens": 87, "seconds": 0.130505827, "tokens": [35]}
+{"id": "arc/172", "prompt_tokens": 95, "seconds": 0.131386388, "tokens": [35]}
+{"id": "arc/173", "prompt_tokens": 76, "seconds": 0.129810963, "tokens": [33]}
+{"id": "arc/174", "prompt_tokens": 62, "seconds": 0.107344537, "tokens": [35]}
+{"id": "arc/175", "prompt_tokens": 122, "seconds": 0.13591506, "tokens": [35]}
+{"id": "arc/176", "prompt_tokens": 88, "seconds": 0.130324094, "tokens": [35]}
+{"id": "arc/177", "prompt_tokens": 93, "seconds": 0.441008121, "tokens": [32, 13, 5361, 5528, 527, 22281, 369, 35821, 828, 13]}
+{"id": "arc/178", "prompt_tokens": 82, "seconds": 0.130129241, "tokens": [34]}
+{"id": "arc/179", "prompt_tokens": 54, "seconds": 0.105649365, "tokens": [34]}
+{"id": "arc/180", "prompt_tokens": 61, "seconds": 0.105977243, "tokens": [33]}
+{"id": "arc/181", "prompt_tokens": 109, "seconds": 0.132818258, "tokens": [35]}
+{"id": "arc/182", "prompt_tokens": 66, "seconds": 0.129458763, "tokens": [33]}
+{"id": "arc/183", "prompt_tokens": 104, "seconds": 0.13274584, "tokens": [34]}
+{"id": "arc/184", "prompt_tokens": 98, "seconds": 0.446932371, "tokens": [32, 13, 578, 3392, 315, 35693, 4907, 1053, 18979, 13]}
+{"id": "arc/185", "prompt_tokens": 131, "seconds": 0.146124713, "tokens": [35]}
+{"id": "arc/186", "prompt_tokens": 127, "seconds": 0.151228342, "tokens": [35]}
+{"id": "arc/187", "prompt_tokens": 109, "seconds": 0.133138264, "tokens": [34]}
+{"id": "arc/188", "prompt_tokens": 65, "seconds": 0.128932991, "tokens": [34]}
+{"id": "arc/189", "prompt_tokens": 77, "seconds": 0.129104611, "tokens": [35]}
+{"id": "arc/190", "prompt_tokens": 80, "seconds": 0.129517547, "tokens": [34]}
+{"id": "arc/191", "prompt_tokens": 102, "seconds": 0.132688941, "tokens": [34]}
+{"id": "arc/192", "prompt_tokens": 70, "seconds": 0.128475797, "tokens": [35]}
+{"id": "arc/193", "prompt_tokens": 101, "seconds": 0.132409831, "tokens": [35]}
+{"id": "arc/194", "prompt_tokens": 106, "seconds": 0.134205774, "tokens": [33]}
+{"id": "arc/195", "prompt_tokens": 83, "seconds": 0.131224015, "tokens": [32]}
+{"id": "arc/196", "prompt_tokens": 123, "seconds": 0.135259204, "tokens": [35]}
+{"id": "arc/197", "prompt_tokens": 90, "seconds": 0.131286449, "tokens": [34]}
+{"id": "arc/198", "prompt_tokens": 94, "seconds": 0.132534954, "tokens": [34]}
+{"id": "arc/199", "prompt_tokens": 76, "seconds": 0.367527716, "tokens": [32, 13, 42358, 3090, 10187, 1202, 6211, 13]}
+{"id": "arc/200", "prompt_tokens": 86, "seconds": 0.133600385, "tokens": [35]}
+{"id": "arc/201", "prompt_tokens": 83, "seconds": 0.129980692, "tokens": [34]}
+{"id": "arc/202", "prompt_tokens": 59, "seconds": 0.206520897, "tokens": [32, 13, 279, 3148]}
+{"id": "arc/203", "prompt_tokens": 81, "seconds": 0.12932471, "tokens": [33]}
+{"id": "arc/204", "prompt_tokens": 72, "seconds": 0.128226223, "tokens": [34]}
+{"id": "arc/205", "prompt_tokens": 85, "seconds": 0.132075936, "tokens": [34]}
+{"id": "arc/206", "prompt_tokens": 102, "seconds": 0.132472776, "tokens": [33]}
+{"id": "arc/207", "prompt_tokens": 116, "seconds": 0.13505315, "tokens": [32]}
+{"id": "arc/208", "prompt_tokens": 91, "seconds": 0.131241678, "tokens": [35]}
+{"id": "arc/209", "prompt_tokens": 69, "seconds": 0.298704887, "tokens": [34, 13, 24702, 872, 21389, 13]}
+{"id": "arc/210", "prompt_tokens": 80, "seconds": 0.134404369, "tokens": [34]}
+{"id": "arc/211", "prompt_tokens": 119, "seconds": 0.131387953, "tokens": [34]}
+{"id": "arc/212", "prompt_tokens": 81, "seconds": 0.130148055, "tokens": [33]}
+{"id": "arc/213", "prompt_tokens": 117, "seconds": 0.413982131, "tokens": [32, 13, 279, 3392, 315, 3805, 304, 1855, 5041]}
+{"id": "arc/214", "prompt_tokens": 115, "seconds": 0.134114122, "tokens": [33]}
+{"id": "arc/215", "prompt_tokens": 91, "seconds": 0.130889413, "tokens": [35]}
+{"id": "arc/216", "prompt_tokens": 71, "seconds": 0.128123499, "tokens": [34]}
+{"id": "arc/217", "prompt_tokens": 89, "seconds": 0.130847428, "tokens": [35]}
+{"id": "arc/218", "prompt_tokens": 50, "seconds": 0.173645642, "tokens": [34, 13, 12690]}
+{"id": "arc/219", "prompt_tokens": 86, "seconds": 0.38421619, "tokens": [32, 13, 3805, 39676, 10717, 279, 5041, 13]}
+{"id": "arc/220", "prompt_tokens": 82, "seconds": 0.131515026, "tokens": [35]}
+{"id": "arc/221", "prompt_tokens": 99, "seconds": 0.134819415, "tokens": [35]}
+{"id": "arc/222", "prompt_tokens": 68, "seconds": 0.13097079, "tokens": [34]}
+{"id": "arc/223", "prompt_tokens": 96, "seconds": 0.129042909, "tokens": [33]}
+{"id": "arc/224", "prompt_tokens": 64, "seconds": 0.105302634, "tokens": [34]}
+{"id": "arc/225", "prompt_tokens": 99, "seconds": 0.132000252, "tokens": [35]}
+{"id": "arc/226", "prompt_tokens": 116, "seconds": 0.134862392, "tokens": [35]}
+{"id": "arc/227", "prompt_tokens": 90, "seconds": 0.131183498, "tokens": [34]}
+{"id": "arc/228", "prompt_tokens": 65, "seconds": 0.164752974, "tokens": [32, 13]}
+{"id": "arc/229", "prompt_tokens": 84, "seconds": 0.132168543, "tokens": [32]}
+{"id": "arc/230", "prompt_tokens": 159, "seconds": 0.150691941, "tokens": [33]}
+{"id": "arc/231", "prompt_tokens": 216, "seconds": 0.164574249, "tokens": [35]}
+{"id": "arc/232", "prompt_tokens": 70, "seconds": 0.231782704, "tokens": [32, 13, 33297, 2191]}
+{"id": "arc/233", "prompt_tokens": 61, "seconds": 0.206716896, "tokens": [32, 13, 220, 17]}
+{"id": "arc/234", "prompt_tokens": 75, "seconds": 0.124494909, "tokens": [33]}
+{"id": "arc/235", "prompt_tokens": 75, "seconds": 0.129247713, "tokens": [32]}
+{"id": "arc/236", "prompt_tokens": 85, "seconds": 0.164087518, "tokens": [32, 13]}
+{"id": "arc/237", "prompt_tokens": 89, "seconds": 0.129882702, "tokens": [32]}
+{"id": "arc/238", "prompt_tokens": 121, "seconds": 0.134646739, "tokens": [33]}
+{"id": "arc/239", "prompt_tokens": 81, "seconds": 0.129423428, "tokens": [35]}
+{"id": "arc/240", "prompt_tokens": 77, "seconds": 0.128935771, "tokens": [35]}
+{"id": "arc/241", "prompt_tokens": 90, "seconds": 0.131209705, "tokens": [33]}
+{"id": "arc/242", "prompt_tokens": 85, "seconds": 0.335759355, "tokens": [32, 13, 656, 279, 9526, 1690, 3115]}
+{"id": "arc/243", "prompt_tokens": 62, "seconds": 0.207443663, "tokens": [32, 13, 4106, 7091]}
+{"id": "arc/244", "prompt_tokens": 113, "seconds": 0.13437518, "tokens": [34]}
+{"id": "arc/245", "prompt_tokens": 79, "seconds": 0.128968027, "tokens": [34]}
+{"id": "arc/246", "prompt_tokens": 76, "seconds": 0.196981713, "tokens": [34, 13, 21518]}
+{"id": "arc/247", "prompt_tokens": 95, "seconds": 0.199844782, "tokens": [34, 13, 68102]}
+{"id": "arc/248", "prompt_tokens": 67, "seconds": 0.128683347, "tokens": [34]}
+{"id": "arc/249", "prompt_tokens": 56, "seconds": 0.105892852, "tokens": [34]}
+{"id": "arc/250", "prompt_tokens": 75, "seconds": 0.129011771, "tokens": [35]}
+{"id": "arc/251", "prompt_tokens": 109, "seconds": 0.133952899, "tokens": [33]}
+{"id": "arc/252", "prompt_tokens": 98, "seconds": 0.174000205, "tokens": [32, 13]}
+{"id": "arc/253", "prompt_tokens": 64, "seconds": 0.107103438, "tokens": [34]}
+{"id": "arc/254", "prompt_tokens": 96, "seconds": 0.131512047, "tokens": [35]}
+{"id": "arc/255", "prompt_tokens": 70, "seconds": 0.128953592, "tokens": [33]}
+{"id": "arc/256", "prompt_tokens": 61, "seconds": 0.106592162, "tokens": [34]}
+{"id": "arc/257", "prompt_tokens": 123, "seconds": 0.13536352, "tokens": [35]}
+{"id": "arc/258", "prompt_tokens": 95, "seconds": 0.1663843, "tokens": [32, 13]}
+{"id": "arc/259", "prompt_tokens": 83, "seconds": 0.122094697, "tokens": [34]}
+{"id": "arc/260", "prompt_tokens": 91, "seconds": 0.165137714, "tokens": [32, 13]}
+{"id": "arc/261", "prompt_tokens": 65, "seconds": 0.128327883, "tokens": [35]}
+{"id": "arc/262", "prompt_tokens": 88, "seconds": 0.164367105, "tokens": [32, 13]}
+{"id": "arc/263", "prompt_tokens": 71, "seconds": 0.128150919, "tokens": [35]}
+{"id": "arc/264", "prompt_tokens": 82, "seconds": 0.130013679, "tokens": [35]}
+{"id": "arc/265", "prompt_tokens": 95, "seconds": 0.130903201, "tokens": [35]}
+{"id": "arc/266", "prompt_tokens": 68, "seconds": 0.162798656, "tokens": [32, 13]}
+{"id": "arc/267", "prompt_tokens": 79, "seconds": 0.128980665, "tokens": [35]}
+{"id": "arc/268", "prompt_tokens": 112, "seconds": 0.133027085, "tokens": [33]}
+{"id": "arc/269", "prompt_tokens": 198, "seconds": 0.163692466, "tokens": [34]}
+{"id": "arc/270", "prompt_tokens": 81, "seconds": 0.129938189, "tokens": [34]}
+{"id": "arc/271", "prompt_tokens": 53, "seconds": 0.105858546, "tokens": [35]}
+{"id": "arc/272", "prompt_tokens": 73, "seconds": 0.129530948, "tokens": [35]}
+{"id": "arc/273", "prompt_tokens": 81, "seconds": 0.130722781, "tokens": [33]}
+{"id": "arc/274", "prompt_tokens": 73, "seconds": 0.12929587, "tokens": [33]}
+{"id": "arc/275", "prompt_tokens": 111, "seconds": 0.13325861, "tokens": [34]}
+{"id": "arc/276", "prompt_tokens": 84, "seconds": 0.130297587, "tokens": [34]}
+{"id": "arc/277", "prompt_tokens": 75, "seconds": 0.12748124, "tokens": [35]}
+{"id": "arc/278", "prompt_tokens": 113, "seconds": 0.133528631, "tokens": [32]}
+{"id": "arc/279", "prompt_tokens": 78, "seconds": 0.129099547, "tokens": [33]}
+{"id": "arc/280", "prompt_tokens": 80, "seconds": 0.12918246, "tokens": [34]}
+{"id": "arc/281", "prompt_tokens": 102, "seconds": 0.132701253, "tokens": [35]}
+{"id": "arc/282", "prompt_tokens": 82, "seconds": 0.130211666, "tokens": [34]}
+{"id": "arc/283", "prompt_tokens": 77, "seconds": 0.160192231, "tokens": [32, 13]}
+{"id": "arc/284", "prompt_tokens": 117, "seconds": 0.169125251, "tokens": [32, 13]}
+{"id": "arc/285", "prompt_tokens": 76, "seconds": 0.128980983, "tokens": [35]}
+{"id": "arc/286", "prompt_tokens": 86, "seconds": 0.130107022, "tokens": [34]}
+{"id": "arc/287", "prompt_tokens": 89, "seconds": 0.128915798, "tokens": [35]}
+{"id": "arc/288", "prompt_tokens": 80, "seconds": 0.12908537, "tokens": [33]}
+{"id": "arc/289", "prompt_tokens": 114, "seconds": 0.169431625, "tokens": [32, 13]}
+{"id": "arc/290", "prompt_tokens": 132, "seconds": 0.143221345, "tokens": [35]}
+{"id": "arc/291", "prompt_tokens": 117, "seconds": 0.133867357, "tokens": [35]}
+{"id": "arc/292", "prompt_tokens": 62, "seconds": 0.173385276, "tokens": [32, 13, 40120]}
+{"id": "arc/293", "prompt_tokens": 82, "seconds": 0.128197094, "tokens": [33]}
+{"id": "arc/294", "prompt_tokens": 65, "seconds": 0.128338121, "tokens": [33]}
+{"id": "arc/295", "prompt_tokens": 62, "seconds": 0.106551487, "tokens": [33]}
+{"id": "arc/296", "prompt_tokens": 81, "seconds": 0.163959093, "tokens": [32, 13]}
+{"id": "arc/297", "prompt_tokens": 80, "seconds": 0.128694896, "tokens": [35]}
+{"id": "arc/298", "prompt_tokens": 126, "seconds": 0.136435219, "tokens": [33]}
+{"id": "arc/299", "prompt_tokens": 135, "seconds": 0.145004006, "tokens": [35]}
+{"id": "arc/300", "prompt_tokens": 82, "seconds": 0.130669337, "tokens": [34]}
+{"id": "arc/301", "prompt_tokens": 89, "seconds": 0.164783526, "tokens": [32, 13]}
+{"id": "arc/302", "prompt_tokens": 74, "seconds": 0.129167482, "tokens": [33]}
+{"id": "arc/303", "prompt_tokens": 86, "seconds": 0.129991275, "tokens": [35]}
+{"id": "arc/304", "prompt_tokens": 75, "seconds": 0.129020726, "tokens": [33]}
+{"id": "arc/305", "prompt_tokens": 65, "seconds": 0.195726031, "tokens": [32, 13, 8271]}
+{"id": "arc/306", "prompt_tokens": 82, "seconds": 0.130269137, "tokens": [35]}
+{"id": "arc/307", "prompt_tokens": 78, "seconds": 0.12910172, "tokens": [33]}
+{"id": "arc/308", "prompt_tokens": 69, "seconds": 0.12828551, "tokens": [35]}
+{"id": "arc/309", "prompt_tokens": 83, "seconds": 0.130399859, "tokens": [34]}
+{"id": "arc/310", "prompt_tokens": 167, "seconds": 0.155172571, "tokens": [34]}
+{"id": "arc/311", "prompt_tokens": 103, "seconds": 0.132627873, "tokens": [32]}
+{"id": "arc/312", "prompt_tokens": 53, "seconds": 0.171626548, "tokens": [32, 13, 24128]}
+{"id": "arc/313", "prompt_tokens": 96, "seconds": 0.160987029, "tokens": [32, 13]}
+{"id": "arc/314", "prompt_tokens": 97, "seconds": 0.165754937, "tokens": [32, 13]}
+{"id": "arc/315", "prompt_tokens": 93, "seconds": 0.234521213, "tokens": [34, 13, 813, 11478]}
+{"id": "arc/316", "prompt_tokens": 71, "seconds": 0.128248357, "tokens": [33]}
+{"id": "arc/317", "prompt_tokens": 94, "seconds": 0.165925116, "tokens": [32, 13]}
+{"id": "arc/318", "prompt_tokens": 146, "seconds": 0.18269574, "tokens": [32, 13]}
+{"id": "arc/319", "prompt_tokens": 57, "seconds": 0.107265676, "tokens": [35]}
+{"id": "arc/320", "prompt_tokens": 146, "seconds": 0.145954648, "tokens": [33]}
+{"id": "arc/321", "prompt_tokens": 77, "seconds": 0.130150957, "tokens": [34]}
+{"id": "arc/322", "prompt_tokens": 92, "seconds": 0.339765021, "tokens": [32, 13, 40916, 279, 9526, 2380, 3115]}
+{"id": "arc/323", "prompt_tokens": 79, "seconds": 0.163856016, "tokens": [32, 13]}
+{"id": "arc/324", "prompt_tokens": 64, "seconds": 0.10693306, "tokens": [33]}
+{"id": "arc/325", "prompt_tokens": 119, "seconds": 0.135607679, "tokens": [34]}
+{"id": "arc/326", "prompt_tokens": 57, "seconds": 0.106097651, "tokens": [33]}
+{"id": "arc/327", "prompt_tokens": 74, "seconds": 0.301501784, "tokens": [32, 13, 86010, 5335, 34172, 13]}
+{"id": "arc/328", "prompt_tokens": 73, "seconds": 0.163551785, "tokens": [32, 13]}
+{"id": "arc/329", "prompt_tokens": 64, "seconds": 0.108241888, "tokens": [34]}
+{"id": "arc/330", "prompt_tokens": 88, "seconds": 0.131725164, "tokens": [33]}
+{"id": "arc/331", "prompt_tokens": 137, "seconds": 0.146598053, "tokens": [35]}
+{"id": "arc/332", "prompt_tokens": 64, "seconds": 0.10767042, "tokens": [35]}
+{"id": "arc/333", "prompt_tokens": 99, "seconds": 0.13436714, "tokens": [33]}
+{"id": "arc/334", "prompt_tokens": 90, "seconds": 0.133181387, "tokens": [35]}
+{"id": "arc/335", "prompt_tokens": 91, "seconds": 0.132333273, "tokens": [33]}
+{"id": "arc/336", "prompt_tokens": 88, "seconds": 0.129813572, "tokens": [34]}
+{"id": "arc/337", "prompt_tokens": 105, "seconds": 0.130282734, "tokens": [34]}
+{"id": "arc/338", "prompt_tokens": 84, "seconds": 0.13176446, "tokens": [35]}
+{"id": "arc/339", "prompt_tokens": 85, "seconds": 0.130643221, "tokens": [35]}
+{"id": "arc/340", "prompt_tokens": 75, "seconds": 0.129595839, "tokens": [34]}
+{"id": "arc/341", "prompt_tokens": 70, "seconds": 0.128270083, "tokens": [35]}
+{"id": "arc/342", "prompt_tokens": 71, "seconds": 0.129248952, "tokens": [33]}
+{"id": "arc/343", "prompt_tokens": 130, "seconds": 0.143238397, "tokens": [35]}
+{"id": "arc/344", "prompt_tokens": 117, "seconds": 0.1336357, "tokens": [35]}
+{"id": "arc/345", "prompt_tokens": 106, "seconds": 0.133774774, "tokens": [32]}
+{"id": "arc/346", "prompt_tokens": 73, "seconds": 0.129485084, "tokens": [35]}
+{"id": "arc/347", "prompt_tokens": 79, "seconds": 0.129335417, "tokens": [34]}
+{"id": "arc/348", "prompt_tokens": 60, "seconds": 0.109891073, "tokens": [35]}
+{"id": "arc/349", "prompt_tokens": 80, "seconds": 0.134644937, "tokens": [34]}
+{"id": "arc/350", "prompt_tokens": 74, "seconds": 0.129560734, "tokens": [34]}
+{"id": "arc/351", "prompt_tokens": 106, "seconds": 0.133427695, "tokens": [34]}
+{"id": "arc/352", "prompt_tokens": 72, "seconds": 0.1302555, "tokens": [34]}
+{"id": "arc/353", "prompt_tokens": 76, "seconds": 0.130472561, "tokens": [33]}
+{"id": "arc/354", "prompt_tokens": 77, "seconds": 0.130179114, "tokens": [32]}
+{"id": "arc/355", "prompt_tokens": 74, "seconds": 0.129666943, "tokens": [33]}
+{"id": "arc/356", "prompt_tokens": 113, "seconds": 0.135074224, "tokens": [35]}
+{"id": "arc/357", "prompt_tokens": 120, "seconds": 0.136262601, "tokens": [34]}
+{"id": "arc/358", "prompt_tokens": 78, "seconds": 0.130392686, "tokens": [34]}
+{"id": "arc/359", "prompt_tokens": 84, "seconds": 0.130972699, "tokens": [34]}
+{"id": "arc/360", "prompt_tokens": 107, "seconds": 0.134140957, "tokens": [35]}
+{"id": "arc/361", "prompt_tokens": 82, "seconds": 0.438856017, "tokens": [32, 13, 390, 80298, 60701, 24923, 9420, 596, 40712, 13]}
+{"id": "arc/362", "prompt_tokens": 70, "seconds": 0.129308055, "tokens": [35]}
+{"id": "arc/363", "prompt_tokens": 69, "seconds": 0.157347523, "tokens": [32, 13]}
+{"id": "arc/364", "prompt_tokens": 126, "seconds": 0.135237555, "tokens": [34]}
+{"id": "arc/365", "prompt_tokens": 83, "seconds": 0.12757861, "tokens": [33]}
+{"id": "arc/366", "prompt_tokens": 75, "seconds": 0.128939055, "tokens": [35]}
+{"id": "arc/367", "prompt_tokens": 71, "seconds": 0.366694919, "tokens": [32, 13, 10223, 828, 311, 5052, 3685, 3135]}
+{"id": "arc/368", "prompt_tokens": 83, "seconds": 0.128034236, "tokens": [35]}
+{"id": "arc/369", "prompt_tokens": 73, "seconds": 0.122835983, "tokens": [35]}
+{"id": "arc/370", "prompt_tokens": 93, "seconds": 0.164210386, "tokens": [32, 13]}
+{"id": "arc/371", "prompt_tokens": 72, "seconds": 0.130959865, "tokens": [34]}
+{"id": "arc/372", "prompt_tokens": 100, "seconds": 0.133053157, "tokens": [34]}
+{"id": "arc/373", "prompt_tokens": 85, "seconds": 0.130104039, "tokens": [34]}
+{"id": "arc/374", "prompt_tokens": 180, "seconds": 0.160057531, "tokens": [34]}
+{"id": "arc/375", "prompt_tokens": 86, "seconds": 0.133545359, "tokens": [35]}
+{"id": "arc/376", "prompt_tokens": 79, "seconds": 0.131765321, "tokens": [33]}
+{"id": "arc/377", "prompt_tokens": 61, "seconds": 0.207284792, "tokens": [32, 13, 87200, 71853]}
+{"id": "arc/378", "prompt_tokens": 109, "seconds": 0.133266633, "tokens": [34]}
+{"id": "arc/379", "prompt_tokens": 76, "seconds": 0.233161942, "tokens": [32, 13, 2673, 13]}
+{"id": "arc/380", "prompt_tokens": 89, "seconds": 0.134904202, "tokens": [34]}
+{"id": "arc/381", "prompt_tokens": 75, "seconds": 0.128461444, "tokens": [34]}
+{"id": "arc/382", "prompt_tokens": 91, "seconds": 0.130966776, "tokens": [34]}
+{"id": "arc/383", "prompt_tokens": 97, "seconds": 0.135240785, "tokens": [35]}
+{"id": "arc/384", "prompt_tokens": 85, "seconds": 0.169325371, "tokens": [32, 13]}
+{"id": "arc/385", "prompt_tokens": 59, "seconds": 0.105793289, "tokens": [33]}
+{"id": "arc/386", "prompt_tokens": 60, "seconds": 0.106729692, "tokens": [35]}
+{"id": "arc/387", "prompt_tokens": 122, "seconds": 0.136090243, "tokens": [35]}
+{"id": "arc/388", "prompt_tokens": 80, "seconds": 0.124852727, "tokens": [33]}
+{"id": "arc/389", "prompt_tokens": 98, "seconds": 0.168342727, "tokens": [32, 13]}
+{"id": "arc/390", "prompt_tokens": 95, "seconds": 0.132702908, "tokens": [34]}
+{"id": "arc/391", "prompt_tokens": 122, "seconds": 0.135598232, "tokens": [35]}
+{"id": "arc/392", "prompt_tokens": 130, "seconds": 0.389285081, "tokens": [32, 13, 7859, 279, 1396, 315, 1499, 1039]}
+{"id": "arc/393", "prompt_tokens": 88, "seconds": 0.130245704, "tokens": [35]}
+{"id": "arc/394", "prompt_tokens": 120, "seconds": 0.134227003, "tokens": [34]}
+{"id": "arc/395", "prompt_tokens": 69, "seconds": 0.128166557, "tokens": [34]}
+{"id": "arc/396", "prompt_tokens": 124, "seconds": 0.486192774, "tokens": [32, 13, 1102, 374, 459, 9647, 323, 539, 264, 2144, 13]}
+{"id": "arc/397", "prompt_tokens": 83, "seconds": 0.140725987, "tokens": [33]}
+{"id": "arc/398", "prompt_tokens": 105, "seconds": 0.140704995, "tokens": [34]}
+{"id": "arc/399", "prompt_tokens": 104, "seconds": 0.132254322, "tokens": [35]}
+{"id": "arc/400", "prompt_tokens": 54, "seconds": 0.172428986, "tokens": [33, 13, 14812]}
+{"id": "arc/401", "prompt_tokens": 105, "seconds": 0.339853067, "tokens": [32, 13, 44304, 1253, 3719, 69918, 13]}
+{"id": "arc/402", "prompt_tokens": 108, "seconds": 0.135472468, "tokens": [34]}
+{"id": "arc/403", "prompt_tokens": 88, "seconds": 0.134362269, "tokens": [35]}
+{"id": "arc/404", "prompt_tokens": 109, "seconds": 0.13304525, "tokens": [34]}
+{"id": "arc/405", "prompt_tokens": 109, "seconds": 0.167801177, "tokens": [32, 13]}
+{"id": "arc/406", "prompt_tokens": 97, "seconds": 0.338212679, "tokens": [32, 13, 14867, 287, 304, 279, 45016]}
+{"id": "arc/407", "prompt_tokens": 102, "seconds": 0.132113325, "tokens": [33]}
+{"id": "arc/408", "prompt_tokens": 118, "seconds": 0.133056129, "tokens": [35]}
+{"id": "arc/409", "prompt_tokens": 94, "seconds": 0.165742221, "tokens": [32, 13]}
+{"id": "arc/410", "prompt_tokens": 104, "seconds": 0.167262253, "tokens": [32, 13]}
+{"id": "arc/411", "prompt_tokens": 82, "seconds": 0.130042882, "tokens": [35]}
+{"id": "arc/412", "prompt_tokens": 66, "seconds": 0.230543384, "tokens": [33, 13, 15395, 21037]}
+{"id": "arc/413", "prompt_tokens": 109, "seconds": 0.133139234, "tokens": [34]}
+{"id": "arc/414", "prompt_tokens": 91, "seconds": 0.130931252, "tokens": [33]}
+{"id": "arc/415", "prompt_tokens": 105, "seconds": 0.132627032, "tokens": [34]}
+{"id": "arc/416", "prompt_tokens": 176, "seconds": 0.150217544, "tokens": [32]}
+{"id": "arc/417", "prompt_tokens": 68, "seconds": 0.129474166, "tokens": [35]}
+{"id": "arc/418", "prompt_tokens": 80, "seconds": 0.129900574, "tokens": [33]}
+{"id": "arc/419", "prompt_tokens": 105, "seconds": 0.132697624, "tokens": [33]}
+{"id": "arc/420", "prompt_tokens": 58, "seconds": 0.173265577, "tokens": [34, 13, 9168]}
+{"id": "arc/421", "prompt_tokens": 119, "seconds": 0.134140887, "tokens": [34]}
+{"id": "arc/422", "prompt_tokens": 112, "seconds": 0.133670541, "tokens": [35]}
+{"id": "arc/423", "prompt_tokens": 118, "seconds": 0.134883174, "tokens": [34]}
+{"id": "arc/424", "prompt_tokens": 94, "seconds": 0.13161597, "tokens": [32]}
+{"id": "arc/425", "prompt_tokens": 117, "seconds": 0.135845403, "tokens": [35]}
+{"id": "arc/426", "prompt_tokens": 89, "seconds": 0.140784609, "tokens": [34]}
+{"id": "arc/427", "prompt_tokens": 61, "seconds": 0.241072786, "tokens": [32, 13, 1603, 36214, 2065]}
+{"id": "arc/428", "prompt_tokens": 121, "seconds": 0.455849855, "tokens": [32, 13, 4185, 9726, 279, 1005, 315, 279, 5623, 13]}
+{"id": "arc/429", "prompt_tokens": 69, "seconds": 0.131248218, "tokens": [33]}
+{"id": "arc/430", "prompt_tokens": 51, "seconds": 0.205071873, "tokens": [32, 13, 3148, 13]}
+{"id": "arc/431", "prompt_tokens": 140, "seconds": 0.144569744, "tokens": [35]}
+{"id": "arc/432", "prompt_tokens": 92, "seconds": 0.13159664, "tokens": [32]}
+{"id": "arc/433", "prompt_tokens": 84, "seconds": 0.132587605, "tokens": [33]}
+{"id": "arc/434", "prompt_tokens": 146, "seconds": 0.160265144, "tokens": [33]}
+{"id": "arc/435", "prompt_tokens": 153, "seconds": 0.149604217, "tokens": [34]}
+{"id": "arc/436", "prompt_tokens": 152, "seconds": 0.149092462, "tokens": [35]}
+{"id": "arc/437", "prompt_tokens": 63, "seconds": 0.207939356, "tokens": [32, 13, 81826, 5070]}
+{"id": "arc/438", "prompt_tokens": 143, "seconds": 0.149462773, "tokens": [35]}
+{"id": "arc/439", "prompt_tokens": 111, "seconds": 0.414434585, "tokens": [32, 13, 10269, 11071, 690, 4498, 389, 1202, 6964]}
+{"id": "arc/440", "prompt_tokens": 67, "seconds": 0.128945224, "tokens": [34]}
+{"id": "arc/441", "prompt_tokens": 60, "seconds": 0.106458834, "tokens": [33]}
+{"id": "arc/442", "prompt_tokens": 88, "seconds": 0.164771733, "tokens": [32, 13]}
+{"id": "arc/443", "prompt_tokens": 97, "seconds": 0.172323666, "tokens": [32, 13]}
+{"id": "arc/444", "prompt_tokens": 92, "seconds": 0.131442332, "tokens": [34]}
+{"id": "arc/445", "prompt_tokens": 76, "seconds": 0.300426856, "tokens": [32, 13, 311, 29602, 2972, 13]}
+{"id": "arc/446", "prompt_tokens": 84, "seconds": 0.131728866, "tokens": [34]}
+{"id": "arc/447", "prompt_tokens": 67, "seconds": 0.129741816, "tokens": [35]}
+{"id": "arc/448", "prompt_tokens": 119, "seconds": 0.13533358, "tokens": [33]}
+{"id": "arc/449", "prompt_tokens": 94, "seconds": 0.168209084, "tokens": [32, 13]}
+{"id": "arc/450", "prompt_tokens": 104, "seconds": 0.168663653, "tokens": [32, 13]}
+{"id": "arc/451", "prompt_tokens": 61, "seconds": 0.107541608, "tokens": [33]}
+{"id": "arc/452", "prompt_tokens": 68, "seconds": 0.131311832, "tokens": [33]}
+{"id": "arc/453", "prompt_tokens": 98, "seconds": 0.132470672, "tokens": [34]}
+{"id": "arc/454", "prompt_tokens": 120, "seconds": 0.136997615, "tokens": [34]}
+{"id": "arc/455", "prompt_tokens": 124, "seconds": 0.143904735, "tokens": [33]}
+{"id": "arc/456", "prompt_tokens": 69, "seconds": 0.128015667, "tokens": [35]}
+{"id": "arc/457", "prompt_tokens": 89, "seconds": 0.166213969, "tokens": [32, 13]}
+{"id": "arc/458", "prompt_tokens": 163, "seconds": 0.161417389, "tokens": [35]}
+{"id": "arc/459", "prompt_tokens": 95, "seconds": 0.16514505, "tokens": [32, 13]}
+{"id": "arc/460", "prompt_tokens": 57, "seconds": 0.106073512, "tokens": [32]}
+{"id": "arc/461", "prompt_tokens": 123, "seconds": 0.134899267, "tokens": [34]}
+{"id": "arc/462", "prompt_tokens": 117, "seconds": 0.134007599, "tokens": [34]}
+{"id": "arc/463", "prompt_tokens": 82, "seconds": 0.130240864, "tokens": [34]}
+{"id": "arc/464", "prompt_tokens": 66, "seconds": 0.129315885, "tokens": [35]}
+{"id": "arc/465", "prompt_tokens": 98, "seconds": 0.132110888, "tokens": [35]}
+{"id": "arc/466", "prompt_tokens": 116, "seconds": 0.135044038, "tokens": [34]}
+{"id": "arc/467", "prompt_tokens": 91, "seconds": 0.132136648, "tokens": [35]}
+{"id": "arc/468", "prompt_tokens": 92, "seconds": 0.132381358, "tokens": [35]}
+{"id": "arc/469", "prompt_tokens": 118, "seconds": 0.135129735, "tokens": [34]}
+{"id": "arc/470", "prompt_tokens": 99, "seconds": 0.166907006, "tokens": [32, 13]}
+{"id": "arc/471", "prompt_tokens": 73, "seconds": 0.129748662, "tokens": [35]}
+{"id": "arc/472", "prompt_tokens": 97, "seconds": 0.13292332, "tokens": [34]}
+{"id": "arc/473", "prompt_tokens": 65, "seconds": 0.264663864, "tokens": [33, 13, 19898, 323, 14254]}
+{"id": "arc/474", "prompt_tokens": 139, "seconds": 0.147540906, "tokens": [33]}
+{"id": "arc/475", "prompt_tokens": 79, "seconds": 0.129166026, "tokens": [33]}
+{"id": "arc/476", "prompt_tokens": 65, "seconds": 0.173081662, "tokens": [32, 13]}
+{"id": "arc/477", "prompt_tokens": 112, "seconds": 0.138386377, "tokens": [35]}
+{"id": "arc/478", "prompt_tokens": 61, "seconds": 0.207448299, "tokens": [32, 13, 10160, 4907]}
+{"id": "arc/479", "prompt_tokens": 85, "seconds": 0.129410319, "tokens": [34]}
+{"id": "arc/480", "prompt_tokens": 78, "seconds": 0.230977655, "tokens": [32, 13, 7397, 74767]}
+{"id": "arc/481", "prompt_tokens": 54, "seconds": 0.105213973, "tokens": [34]}
+{"id": "arc/482", "prompt_tokens": 106, "seconds": 0.14276266, "tokens": [35]}
+{"id": "arc/483", "prompt_tokens": 122, "seconds": 0.383125247, "tokens": [35, 13, 1102, 374, 2536, 76, 39100, 13]}
+{"id": "arc/484", "prompt_tokens": 88, "seconds": 0.130801738, "tokens": [35]}
+{"id": "arc/485", "prompt_tokens": 98, "seconds": 0.141159875, "tokens": [35]}
+{"id": "arc/486", "prompt_tokens": 78, "seconds": 0.130853772, "tokens": [34]}
+{"id": "arc/487", "prompt_tokens": 70, "seconds": 0.129232905, "tokens": [35]}
+{"id": "arc/488", "prompt_tokens": 84, "seconds": 0.175752021, "tokens": [32, 13]}
+{"id": "arc/489", "prompt_tokens": 68, "seconds": 0.230729232, "tokens": [35, 13, 9678, 7482]}
+{"id": "arc/490", "prompt_tokens": 102, "seconds": 0.136405344, "tokens": [33]}
+{"id": "arc/491", "prompt_tokens": 100, "seconds": 0.132421996, "tokens": [33]}
+{"id": "arc/492", "prompt_tokens": 71, "seconds": 0.336048454, "tokens": [32, 13, 10164, 649, 2349, 10474, 13]}
+{"id": "arc/493", "prompt_tokens": 94, "seconds": 0.136254171, "tokens": [32]}
+{"id": "arc/494", "prompt_tokens": 72, "seconds": 0.13439314, "tokens": [34]}
+{"id": "arc/495", "prompt_tokens": 70, "seconds": 0.128421304, "tokens": [33]}
+{"id": "arc/496", "prompt_tokens": 90, "seconds": 0.130869099, "tokens": [32]}
+{"id": "arc/497", "prompt_tokens": 60, "seconds": 0.109641296, "tokens": [33]}
+{"id": "arc/498", "prompt_tokens": 123, "seconds": 0.13762524, "tokens": [34]}
+{"id": "arc/499", "prompt_tokens": 113, "seconds": 0.135189413, "tokens": [34]}
+{"id": "arc/500", "prompt_tokens": 104, "seconds": 0.132314057, "tokens": [35]}
+{"id": "arc/501", "prompt_tokens": 77, "seconds": 0.128530906, "tokens": [34]}
+{"id": "arc/502", "prompt_tokens": 104, "seconds": 0.132177734, "tokens": [34]}
+{"id": "arc/503", "prompt_tokens": 60, "seconds": 0.107122811, "tokens": [35]}
+{"id": "arc/504", "prompt_tokens": 133, "seconds": 0.144945968, "tokens": [35]}
+{"id": "arc/505", "prompt_tokens": 92, "seconds": 0.268988364, "tokens": [32, 13, 220, 10943, 468]}
+{"id": "arc/506", "prompt_tokens": 130, "seconds": 0.17841809, "tokens": [32, 13]}
+{"id": "arc/507", "prompt_tokens": 99, "seconds": 0.131839518, "tokens": [33]}
+{"id": "arc/508", "prompt_tokens": 96, "seconds": 0.131406229, "tokens": [34]}
+{"id": "arc/509", "prompt_tokens": 83, "seconds": 0.13002316, "tokens": [35]}
+{"id": "arc/510", "prompt_tokens": 75, "seconds": 0.128646971, "tokens": [33]}
+{"id": "arc/511", "prompt_tokens": 61, "seconds": 0.106510478, "tokens": [35]}
+{"id": "arc/512", "prompt_tokens": 81, "seconds": 0.164284067, "tokens": [32, 13]}
+{"id": "arc/513", "prompt_tokens": 54, "seconds": 0.105598042, "tokens": [35]}
+{"id": "arc/514", "prompt_tokens": 80, "seconds": 0.129170342, "tokens": [35]}
+{"id": "arc/515", "prompt_tokens": 79, "seconds": 0.128931968, "tokens": [32]}
+{"id": "arc/516", "prompt_tokens": 107, "seconds": 0.132489899, "tokens": [35]}
+{"id": "arc/517", "prompt_tokens": 73, "seconds": 0.12868726, "tokens": [35]}
+{"id": "arc/518", "prompt_tokens": 65, "seconds": 0.128055823, "tokens": [33]}
+{"id": "arc/519", "prompt_tokens": 54, "seconds": 0.177094765, "tokens": [33, 13, 25152]}
+{"id": "arc/520", "prompt_tokens": 62, "seconds": 0.106581487, "tokens": [34]}
+{"id": "arc/521", "prompt_tokens": 83, "seconds": 0.129775858, "tokens": [35]}
+{"id": "arc/522", "prompt_tokens": 63, "seconds": 0.106653424, "tokens": [34]}
+{"id": "arc/523", "prompt_tokens": 112, "seconds": 0.132992693, "tokens": [35]}
+{"id": "arc/524", "prompt_tokens": 107, "seconds": 0.167406562, "tokens": [32, 13]}
+{"id": "arc/525", "prompt_tokens": 57, "seconds": 0.106040707, "tokens": [33]}
+{"id": "arc/526", "prompt_tokens": 96, "seconds": 0.131238128, "tokens": [33]}
+{"id": "arc/527", "prompt_tokens": 88, "seconds": 0.130314877, "tokens": [33]}
+{"id": "arc/528", "prompt_tokens": 82, "seconds": 0.130551843, "tokens": [35]}
+{"id": "arc/529", "prompt_tokens": 88, "seconds": 0.13038307, "tokens": [35]}
+{"id": "arc/530", "prompt_tokens": 73, "seconds": 0.129161733, "tokens": [35]}
+{"id": "arc/531", "prompt_tokens": 98, "seconds": 0.132249477, "tokens": [34]}
+{"id": "arc/532", "prompt_tokens": 107, "seconds": 0.133259642, "tokens": [34]}
+{"id": "arc/533", "prompt_tokens": 64, "seconds": 0.1070342, "tokens": [34]}
+{"id": "arc/534", "prompt_tokens": 64, "seconds": 0.106676719, "tokens": [35]}
+{"id": "arc/535", "prompt_tokens": 55, "seconds": 0.105483446, "tokens": [34]}
+{"id": "arc/536", "prompt_tokens": 67, "seconds": 0.128762012, "tokens": [32]}
+{"id": "arc/537", "prompt_tokens": 82, "seconds": 0.130252091, "tokens": [32]}
+{"id": "arc/538", "prompt_tokens": 82, "seconds": 0.130324284, "tokens": [35]}
+{"id": "arc/539", "prompt_tokens": 86, "seconds": 0.135944145, "tokens": [33]}
+{"id": "arc/540", "prompt_tokens": 75, "seconds": 0.128661561, "tokens": [34]}
+{"id": "arc/541", "prompt_tokens": 95, "seconds": 0.130725893, "tokens": [33]}
+{"id": "arc/542", "prompt_tokens": 89, "seconds": 0.135527176, "tokens": [34]}
+{"id": "arc/543", "prompt_tokens": 141, "seconds": 0.148415222, "tokens": [34]}
+{"id": "arc/544", "prompt_tokens": 180, "seconds": 0.156081429, "tokens": [34]}
+{"id": "arc/545", "prompt_tokens": 83, "seconds": 0.129934356, "tokens": [35]}
+{"id": "arc/546", "prompt_tokens": 74, "seconds": 0.162798944, "tokens": [32, 13]}
+{"id": "arc/547", "prompt_tokens": 57, "seconds": 0.105352436, "tokens": [34]}
+{"id": "arc/548", "prompt_tokens": 103, "seconds": 0.131897468, "tokens": [34]}
+{"id": "arc/549", "prompt_tokens": 69, "seconds": 0.12807134, "tokens": [34]}
+{"id": "arc/550", "prompt_tokens": 68, "seconds": 0.130043605, "tokens": [35]}
+{"id": "arc/551", "prompt_tokens": 73, "seconds": 0.164297312, "tokens": [32, 13]}
+{"id": "arc/552", "prompt_tokens": 83, "seconds": 0.130482975, "tokens": [34]}
+{"id": "arc/553", "prompt_tokens": 51, "seconds": 0.207510755, "tokens": [32, 13, 9420, 13]}
+{"id": "arc/554", "prompt_tokens": 90, "seconds": 0.16674133, "tokens": [32, 13]}
+{"id": "arc/555", "prompt_tokens": 76, "seconds": 0.124083833, "tokens": [35]}
+{"id": "arc/556", "prompt_tokens": 126, "seconds": 0.135772748, "tokens": [33]}
+{"id": "arc/557", "prompt_tokens": 111, "seconds": 0.133197687, "tokens": [33]}
+{"id": "arc/558", "prompt_tokens": 63, "seconds": 0.106344903, "tokens": [35]}
+{"id": "arc/559", "prompt_tokens": 61, "seconds": 0.274892862, "tokens": [32, 13, 4478, 315, 12984, 13]}
+{"id": "arc/560", "prompt_tokens": 93, "seconds": 0.131222765, "tokens": [35]}
+{"id": "arc/561", "prompt_tokens": 68, "seconds": 0.165293107, "tokens": [32, 13]}
+{"id": "arc/562", "prompt_tokens": 77, "seconds": 0.128784762, "tokens": [34]}
+{"id": "arc/563", "prompt_tokens": 131, "seconds": 0.144853673, "tokens": [35]}
+{"id": "arc/564", "prompt_tokens": 72, "seconds": 0.19712481, "tokens": [33, 13, 22925]}
+{"id": "arc/565", "prompt_tokens": 103, "seconds": 0.13329276, "tokens": [34]}
+{"id": "arc/566", "prompt_tokens": 122, "seconds": 0.171691703, "tokens": [32, 13]}
+{"id": "arc/567", "prompt_tokens": 61, "seconds": 0.174709334, "tokens": [34, 13, 12628]}
+{"id": "arc/568", "prompt_tokens": 91, "seconds": 0.131269358, "tokens": [35]}
+{"id": "arc/569", "prompt_tokens": 80, "seconds": 0.130982664, "tokens": [35]}
+{"id": "arc/570", "prompt_tokens": 83, "seconds": 0.13122398, "tokens": [33]}
+{"id": "arc/571", "prompt_tokens": 67, "seconds": 0.299051411, "tokens": [32, 13, 7432, 15511, 17, 92]}
+{"id": "arc/572", "prompt_tokens": 68, "seconds": 0.129361638, "tokens": [35]}
+{"id": "arc/573", "prompt_tokens": 101, "seconds": 0.13189993, "tokens": [35]}
+{"id": "arc/574", "prompt_tokens": 159, "seconds": 0.151731639, "tokens": [33]}
+{"id": "arc/575", "prompt_tokens": 65, "seconds": 0.128394769, "tokens": [34]}
+{"id": "arc/576", "prompt_tokens": 75, "seconds": 0.128710968, "tokens": [33]}
+{"id": "arc/577", "prompt_tokens": 118, "seconds": 0.134955514, "tokens": [34]}
+{"id": "arc/578", "prompt_tokens": 83, "seconds": 0.165479125, "tokens": [32, 13]}
+{"id": "arc/579", "prompt_tokens": 94, "seconds": 0.132467525, "tokens": [34]}
+{"id": "arc/580", "prompt_tokens": 65, "seconds": 0.127958791, "tokens": [32]}
+{"id": "arc/581", "prompt_tokens": 82, "seconds": 0.159982562, "tokens": [32, 13]}
+{"id": "arc/582", "prompt_tokens": 60, "seconds": 0.106711821, "tokens": [33]}
+{"id": "arc/583", "prompt_tokens": 71, "seconds": 0.12926557, "tokens": [33]}
+{"id": "arc/584", "prompt_tokens": 167, "seconds": 0.192572104, "tokens": [32, 13]}
+{"id": "arc/585", "prompt_tokens": 78, "seconds": 0.130017714, "tokens": [35]}
+{"id": "arc/586", "prompt_tokens": 66, "seconds": 0.129575305, "tokens": [33]}
+{"id": "arc/587", "prompt_tokens": 70, "seconds": 0.231176107, "tokens": [32, 13, 45636, 36516]}
+{"id": "arc/588", "prompt_tokens": 165, "seconds": 0.155186462, "tokens": [34]}
+{"id": "arc/589", "prompt_tokens": 63, "seconds": 0.287639587, "tokens": [32, 13, 1102, 374, 8579, 13]}
+{"id": "arc/590", "prompt_tokens": 111, "seconds": 0.308695127, "tokens": [32, 13, 3392, 315, 26878, 26692]}
+{"id": "arc/591", "prompt_tokens": 64, "seconds": 0.242602648, "tokens": [32, 13, 1938, 323, 3814]}
+{"id": "arc/592", "prompt_tokens": 59, "seconds": 0.106866671, "tokens": [34]}
+{"id": "arc/593", "prompt_tokens": 65, "seconds": 0.231002023, "tokens": [32, 13, 9955, 42725]}
+{"id": "arc/594", "prompt_tokens": 82, "seconds": 0.406785167, "tokens": [32, 13, 9420, 311, 387, 46039, 520, 3814, 13]}
+{"id": "arc/595", "prompt_tokens": 86, "seconds": 0.131799541, "tokens": [32]}
+{"id": "arc/596", "prompt_tokens": 87, "seconds": 0.165624501, "tokens": [32, 13]}
+{"id": "arc/597", "prompt_tokens": 103, "seconds": 0.167910213, "tokens": [32, 13]}
+{"id": "arc/598", "prompt_tokens": 144, "seconds": 0.145386416, "tokens": [35]}
+{"id": "arc/599", "prompt_tokens": 135, "seconds": 0.145471603, "tokens": [32]}
+{"id": "arc/600", "prompt_tokens": 86, "seconds": 0.131134471, "tokens": [35]}
+{"id": "arc/601", "prompt_tokens": 50, "seconds": 0.104467965, "tokens": [35]}
+{"id": "arc/602", "prompt_tokens": 109, "seconds": 0.166956112, "tokens": [32, 13]}
+{"id": "arc/603", "prompt_tokens": 67, "seconds": 0.131369164, "tokens": [32]}
+{"id": "arc/604", "prompt_tokens": 108, "seconds": 0.138584195, "tokens": [32]}
+{"id": "arc/605", "prompt_tokens": 76, "seconds": 0.129517221, "tokens": [33]}
+{"id": "arc/606", "prompt_tokens": 65, "seconds": 0.133854528, "tokens": [34]}
+{"id": "arc/607", "prompt_tokens": 62, "seconds": 0.113643771, "tokens": [33]}
+{"id": "arc/608", "prompt_tokens": 80, "seconds": 0.167500475, "tokens": [32, 13]}
+{"id": "arc/609", "prompt_tokens": 107, "seconds": 0.133743869, "tokens": [35]}
+{"id": "arc/610", "prompt_tokens": 99, "seconds": 0.133493656, "tokens": [33]}
+{"id": "arc/611", "prompt_tokens": 73, "seconds": 0.136565688, "tokens": [33]}
+{"id": "arc/612", "prompt_tokens": 99, "seconds": 0.131727155, "tokens": [34]}
+{"id": "arc/613", "prompt_tokens": 87, "seconds": 0.302235789, "tokens": [34, 13, 220, 1041, 296, 2754]}
+{"id": "arc/614", "prompt_tokens": 76, "seconds": 0.129366882, "tokens": [33]}
+{"id": "arc/615", "prompt_tokens": 118, "seconds": 0.135163002, "tokens": [35]}
+{"id": "arc/616", "prompt_tokens": 91, "seconds": 0.130181299, "tokens": [34]}
+{"id": "arc/617", "prompt_tokens": 89, "seconds": 0.12849496, "tokens": [34]}
+{"id": "arc/618", "prompt_tokens": 68, "seconds": 0.331289256, "tokens": [32, 13, 5788, 315, 40699, 323, 19151]}
+{"id": "arc/619", "prompt_tokens": 77, "seconds": 0.128839862, "tokens": [34]}
+{"id": "arc/620", "prompt_tokens": 56, "seconds": 0.104925701, "tokens": [35]}
+{"id": "arc/621", "prompt_tokens": 84, "seconds": 0.131345066, "tokens": [33]}
+{"id": "arc/622", "prompt_tokens": 72, "seconds": 0.127959204, "tokens": [33]}
+{"id": "arc/623", "prompt_tokens": 100, "seconds": 0.132176572, "tokens": [34]}
+{"id": "arc/624", "prompt_tokens": 66, "seconds": 0.128387884, "tokens": [34]}
+{"id": "arc/625", "prompt_tokens": 94, "seconds": 0.200555529, "tokens": [35, 13, 8286]}
+{"id": "arc/626", "prompt_tokens": 93, "seconds": 0.131296073, "tokens": [34]}
+{"id": "arc/627", "prompt_tokens": 84, "seconds": 0.12786285, "tokens": [33]}
+{"id": "arc/628", "prompt_tokens": 61, "seconds": 0.106511109, "tokens": [34]}
+{"id": "arc/629", "prompt_tokens": 77, "seconds": 0.162759223, "tokens": [32, 13]}
+{"id": "arc/630", "prompt_tokens": 83, "seconds": 0.129462691, "tokens": [35]}
+{"id": "arc/631", "prompt_tokens": 116, "seconds": 0.518581688, "tokens": [32, 13, 21682, 555, 1396, 315, 2960, 55336, 315, 12056, 824, 1938]}
+{"id": "arc/632", "prompt_tokens": 101, "seconds": 0.131626863, "tokens": [33]}
+{"id": "arc/633", "prompt_tokens": 91, "seconds": 0.130632059, "tokens": [33]}
+{"id": "arc/634", "prompt_tokens": 117, "seconds": 0.134210724, "tokens": [35]}
+{"id": "arc/635", "prompt_tokens": 130, "seconds": 0.142934297, "tokens": [33]}
+{"id": "arc/636", "prompt_tokens": 136, "seconds": 0.143014939, "tokens": [34]}
+{"id": "arc/637", "prompt_tokens": 128, "seconds": 0.135956553, "tokens": [34]}
+{"id": "arc/638", "prompt_tokens": 59, "seconds": 0.106257888, "tokens": [33]}
+{"id": "arc/639", "prompt_tokens": 67, "seconds": 0.163175038, "tokens": [32, 13]}
+{"id": "arc/640", "prompt_tokens": 113, "seconds": 0.134232676, "tokens": [34]}
+{"id": "arc/641", "prompt_tokens": 94, "seconds": 0.132716357, "tokens": [34]}
+{"id": "arc/642", "prompt_tokens": 97, "seconds": 0.135583041, "tokens": [35]}
+{"id": "arc/643", "prompt_tokens": 70, "seconds": 0.126352673, "tokens": [35]}
+{"id": "arc/644", "prompt_tokens": 56, "seconds": 0.102442736, "tokens": [35]}
+{"id": "arc/645", "prompt_tokens": 95, "seconds": 0.131275623, "tokens": [34]}
+{"id": "arc/646", "prompt_tokens": 89, "seconds": 0.130700155, "tokens": [33]}
+{"id": "arc/647", "prompt_tokens": 82, "seconds": 0.130266289, "tokens": [34]}
+{"id": "arc/648", "prompt_tokens": 49, "seconds": 0.105280683, "tokens": [33]}
+{"id": "arc/649", "prompt_tokens": 81, "seconds": 0.164138385, "tokens": [32, 13]}
+{"id": "arc/650", "prompt_tokens": 107, "seconds": 0.132639747, "tokens": [32]}
+{"id": "arc/651", "prompt_tokens": 111, "seconds": 0.133385938, "tokens": [34]}
+{"id": "arc/652", "prompt_tokens": 80, "seconds": 0.124865633, "tokens": [34]}
+{"id": "arc/653", "prompt_tokens": 73, "seconds": 0.130632473, "tokens": [35]}
+{"id": "arc/654", "prompt_tokens": 72, "seconds": 0.13524492, "tokens": [34]}
+{"id": "arc/655", "prompt_tokens": 85, "seconds": 0.135352827, "tokens": [35]}
+{"id": "arc/656", "prompt_tokens": 67, "seconds": 0.135890022, "tokens": [33]}
+{"id": "arc/657", "prompt_tokens": 130, "seconds": 0.152054037, "tokens": [33]}
+{"id": "arc/658", "prompt_tokens": 98, "seconds": 0.133161453, "tokens": [34]}
+{"id": "arc/659", "prompt_tokens": 92, "seconds": 0.132423422, "tokens": [32]}
+{"id": "arc/660", "prompt_tokens": 120, "seconds": 0.178258454, "tokens": [32, 13]}
+{"id": "arc/661", "prompt_tokens": 120, "seconds": 0.142266026, "tokens": [35]}
+{"id": "arc/662", "prompt_tokens": 81, "seconds": 0.135418811, "tokens": [34]}
+{"id": "arc/663", "prompt_tokens": 78, "seconds": 0.232535612, "tokens": [32, 13, 9955, 42725]}
+{"id": "arc/664", "prompt_tokens": 97, "seconds": 0.132254714, "tokens": [34]}
+{"id": "arc/665", "prompt_tokens": 63, "seconds": 0.107687932, "tokens": [33]}
+{"id": "arc/666", "prompt_tokens": 75, "seconds": 0.402456642, "tokens": [32, 13, 5097, 2753, 5457, 311, 3351, 2555, 8987]}
+{"id": "arc/667", "prompt_tokens": 100, "seconds": 0.174794732, "tokens": [32, 13]}
+{"id": "arc/668", "prompt_tokens": 88, "seconds": 0.140219615, "tokens": [34]}
+{"id": "arc/669", "prompt_tokens": 87, "seconds": 0.13122378, "tokens": [34]}
+{"id": "arc/670", "prompt_tokens": 84, "seconds": 0.13096355, "tokens": [34]}
+{"id": "arc/671", "prompt_tokens": 115, "seconds": 0.13414128, "tokens": [34]}
+{"id": "arc/672", "prompt_tokens": 71, "seconds": 0.129512096, "tokens": [35]}
+{"id": "arc/673", "prompt_tokens": 98, "seconds": 0.133024969, "tokens": [34]}
+{"id": "arc/674", "prompt_tokens": 81, "seconds": 0.370023198, "tokens": [32, 13, 37833, 92335, 323, 55042, 81, 290]}
+{"id": "arc/675", "prompt_tokens": 54, "seconds": 0.099643092, "tokens": [34]}
+{"id": "arc/676", "prompt_tokens": 95, "seconds": 0.130914653, "tokens": [33]}
+{"id": "arc/677", "prompt_tokens": 69, "seconds": 0.133140683, "tokens": [35]}
+{"id": "arc/678", "prompt_tokens": 103, "seconds": 0.13321582, "tokens": [35]}
+{"id": "arc/679", "prompt_tokens": 77, "seconds": 0.143765607, "tokens": [35]}
+{"id": "arc/680", "prompt_tokens": 96, "seconds": 0.165236804, "tokens": [32, 13]}
+{"id": "arc/681", "prompt_tokens": 80, "seconds": 0.12953088, "tokens": [33]}
+{"id": "arc/682", "prompt_tokens": 79, "seconds": 0.161685274, "tokens": [32, 13]}
+{"id": "arc/683", "prompt_tokens": 80, "seconds": 0.133747895, "tokens": [35]}
+{"id": "arc/684", "prompt_tokens": 63, "seconds": 0.143043672, "tokens": [32, 13]}
+{"id": "arc/685", "prompt_tokens": 83, "seconds": 0.146606946, "tokens": [35]}
+{"id": "arc/686", "prompt_tokens": 89, "seconds": 0.134602761, "tokens": [34]}
+{"id": "arc/687", "prompt_tokens": 63, "seconds": 0.106450721, "tokens": [33]}
+{"id": "arc/688", "prompt_tokens": 64, "seconds": 0.244233483, "tokens": [34, 13, 6929, 279, 9526]}
+{"id": "arc/689", "prompt_tokens": 74, "seconds": 0.129286681, "tokens": [33]}
+{"id": "arc/690", "prompt_tokens": 94, "seconds": 0.131549449, "tokens": [35]}
+{"id": "arc/691", "prompt_tokens": 72, "seconds": 0.263811296, "tokens": [32, 13, 810, 72491, 2324]}
+{"id": "arc/692", "prompt_tokens": 139, "seconds": 0.180827494, "tokens": [32, 13]}
+{"id": "arc/693", "prompt_tokens": 60, "seconds": 0.106444064, "tokens": [35]}
+{"id": "arc/694", "prompt_tokens": 74, "seconds": 0.128787214, "tokens": [33]}
+{"id": "arc/695", "prompt_tokens": 69, "seconds": 0.128010207, "tokens": [35]}
+{"id": "arc/696", "prompt_tokens": 89, "seconds": 0.130521651, "tokens": [34]}
+{"id": "arc/697", "prompt_tokens": 93, "seconds": 0.130211245, "tokens": [35]}
+{"id": "arc/698", "prompt_tokens": 105, "seconds": 0.132307416, "tokens": [33]}
+{"id": "arc/699", "prompt_tokens": 58, "seconds": 0.106331997, "tokens": [34]}
+{"id": "arc/700", "prompt_tokens": 59, "seconds": 0.105691343, "tokens": [34]}
+{"id": "arc/701", "prompt_tokens": 76, "seconds": 0.128029246, "tokens": [35]}
+{"id": "arc/702", "prompt_tokens": 76, "seconds": 0.16320604, "tokens": [32, 13]}
+{"id": "arc/703", "prompt_tokens": 82, "seconds": 0.136450414, "tokens": [35]}
+{"id": "arc/704", "prompt_tokens": 68, "seconds": 0.138905632, "tokens": [33]}
+{"id": "arc/705", "prompt_tokens": 114, "seconds": 0.172522041, "tokens": [32, 13]}
+{"id": "arc/706", "prompt_tokens": 82, "seconds": 0.304598891, "tokens": [32, 13, 39676, 505, 279, 16975]}
+{"id": "arc/707", "prompt_tokens": 116, "seconds": 0.134492932, "tokens": [35]}
+{"id": "arc/708", "prompt_tokens": 94, "seconds": 0.139974742, "tokens": [35]}
+{"id": "arc/709", "prompt_tokens": 114, "seconds": 0.134534437, "tokens": [32]}
+{"id": "arc/710", "prompt_tokens": 95, "seconds": 0.165317348, "tokens": [32, 13]}
+{"id": "arc/711", "prompt_tokens": 80, "seconds": 0.129017906, "tokens": [34]}
+{"id": "arc/712", "prompt_tokens": 68, "seconds": 0.136465933, "tokens": [33]}
+{"id": "arc/713", "prompt_tokens": 91, "seconds": 0.165334499, "tokens": [33, 13]}
+{"id": "arc/714", "prompt_tokens": 142, "seconds": 0.144245038, "tokens": [34]}
+{"id": "arc/715", "prompt_tokens": 104, "seconds": 0.132751328, "tokens": [35]}
+{"id": "arc/716", "prompt_tokens": 85, "seconds": 0.130354158, "tokens": [33]}
+{"id": "arc/717", "prompt_tokens": 85, "seconds": 0.130481264, "tokens": [34]}
+{"id": "arc/718", "prompt_tokens": 111, "seconds": 0.168465444, "tokens": [32, 13]}
+{"id": "arc/719", "prompt_tokens": 69, "seconds": 0.128678571, "tokens": [34]}
+{"id": "arc/720", "prompt_tokens": 54, "seconds": 0.133358379, "tokens": [32, 13]}
+{"id": "arc/721", "prompt_tokens": 64, "seconds": 0.097802827, "tokens": [33]}
+{"id": "arc/722", "prompt_tokens": 90, "seconds": 0.236817132, "tokens": [32, 13, 9955, 1137]}
+{"id": "arc/723", "prompt_tokens": 66, "seconds": 0.132881089, "tokens": [33]}
+{"id": "arc/724", "prompt_tokens": 69, "seconds": 0.139968021, "tokens": [35]}
+{"id": "arc/725", "prompt_tokens": 98, "seconds": 0.132099441, "tokens": [33]}
+{"id": "arc/726", "prompt_tokens": 63, "seconds": 0.103766374, "tokens": [35]}
+{"id": "arc/727", "prompt_tokens": 101, "seconds": 0.165925038, "tokens": [32, 13]}
+{"id": "arc/728", "prompt_tokens": 60, "seconds": 0.106645281, "tokens": [35]}
+{"id": "arc/729", "prompt_tokens": 103, "seconds": 0.131745001, "tokens": [35]}
+{"id": "arc/730", "prompt_tokens": 126, "seconds": 0.136239431, "tokens": [35]}
+{"id": "arc/731", "prompt_tokens": 127, "seconds": 0.135112815, "tokens": [35]}
+{"id": "arc/732", "prompt_tokens": 99, "seconds": 0.16616997, "tokens": [32, 13]}
+{"id": "arc/733", "prompt_tokens": 75, "seconds": 0.128653482, "tokens": [34]}
+{"id": "arc/734", "prompt_tokens": 79, "seconds": 0.129108882, "tokens": [35]}
+{"id": "arc/735", "prompt_tokens": 82, "seconds": 0.133141062, "tokens": [33]}
+{"id": "arc/736", "prompt_tokens": 98, "seconds": 0.134612036, "tokens": [35]}
+{"id": "arc/737", "prompt_tokens": 60, "seconds": 0.106493854, "tokens": [35]}
+{"id": "arc/738", "prompt_tokens": 77, "seconds": 0.166890785, "tokens": [32, 13]}
+{"id": "arc/739", "prompt_tokens": 87, "seconds": 0.12502243, "tokens": [34]}
+{"id": "arc/740", "prompt_tokens": 71, "seconds": 0.125908304, "tokens": [33]}
+{"id": "arc/741", "prompt_tokens": 134, "seconds": 0.144334254, "tokens": [35]}
+{"id": "arc/742", "prompt_tokens": 89, "seconds": 0.164896151, "tokens": [32, 13]}
+{"id": "arc/743", "prompt_tokens": 97, "seconds": 0.131977262, "tokens": [34]}
+{"id": "arc/744", "prompt_tokens": 62, "seconds": 0.107368144, "tokens": [34]}
+{"id": "arc/745", "prompt_tokens": 102, "seconds": 0.133150246, "tokens": [35]}
+{"id": "arc/746", "prompt_tokens": 94, "seconds": 0.131759656, "tokens": [35]}
+{"id": "arc/747", "prompt_tokens": 64, "seconds": 0.110719381, "tokens": [33]}
+{"id": "arc/748", "prompt_tokens": 89, "seconds": 0.166421111, "tokens": [32, 13]}
+{"id": "arc/749", "prompt_tokens": 74, "seconds": 0.232513839, "tokens": [34, 13, 13238, 9249]}
+{"id": "arc/750", "prompt_tokens": 83, "seconds": 0.133794099, "tokens": [34]}
+{"id": "arc/751", "prompt_tokens": 86, "seconds": 0.132261459, "tokens": [34]}
+{"id": "arc/752", "prompt_tokens": 98, "seconds": 0.129756607, "tokens": [35]}
+{"id": "arc/753", "prompt_tokens": 83, "seconds": 0.129416056, "tokens": [35]}
+{"id": "arc/754", "prompt_tokens": 91, "seconds": 0.164649202, "tokens": [32, 13]}
+{"id": "arc/755", "prompt_tokens": 98, "seconds": 0.13224613, "tokens": [35]}
+{"id": "arc/756", "prompt_tokens": 89, "seconds": 0.129984739, "tokens": [35]}
+{"id": "arc/757", "prompt_tokens": 110, "seconds": 0.167728369, "tokens": [32, 13]}
+{"id": "arc/758", "prompt_tokens": 81, "seconds": 0.132379413, "tokens": [34]}
+{"id": "arc/759", "prompt_tokens": 88, "seconds": 0.136687949, "tokens": [35]}
+{"id": "arc/760", "prompt_tokens": 81, "seconds": 0.132990753, "tokens": [35]}
+{"id": "arc/761", "prompt_tokens": 97, "seconds": 0.168058327, "tokens": [32, 13]}
+{"id": "arc/762", "prompt_tokens": 99, "seconds": 0.132542328, "tokens": [32]}
+{"id": "arc/763", "prompt_tokens": 82, "seconds": 0.343145535, "tokens": [32, 13, 43640, 1288, 387, 47658, 13]}
+{"id": "arc/764", "prompt_tokens": 92, "seconds": 0.13111257, "tokens": [35]}
+{"id": "arc/765", "prompt_tokens": 102, "seconds": 0.307748162, "tokens": [34, 13, 24564, 279, 3135, 1578]}
+{"id": "arc/766", "prompt_tokens": 124, "seconds": 3.680588564, "tokens": [31765, 12865, 3638, 40, 1097, 4477, 311, 4430, 856, 3293, 18841, 9002, 264, 20278, 430, 1253, 387, 5505, 304, 27723, 32015, 5674, 13, 4740, 31474, 16781, 3495, 11, 358, 617, 1766, 430, 420, 20278, 706, 6982, 26455, 3135, 304, 46649, 23747, 13803, 5938, 449, 32015, 5674, 382, 40, 1097, 24450, 311, 4430, 856, 14955, 449, 279, 12624, 4029, 323, 1053, 1093, 311, 30714, 264, 2478, 2671, 369, 34000, 65383, 856, 3495, 13, 358, 4510, 430, 23763, 856, 3135, 304, 264, 56940, 12624, 8486, 1053, 387, 279, 1455, 7524, 1648, 311, 4430, 856, 14955, 449, 279, 12624, 4029, 382, 50, 87191]}
+{"id": "arc/767", "prompt_tokens": 122, "seconds": 0.170561607, "tokens": [32, 13]}
+{"id": "arc/768", "prompt_tokens": 72, "seconds": 0.298649472, "tokens": [34, 13, 2435, 64380, 349, 13]}
+{"id": "arc/769", "prompt_tokens": 77, "seconds": 0.338629242, "tokens": [32, 13, 34537, 5222, 311, 20314, 87633]}
+{"id": "arc/770", "prompt_tokens": 103, "seconds": 0.134283705, "tokens": [32]}
+{"id": "arc/771", "prompt_tokens": 63, "seconds": 0.10593579, "tokens": [33]}
+{"id": "arc/772", "prompt_tokens": 65, "seconds": 0.127810035, "tokens": [34]}
+{"id": "arc/773", "prompt_tokens": 59, "seconds": 0.108259999, "tokens": [33]}
+{"id": "arc/774", "prompt_tokens": 87, "seconds": 0.129890014, "tokens": [34]}
+{"id": "arc/775", "prompt_tokens": 55, "seconds": 0.175207718, "tokens": [32, 13, 23902]}
+{"id": "arc/776", "prompt_tokens": 98, "seconds": 0.166602996, "tokens": [32, 13]}
+{"id": "arc/777", "prompt_tokens": 70, "seconds": 0.129032459, "tokens": [33]}
+{"id": "arc/778", "prompt_tokens": 67, "seconds": 0.128597091, "tokens": [33]}
+{"id": "arc/779", "prompt_tokens": 103, "seconds": 0.166468337, "tokens": [32, 13]}
+{"id": "arc/780", "prompt_tokens": 101, "seconds": 0.166422224, "tokens": [32, 13]}
+{"id": "arc/781", "prompt_tokens": 66, "seconds": 0.264756833, "tokens": [32, 13, 27989, 6548, 492]}
+{"id": "arc/782", "prompt_tokens": 58, "seconds": 0.107137734, "tokens": [33]}
+{"id": "arc/783", "prompt_tokens": 84, "seconds": 0.33625095, "tokens": [32, 13, 12992, 279, 8312, 315, 5070]}
+{"id": "arc/784", "prompt_tokens": 78, "seconds": 0.129907357, "tokens": [35]}
+{"id": "arc/785", "prompt_tokens": 107, "seconds": 0.133302851, "tokens": [34]}
+{"id": "arc/786", "prompt_tokens": 63, "seconds": 0.241683683, "tokens": [32, 13, 19837, 323, 11141]}
+{"id": "arc/787", "prompt_tokens": 106, "seconds": 0.133299075, "tokens": [35]}
+{"id": "arc/788", "prompt_tokens": 161, "seconds": 0.154152625, "tokens": [34]}
+{"id": "arc/789", "prompt_tokens": 113, "seconds": 0.133213985, "tokens": [32]}
+{"id": "arc/790", "prompt_tokens": 102, "seconds": 0.128554144, "tokens": [34]}
+{"id": "arc/791", "prompt_tokens": 64, "seconds": 0.106463193, "tokens": [35]}
+{"id": "arc/792", "prompt_tokens": 93, "seconds": 0.132619252, "tokens": [34]}
+{"id": "arc/793", "prompt_tokens": 67, "seconds": 0.129111021, "tokens": [33]}
+{"id": "arc/794", "prompt_tokens": 99, "seconds": 0.133985904, "tokens": [35]}
+{"id": "arc/795", "prompt_tokens": 95, "seconds": 0.131318394, "tokens": [35]}
+{"id": "arc/796", "prompt_tokens": 81, "seconds": 0.165005233, "tokens": [32, 13]}
+{"id": "arc/797", "prompt_tokens": 90, "seconds": 0.131797315, "tokens": [35]}
+{"id": "arc/798", "prompt_tokens": 86, "seconds": 0.13103666, "tokens": [35]}
+{"id": "arc/799", "prompt_tokens": 128, "seconds": 0.137749278, "tokens": [34]}
+{"id": "arc/800", "prompt_tokens": 70, "seconds": 0.130926353, "tokens": [35]}
+{"id": "arc/801", "prompt_tokens": 68, "seconds": 0.123133231, "tokens": [35]}
+{"id": "arc/802", "prompt_tokens": 86, "seconds": 0.132402832, "tokens": [34]}
+{"id": "arc/803", "prompt_tokens": 80, "seconds": 0.130502952, "tokens": [34]}
+{"id": "arc/804", "prompt_tokens": 111, "seconds": 0.134646621, "tokens": [34]}
+{"id": "arc/805", "prompt_tokens": 61, "seconds": 0.107267688, "tokens": [33]}
+{"id": "arc/806", "prompt_tokens": 93, "seconds": 0.304774872, "tokens": [32, 13, 36958, 3485, 9581, 2237]}
+{"id": "arc/807", "prompt_tokens": 60, "seconds": 0.106959425, "tokens": [35]}
+{"id": "arc/808", "prompt_tokens": 146, "seconds": 0.146961019, "tokens": [34]}
+{"id": "arc/809", "prompt_tokens": 80, "seconds": 0.129555924, "tokens": [35]}
+{"id": "arc/810", "prompt_tokens": 73, "seconds": 0.129615189, "tokens": [32]}
+{"id": "arc/811", "prompt_tokens": 82, "seconds": 0.165426361, "tokens": [32, 13]}
+{"id": "arc/812", "prompt_tokens": 77, "seconds": 0.130210337, "tokens": [34]}
+{"id": "arc/813", "prompt_tokens": 100, "seconds": 0.132492337, "tokens": [35]}
+{"id": "arc/814", "prompt_tokens": 112, "seconds": 0.133647304, "tokens": [34]}
+{"id": "arc/815", "prompt_tokens": 60, "seconds": 0.106657723, "tokens": [33]}
+{"id": "arc/816", "prompt_tokens": 168, "seconds": 0.150533316, "tokens": [35]}
+{"id": "arc/817", "prompt_tokens": 77, "seconds": 0.129573172, "tokens": [33]}
+{"id": "arc/818", "prompt_tokens": 77, "seconds": 0.129791448, "tokens": [35]}
+{"id": "arc/819", "prompt_tokens": 104, "seconds": 0.141990612, "tokens": [34]}
+{"id": "arc/820", "prompt_tokens": 81, "seconds": 0.129769208, "tokens": [35]}
+{"id": "arc/821", "prompt_tokens": 75, "seconds": 0.163448975, "tokens": [32, 13]}
+{"id": "arc/822", "prompt_tokens": 93, "seconds": 0.166792116, "tokens": [32, 13]}
+{"id": "arc/823", "prompt_tokens": 100, "seconds": 0.133722537, "tokens": [34]}
+{"id": "arc/824", "prompt_tokens": 86, "seconds": 0.131928836, "tokens": [35]}
+{"id": "arc/825", "prompt_tokens": 94, "seconds": 0.131771393, "tokens": [35]}
+{"id": "arc/826", "prompt_tokens": 101, "seconds": 0.131641342, "tokens": [34]}
+{"id": "arc/827", "prompt_tokens": 76, "seconds": 0.130049021, "tokens": [35]}
+{"id": "arc/828", "prompt_tokens": 62, "seconds": 0.241013456, "tokens": [35, 13, 1933, 315, 6548]}
+{"id": "arc/829", "prompt_tokens": 64, "seconds": 0.106543735, "tokens": [33]}
+{"id": "arc/830", "prompt_tokens": 71, "seconds": 0.128746402, "tokens": [33]}
+{"id": "arc/831", "prompt_tokens": 72, "seconds": 0.12878061, "tokens": [33]}
+{"id": "arc/832", "prompt_tokens": 93, "seconds": 0.131221332, "tokens": [32]}
+{"id": "arc/833", "prompt_tokens": 68, "seconds": 0.129264909, "tokens": [35]}
+{"id": "arc/834", "prompt_tokens": 61, "seconds": 0.107013601, "tokens": [33]}
+{"id": "arc/835", "prompt_tokens": 95, "seconds": 0.13142396, "tokens": [34]}
+{"id": "arc/836", "prompt_tokens": 111, "seconds": 0.133312864, "tokens": [35]}
+{"id": "arc/837", "prompt_tokens": 66, "seconds": 0.129271371, "tokens": [35]}
+{"id": "arc/838", "prompt_tokens": 87, "seconds": 0.130996688, "tokens": [34]}
+{"id": "arc/839", "prompt_tokens": 61, "seconds": 0.245776208, "tokens": [32, 13, 3980, 91096, 4907]}
+{"id": "arc/840", "prompt_tokens": 82, "seconds": 0.130783563, "tokens": [34]}
+{"id": "arc/841", "prompt_tokens": 91, "seconds": 0.165283891, "tokens": [32, 13]}
+{"id": "arc/842", "prompt_tokens": 84, "seconds": 0.233324687, "tokens": [32, 13, 520, 38245]}
+{"id": "arc/843", "prompt_tokens": 91, "seconds": 0.130913901, "tokens": [35]}
+{"id": "arc/844", "prompt_tokens": 89, "seconds": 0.130909421, "tokens": [35]}
+{"id": "arc/845", "prompt_tokens": 73, "seconds": 0.128861443, "tokens": [33]}
+{"id": "arc/846", "prompt_tokens": 68, "seconds": 0.130345857, "tokens": [35]}
+{"id": "arc/847", "prompt_tokens": 113, "seconds": 0.134011918, "tokens": [33]}
+{"id": "arc/848", "prompt_tokens": 116, "seconds": 0.134814238, "tokens": [34]}
+{"id": "arc/849", "prompt_tokens": 83, "seconds": 0.133640262, "tokens": [35]}
+{"id": "arc/850", "prompt_tokens": 111, "seconds": 0.133042617, "tokens": [35]}
+{"id": "arc/851", "prompt_tokens": 113, "seconds": 0.134119279, "tokens": [32]}
+{"id": "arc/852", "prompt_tokens": 64, "seconds": 0.107592363, "tokens": [33]}
+{"id": "arc/853", "prompt_tokens": 76, "seconds": 0.129711348, "tokens": [33]}
+{"id": "arc/854", "prompt_tokens": 71, "seconds": 0.128112435, "tokens": [33]}
+{"id": "arc/855", "prompt_tokens": 213, "seconds": 0.453131428, "tokens": [34]}
+{"id": "arc/856", "prompt_tokens": 131, "seconds": 0.179731035, "tokens": [35, 13]}
+{"id": "arc/857", "prompt_tokens": 107, "seconds": 0.170625407, "tokens": [32, 13]}
+{"id": "arc/858", "prompt_tokens": 60, "seconds": 0.207438903, "tokens": [32, 13, 1579, 20472]}
+{"id": "arc/859", "prompt_tokens": 108, "seconds": 0.133308062, "tokens": [33]}
+{"id": "arc/860", "prompt_tokens": 82, "seconds": 0.13062311, "tokens": [34]}
+{"id": "arc/861", "prompt_tokens": 80, "seconds": 0.265501572, "tokens": [32, 13, 8149, 315, 17614]}
+{"id": "arc/862", "prompt_tokens": 121, "seconds": 0.138198018, "tokens": [35]}
+{"id": "arc/863", "prompt_tokens": 86, "seconds": 0.138524296, "tokens": [35]}
+{"id": "arc/864", "prompt_tokens": 114, "seconds": 0.134156911, "tokens": [34]}
+{"id": "arc/865", "prompt_tokens": 91, "seconds": 0.130690919, "tokens": [34]}
+{"id": "arc/866", "prompt_tokens": 88, "seconds": 0.130443778, "tokens": [33]}
+{"id": "arc/867", "prompt_tokens": 71, "seconds": 0.129170824, "tokens": [34]}
+{"id": "arc/868", "prompt_tokens": 94, "seconds": 0.132653839, "tokens": [36]}
+{"id": "arc/869", "prompt_tokens": 131, "seconds": 0.538242553, "tokens": [35, 13, 10455, 706, 264, 7191, 2410, 2612, 1109, 8563, 64, 13]}
+{"id": "arc/870", "prompt_tokens": 75, "seconds": 0.134905117, "tokens": [35]}
+{"id": "arc/871", "prompt_tokens": 82, "seconds": 0.130633702, "tokens": [35]}
+{"id": "arc/872", "prompt_tokens": 99, "seconds": 0.165989118, "tokens": [32, 13]}
+{"id": "arc/873", "prompt_tokens": 108, "seconds": 0.444694095, "tokens": [32, 13, 19426, 18027, 311, 8895, 459, 28088, 18027, 13]}
+{"id": "arc/874", "prompt_tokens": 55, "seconds": 0.105073494, "tokens": [35]}
+{"id": "arc/875", "prompt_tokens": 97, "seconds": 0.270926961, "tokens": [32, 13, 7106, 2349, 13]}
+{"id": "arc/876", "prompt_tokens": 76, "seconds": 0.334523311, "tokens": [32, 13, 3148, 315, 279, 8219, 13]}
+{"id": "arc/877", "prompt_tokens": 65, "seconds": 0.128990658, "tokens": [35]}
+{"id": "arc/878", "prompt_tokens": 70, "seconds": 0.333695229, "tokens": [32, 13, 24463, 11, 35784, 323, 3090]}
+{"id": "arc/879", "prompt_tokens": 83, "seconds": 0.130788424, "tokens": [33]}
+{"id": "arc/880", "prompt_tokens": 78, "seconds": 0.12955643, "tokens": [33]}
+{"id": "arc/881", "prompt_tokens": 86, "seconds": 0.131130862, "tokens": [35]}
+{"id": "arc/882", "prompt_tokens": 74, "seconds": 0.368128194, "tokens": [34, 13, 220, 845, 320, 21, 32, 8]}
+{"id": "arc/883", "prompt_tokens": 92, "seconds": 0.131430036, "tokens": [35]}
+{"id": "arc/884", "prompt_tokens": 90, "seconds": 0.13141698, "tokens": [35]}
+{"id": "arc/885", "prompt_tokens": 62, "seconds": 0.108435323, "tokens": [33]}
+{"id": "arc/886", "prompt_tokens": 88, "seconds": 0.130471553, "tokens": [35]}
+{"id": "arc/887", "prompt_tokens": 97, "seconds": 0.131802748, "tokens": [34]}
+{"id": "arc/888", "prompt_tokens": 137, "seconds": 0.181280342, "tokens": [32, 13]}
+{"id": "arc/889", "prompt_tokens": 123, "seconds": 0.13522381, "tokens": [32]}
+{"id": "arc/890", "prompt_tokens": 70, "seconds": 0.162611447, "tokens": [32, 13]}
+{"id": "arc/891", "prompt_tokens": 126, "seconds": 0.136643743, "tokens": [34]}
+{"id": "arc/892", "prompt_tokens": 96, "seconds": 3.651487394, "tokens": [31765, 12865, 3638, 40, 1097, 4477, 311, 6179, 499, 315, 264, 64955, 18841, 1903, 555, 264, 3495, 2128, 13, 2435, 617, 11054, 264, 502, 9606, 315, 10065, 430, 706, 25351, 502, 3177, 389, 279, 5933, 1917, 13, 1115, 18841, 374, 315, 2294, 12624, 26431, 323, 1053, 19407, 8935, 1057, 8830, 315, 279, 10065, 26135, 382, 791, 3495, 2128, 374, 24450, 311, 4430, 872, 14955, 449, 279, 12624, 4029, 11, 439, 420, 690, 2187, 369, 4726, 3495, 323, 6492, 311, 387, 13375, 13, 2435, 4510, 430, 279, 586, 596, 2802, 304, 420, 18841, 690, 1101, 387, 281, 5118, 291, 11, 323]}
+{"id": "arc/893", "prompt_tokens": 78, "seconds": 0.333153547, "tokens": [32, 13, 13792, 17301, 5944, 10819, 13]}
+{"id": "arc/894", "prompt_tokens": 64, "seconds": 0.102349787, "tokens": [33]}
+{"id": "arc/895", "prompt_tokens": 85, "seconds": 0.12969563, "tokens": [35]}
+{"id": "arc/896", "prompt_tokens": 61, "seconds": 0.173358161, "tokens": [32, 13, 29487]}
+{"id": "arc/897", "prompt_tokens": 111, "seconds": 0.135040923, "tokens": [32]}
+{"id": "arc/898", "prompt_tokens": 92, "seconds": 0.442570645, "tokens": [32, 13, 311, 1893, 11, 1296, 11, 323, 7417, 3956]}
+{"id": "arc/899", "prompt_tokens": 105, "seconds": 0.166799785, "tokens": [32, 13]}
+{"id": "arc/900", "prompt_tokens": 129, "seconds": 0.144624033, "tokens": [34]}
+{"id": "arc/901", "prompt_tokens": 87, "seconds": 0.131174027, "tokens": [35]}
+{"id": "arc/902", "prompt_tokens": 106, "seconds": 0.133297176, "tokens": [33]}
+{"id": "arc/903", "prompt_tokens": 90, "seconds": 0.131355247, "tokens": [32]}
+{"id": "arc/904", "prompt_tokens": 64, "seconds": 0.107711561, "tokens": [34]}
+{"id": "arc/905", "prompt_tokens": 112, "seconds": 0.167331092, "tokens": [32, 13]}
+{"id": "arc/906", "prompt_tokens": 75, "seconds": 0.132080414, "tokens": [34]}
+{"id": "arc/907", "prompt_tokens": 106, "seconds": 0.132024157, "tokens": [34]}
+{"id": "arc/908", "prompt_tokens": 67, "seconds": 0.263175656, "tokens": [32, 13, 6573, 11, 1193]}
+{"id": "arc/909", "prompt_tokens": 97, "seconds": 0.131564435, "tokens": [35]}
+{"id": "arc/910", "prompt_tokens": 50, "seconds": 0.105010161, "tokens": [33]}
+{"id": "arc/911", "prompt_tokens": 80, "seconds": 0.128980798, "tokens": [35]}
+{"id": "arc/912", "prompt_tokens": 63, "seconds": 0.173751479, "tokens": [32, 13, 8141]}
+{"id": "arc/913", "prompt_tokens": 81, "seconds": 0.369343919, "tokens": [32, 13, 66102, 64, 323, 469, 3178, 73268]}
+{"id": "arc/914", "prompt_tokens": 86, "seconds": 0.13249799, "tokens": [34]}
+{"id": "arc/915", "prompt_tokens": 79, "seconds": 0.130793987, "tokens": [35]}
+{"id": "arc/916", "prompt_tokens": 88, "seconds": 0.127695683, "tokens": [33]}
+{"id": "arc/917", "prompt_tokens": 91, "seconds": 0.130852099, "tokens": [35]}
+{"id": "arc/918", "prompt_tokens": 73, "seconds": 0.128805882, "tokens": [35]}
+{"id": "arc/919", "prompt_tokens": 98, "seconds": 0.132723627, "tokens": [35]}
+{"id": "arc/920", "prompt_tokens": 80, "seconds": 0.129424134, "tokens": [35]}
+{"id": "arc/921", "prompt_tokens": 90, "seconds": 0.165687631, "tokens": [32, 13]}
+{"id": "arc/922", "prompt_tokens": 94, "seconds": 0.131833112, "tokens": [34]}
+{"id": "arc/923", "prompt_tokens": 114, "seconds": 0.13477202, "tokens": [35]}
+{"id": "arc/924", "prompt_tokens": 193, "seconds": 0.167139053, "tokens": [34]}
+{"id": "arc/925", "prompt_tokens": 56, "seconds": 0.105212692, "tokens": [34]}
+{"id": "arc/926", "prompt_tokens": 65, "seconds": 0.12849029, "tokens": [34]}
+{"id": "arc/927", "prompt_tokens": 130, "seconds": 0.143083039, "tokens": [34]}
+{"id": "arc/928", "prompt_tokens": 69, "seconds": 0.128301903, "tokens": [35]}
+{"id": "arc/929", "prompt_tokens": 108, "seconds": 0.168038016, "tokens": [32, 13]}
+{"id": "arc/930", "prompt_tokens": 89, "seconds": 0.165386057, "tokens": [32, 13]}
+{"id": "arc/931", "prompt_tokens": 70, "seconds": 0.128837114, "tokens": [34]}
+{"id": "arc/932", "prompt_tokens": 116, "seconds": 0.135059065, "tokens": [35]}
+{"id": "arc/933", "prompt_tokens": 65, "seconds": 0.1279858, "tokens": [35]}
+{"id": "arc/934", "prompt_tokens": 125, "seconds": 0.170315406, "tokens": [32, 13]}
+{"id": "arc/935", "prompt_tokens": 66, "seconds": 0.128435121, "tokens": [35]}
+{"id": "arc/936", "prompt_tokens": 90, "seconds": 0.13090586, "tokens": [34]}
+{"id": "arc/937", "prompt_tokens": 110, "seconds": 0.13324994, "tokens": [34]}
+{"id": "arc/938", "prompt_tokens": 77, "seconds": 0.128836985, "tokens": [35]}
+{"id": "arc/939", "prompt_tokens": 101, "seconds": 0.132373441, "tokens": [34]}
+{"id": "arc/940", "prompt_tokens": 71, "seconds": 0.265163756, "tokens": [33, 13, 8792, 23418, 1887]}
+{"id": "arc/941", "prompt_tokens": 111, "seconds": 0.134085413, "tokens": [33]}
+{"id": "arc/942", "prompt_tokens": 75, "seconds": 0.128178762, "tokens": [34]}
+{"id": "arc/943", "prompt_tokens": 85, "seconds": 0.12823278, "tokens": [32]}
+{"id": "arc/944", "prompt_tokens": 77, "seconds": 0.265192492, "tokens": [32, 13, 311, 6144, 19595]}
+{"id": "arc/945", "prompt_tokens": 85, "seconds": 0.232265671, "tokens": [32, 13, 24166, 9244]}
+{"id": "arc/946", "prompt_tokens": 92, "seconds": 0.166000116, "tokens": [32, 13]}
+{"id": "arc/947", "prompt_tokens": 75, "seconds": 0.128966075, "tokens": [34]}
+{"id": "arc/948", "prompt_tokens": 59, "seconds": 0.106028388, "tokens": [33]}
+{"id": "arc/949", "prompt_tokens": 99, "seconds": 0.16640758, "tokens": [32, 13]}
+{"id": "arc/950", "prompt_tokens": 143, "seconds": 0.182008253, "tokens": [32, 13]}
+{"id": "arc/951", "prompt_tokens": 75, "seconds": 0.231187823, "tokens": [34, 13, 555, 11092]}
+{"id": "arc/952", "prompt_tokens": 70, "seconds": 0.128729621, "tokens": [34]}
+{"id": "arc/953", "prompt_tokens": 102, "seconds": 0.132460162, "tokens": [32]}
+{"id": "arc/954", "prompt_tokens": 70, "seconds": 0.332539697, "tokens": [34, 13, 1587, 539, 6929, 8798, 6847]}
+{"id": "arc/955", "prompt_tokens": 51, "seconds": 0.10573606, "tokens": [34]}
+{"id": "arc/956", "prompt_tokens": 89, "seconds": 0.127569821, "tokens": [34]}
+{"id": "arc/957", "prompt_tokens": 69, "seconds": 0.128083784, "tokens": [35]}
+{"id": "arc/958", "prompt_tokens": 107, "seconds": 0.132399873, "tokens": [35]}
+{"id": "arc/959", "prompt_tokens": 64, "seconds": 0.106835796, "tokens": [34]}
+{"id": "arc/960", "prompt_tokens": 115, "seconds": 0.134601838, "tokens": [34]}
+{"id": "arc/961", "prompt_tokens": 57, "seconds": 0.106138532, "tokens": [33]}
+{"id": "arc/962", "prompt_tokens": 86, "seconds": 0.131572719, "tokens": [33]}
+{"id": "arc/963", "prompt_tokens": 64, "seconds": 0.107573346, "tokens": [33]}
+{"id": "arc/964", "prompt_tokens": 113, "seconds": 0.13384483, "tokens": [35]}
+{"id": "arc/965", "prompt_tokens": 81, "seconds": 0.12975601, "tokens": [35]}
+{"id": "arc/966", "prompt_tokens": 100, "seconds": 0.135945641, "tokens": [33]}
+{"id": "arc/967", "prompt_tokens": 98, "seconds": 0.125415633, "tokens": [33]}
+{"id": "arc/968", "prompt_tokens": 107, "seconds": 0.133026381, "tokens": [34]}
+{"id": "arc/969", "prompt_tokens": 106, "seconds": 0.133313907, "tokens": [33]}
+{"id": "arc/970", "prompt_tokens": 77, "seconds": 0.131163206, "tokens": [35]}
+{"id": "arc/971", "prompt_tokens": 129, "seconds": 0.147678361, "tokens": [32]}
+{"id": "arc/972", "prompt_tokens": 56, "seconds": 0.093004439, "tokens": [35]}
+{"id": "arc/973", "prompt_tokens": 94, "seconds": 0.130633916, "tokens": [35]}
+{"id": "arc/974", "prompt_tokens": 105, "seconds": 0.167900409, "tokens": [32, 13]}
+{"id": "arc/975", "prompt_tokens": 77, "seconds": 0.130754398, "tokens": [35]}
+{"id": "arc/976", "prompt_tokens": 106, "seconds": 0.171516067, "tokens": [32, 13]}
+{"id": "arc/977", "prompt_tokens": 73, "seconds": 0.128908759, "tokens": [35]}
+{"id": "arc/978", "prompt_tokens": 62, "seconds": 0.107051095, "tokens": [35]}
+{"id": "arc/979", "prompt_tokens": 55, "seconds": 0.106450154, "tokens": [33]}
+{"id": "arc/980", "prompt_tokens": 71, "seconds": 0.127939811, "tokens": [33]}
+{"id": "arc/981", "prompt_tokens": 93, "seconds": 0.131170982, "tokens": [35]}
+{"id": "arc/982", "prompt_tokens": 121, "seconds": 0.134981621, "tokens": [34]}
+{"id": "arc/983", "prompt_tokens": 57, "seconds": 0.105808604, "tokens": [33]}
+{"id": "arc/984", "prompt_tokens": 89, "seconds": 0.131021794, "tokens": [35]}
+{"id": "arc/985", "prompt_tokens": 60, "seconds": 0.108863355, "tokens": [35]}
+{"id": "arc/986", "prompt_tokens": 59, "seconds": 0.106079971, "tokens": [35]}
+{"id": "arc/987", "prompt_tokens": 92, "seconds": 0.131342921, "tokens": [34]}
+{"id": "arc/988", "prompt_tokens": 109, "seconds": 0.132697061, "tokens": [33]}
+{"id": "arc/989", "prompt_tokens": 79, "seconds": 0.129295583, "tokens": [35]}
+{"id": "arc/990", "prompt_tokens": 95, "seconds": 0.131767858, "tokens": [32]}
+{"id": "arc/991", "prompt_tokens": 66, "seconds": 0.131793938, "tokens": [35]}
+{"id": "arc/992", "prompt_tokens": 84, "seconds": 0.130130096, "tokens": [33]}
+{"id": "arc/993", "prompt_tokens": 135, "seconds": 0.180426136, "tokens": [32, 13]}
+{"id": "arc/994", "prompt_tokens": 82, "seconds": 0.133406035, "tokens": [33]}
+{"id": "arc/995", "prompt_tokens": 93, "seconds": 0.130003149, "tokens": [32]}
+{"id": "arc/996", "prompt_tokens": 55, "seconds": 0.098161023, "tokens": [34]}
+{"id": "arc/997", "prompt_tokens": 87, "seconds": 0.130549272, "tokens": [34]}
+{"id": "arc/998", "prompt_tokens": 92, "seconds": 0.165377507, "tokens": [32, 13]}
+{"id": "arc/999", "prompt_tokens": 116, "seconds": 0.134473417, "tokens": [35]}
+{"id": "arc/1000", "prompt_tokens": 115, "seconds": 0.168900683, "tokens": [32, 13]}
+{"id": "arc/1001", "prompt_tokens": 93, "seconds": 0.130866974, "tokens": [33]}
+{"id": "arc/1002", "prompt_tokens": 91, "seconds": 0.130835133, "tokens": [35]}
+{"id": "arc/1003", "prompt_tokens": 146, "seconds": 0.180970722, "tokens": [32, 13]}
+{"id": "arc/1004", "prompt_tokens": 114, "seconds": 0.134693453, "tokens": [34]}
+{"id": "arc/1005", "prompt_tokens": 98, "seconds": 0.132057591, "tokens": [35]}
+{"id": "arc/1006", "prompt_tokens": 144, "seconds": 0.498513046, "tokens": [32, 13, 3383, 78, 3141, 300, 649, 2349, 872, 6211, 13]}
+{"id": "arc/1007", "prompt_tokens": 87, "seconds": 0.130327859, "tokens": [34]}
+{"id": "arc/1008", "prompt_tokens": 85, "seconds": 0.163753729, "tokens": [32, 13]}
+{"id": "arc/1009", "prompt_tokens": 55, "seconds": 0.105109165, "tokens": [34]}
+{"id": "arc/1010", "prompt_tokens": 66, "seconds": 0.128829428, "tokens": [34]}
+{"id": "arc/1011", "prompt_tokens": 93, "seconds": 0.165195805, "tokens": [32, 13]}
+{"id": "arc/1012", "prompt_tokens": 86, "seconds": 0.130023788, "tokens": [34]}
+{"id": "arc/1013", "prompt_tokens": 66, "seconds": 0.128533069, "tokens": [34]}
+{"id": "arc/1014", "prompt_tokens": 80, "seconds": 0.128788754, "tokens": [33]}
+{"id": "arc/1015", "prompt_tokens": 72, "seconds": 0.128105957, "tokens": [35]}
+{"id": "arc/1016", "prompt_tokens": 63, "seconds": 0.140507523, "tokens": [32, 13]}
+{"id": "arc/1017", "prompt_tokens": 106, "seconds": 0.133947004, "tokens": [34]}
+{"id": "arc/1018", "prompt_tokens": 78, "seconds": 0.129662692, "tokens": [35]}
+{"id": "arc/1019", "prompt_tokens": 91, "seconds": 0.170859697, "tokens": [32, 13]}
+{"id": "arc/1020", "prompt_tokens": 93, "seconds": 0.131646317, "tokens": [35]}
+{"id": "arc/1021", "prompt_tokens": 90, "seconds": 0.13141652, "tokens": [35]}
+{"id": "arc/1022", "prompt_tokens": 86, "seconds": 0.130695673, "tokens": [35]}
+{"id": "arc/1023", "prompt_tokens": 79, "seconds": 0.129230459, "tokens": [35]}
+{"id": "arc/1024", "prompt_tokens": 92, "seconds": 0.131522123, "tokens": [34]}
+{"id": "arc/1025", "prompt_tokens": 115, "seconds": 0.134770028, "tokens": [34]}
+{"id": "arc/1026", "prompt_tokens": 69, "seconds": 0.128124804, "tokens": [34]}
+{"id": "arc/1027", "prompt_tokens": 70, "seconds": 0.128998486, "tokens": [34]}
+{"id": "arc/1028", "prompt_tokens": 96, "seconds": 0.131311685, "tokens": [34]}
+{"id": "arc/1029", "prompt_tokens": 53, "seconds": 0.172298798, "tokens": [32, 13, 9168]}
+{"id": "arc/1030", "prompt_tokens": 88, "seconds": 0.164725971, "tokens": [32, 13]}
+{"id": "arc/1031", "prompt_tokens": 101, "seconds": 0.132537534, "tokens": [32]}
+{"id": "arc/1032", "prompt_tokens": 122, "seconds": 0.416448413, "tokens": [35, 13, 311, 1304, 2771, 279, 3135, 527, 2764]}
+{"id": "arc/1033", "prompt_tokens": 128, "seconds": 0.135961028, "tokens": [34]}
+{"id": "arc/1034", "prompt_tokens": 69, "seconds": 0.163255988, "tokens": [35, 13]}
+{"id": "arc/1035", "prompt_tokens": 96, "seconds": 0.131273316, "tokens": [35]}
+{"id": "arc/1036", "prompt_tokens": 67, "seconds": 0.128535532, "tokens": [35]}
+{"id": "arc/1037", "prompt_tokens": 82, "seconds": 0.130435859, "tokens": [33]}
+{"id": "arc/1038", "prompt_tokens": 89, "seconds": 0.131182882, "tokens": [34]}
+{"id": "arc/1039", "prompt_tokens": 89, "seconds": 0.130769049, "tokens": [33]}
+{"id": "arc/1040", "prompt_tokens": 87, "seconds": 0.131040766, "tokens": [33]}
+{"id": "arc/1041", "prompt_tokens": 113, "seconds": 0.135533787, "tokens": [33]}
+{"id": "arc/1042", "prompt_tokens": 68, "seconds": 0.197256717, "tokens": [32, 13, 18979]}
+{"id": "arc/1043", "prompt_tokens": 87, "seconds": 0.130971934, "tokens": [35]}
+{"id": "arc/1044", "prompt_tokens": 78, "seconds": 0.163902656, "tokens": [32, 13]}
+{"id": "arc/1045", "prompt_tokens": 125, "seconds": 0.132897029, "tokens": [33]}
+{"id": "arc/1046", "prompt_tokens": 63, "seconds": 0.108599474, "tokens": [35]}
+{"id": "arc/1047", "prompt_tokens": 116, "seconds": 0.134875693, "tokens": [35]}
+{"id": "arc/1048", "prompt_tokens": 63, "seconds": 0.141888477, "tokens": [32, 13]}
+{"id": "arc/1049", "prompt_tokens": 77, "seconds": 0.128840786, "tokens": [33]}
+{"id": "arc/1050", "prompt_tokens": 77, "seconds": 0.129251738, "tokens": [34]}
+{"id": "arc/1051", "prompt_tokens": 128, "seconds": 0.170536935, "tokens": [32, 13]}
+{"id": "arc/1052", "prompt_tokens": 77, "seconds": 0.197200809, "tokens": [32, 13, 9499]}
+{"id": "arc/1053", "prompt_tokens": 87, "seconds": 0.370031264, "tokens": [32, 13, 387, 304, 279, 1890, 1912, 13]}
+{"id": "arc/1054", "prompt_tokens": 73, "seconds": 0.128449352, "tokens": [33]}
+{"id": "arc/1055", "prompt_tokens": 94, "seconds": 0.131134591, "tokens": [32]}
+{"id": "arc/1056", "prompt_tokens": 61, "seconds": 0.173194174, "tokens": [33, 13, 69397]}
+{"id": "arc/1057", "prompt_tokens": 100, "seconds": 0.132342168, "tokens": [34]}
+{"id": "arc/1058", "prompt_tokens": 88, "seconds": 0.164796369, "tokens": [32, 13]}
+{"id": "arc/1059", "prompt_tokens": 113, "seconds": 0.134065051, "tokens": [35]}
+{"id": "arc/1060", "prompt_tokens": 83, "seconds": 0.130174923, "tokens": [33]}
+{"id": "arc/1061", "prompt_tokens": 71, "seconds": 0.128629036, "tokens": [35]}
+{"id": "arc/1062", "prompt_tokens": 80, "seconds": 0.164020834, "tokens": [32, 13]}
+{"id": "arc/1063", "prompt_tokens": 108, "seconds": 0.132710463, "tokens": [35]}
+{"id": "arc/1064", "prompt_tokens": 86, "seconds": 0.130416336, "tokens": [35]}
+{"id": "arc/1065", "prompt_tokens": 140, "seconds": 0.179861797, "tokens": [32, 13]}
+{"id": "arc/1066", "prompt_tokens": 94, "seconds": 0.132062257, "tokens": [34]}
+{"id": "arc/1067", "prompt_tokens": 78, "seconds": 0.129481821, "tokens": [35]}
+{"id": "arc/1068", "prompt_tokens": 73, "seconds": 0.128770542, "tokens": [35]}
+{"id": "arc/1069", "prompt_tokens": 129, "seconds": 0.142374405, "tokens": [35]}
+{"id": "arc/1070", "prompt_tokens": 102, "seconds": 0.13274848, "tokens": [35]}
+{"id": "arc/1071", "prompt_tokens": 86, "seconds": 0.130601971, "tokens": [33]}
+{"id": "arc/1072", "prompt_tokens": 53, "seconds": 0.105208267, "tokens": [35]}
+{"id": "arc/1073", "prompt_tokens": 71, "seconds": 0.128394342, "tokens": [33]}
+{"id": "arc/1074", "prompt_tokens": 145, "seconds": 0.147765011, "tokens": [34]}
+{"id": "arc/1075", "prompt_tokens": 98, "seconds": 0.132203892, "tokens": [34]}
+{"id": "arc/1076", "prompt_tokens": 63, "seconds": 0.106435908, "tokens": [35]}
+{"id": "arc/1077", "prompt_tokens": 79, "seconds": 0.129422299, "tokens": [33]}
+{"id": "arc/1078", "prompt_tokens": 108, "seconds": 0.133233258, "tokens": [35]}
+{"id": "arc/1079", "prompt_tokens": 111, "seconds": 0.133428781, "tokens": [33]}
+{"id": "arc/1080", "prompt_tokens": 109, "seconds": 0.167460742, "tokens": [32, 13]}
+{"id": "arc/1081", "prompt_tokens": 75, "seconds": 0.128983602, "tokens": [35]}
+{"id": "arc/1082", "prompt_tokens": 73, "seconds": 0.129068691, "tokens": [35]}
+{"id": "arc/1083", "prompt_tokens": 108, "seconds": 0.133447533, "tokens": [33]}
+{"id": "arc/1084", "prompt_tokens": 93, "seconds": 0.130514385, "tokens": [35]}
+{"id": "arc/1085", "prompt_tokens": 119, "seconds": 0.134294719, "tokens": [35]}
+{"id": "arc/1086", "prompt_tokens": 128, "seconds": 0.136604046, "tokens": [34]}
+{"id": "arc/1087", "prompt_tokens": 106, "seconds": 0.517209759, "tokens": [35, 13, 578, 5041, 8738, 311, 3351, 304, 279, 1890, 5216, 13]}
+{"id": "arc/1088", "prompt_tokens": 79, "seconds": 0.163112588, "tokens": [32, 13]}
+{"id": "arc/1089", "prompt_tokens": 105, "seconds": 0.166720535, "tokens": [32, 13]}
+{"id": "arc/1090", "prompt_tokens": 84, "seconds": 0.129895075, "tokens": [34]}
+{"id": "arc/1091", "prompt_tokens": 64, "seconds": 0.106517861, "tokens": [34]}
+{"id": "arc/1092", "prompt_tokens": 134, "seconds": 0.143751519, "tokens": [32]}
+{"id": "arc/1093", "prompt_tokens": 111, "seconds": 0.132943458, "tokens": [35]}
+{"id": "arc/1094", "prompt_tokens": 71, "seconds": 0.124691609, "tokens": [35]}
+{"id": "arc/1095", "prompt_tokens": 62, "seconds": 0.106168189, "tokens": [35]}
+{"id": "arc/1096", "prompt_tokens": 80, "seconds": 0.12899637, "tokens": [34]}
+{"id": "arc/1097", "prompt_tokens": 96, "seconds": 0.165576638, "tokens": [32, 13]}
+{"id": "arc/1098", "prompt_tokens": 111, "seconds": 0.132927169, "tokens": [34]}
+{"id": "arc/1099", "prompt_tokens": 83, "seconds": 0.129919076, "tokens": [35]}
+{"id": "arc/1100", "prompt_tokens": 77, "seconds": 0.166028678, "tokens": [32, 13]}
+{"id": "arc/1101", "prompt_tokens": 88, "seconds": 0.164214305, "tokens": [32, 13]}
+{"id": "arc/1102", "prompt_tokens": 68, "seconds": 0.128889486, "tokens": [34]}
+{"id": "arc/1103", "prompt_tokens": 71, "seconds": 0.128340099, "tokens": [34]}
+{"id": "arc/1104", "prompt_tokens": 87, "seconds": 0.130717492, "tokens": [34]}
+{"id": "arc/1105", "prompt_tokens": 95, "seconds": 0.13080511, "tokens": [34]}
+{"id": "arc/1106", "prompt_tokens": 63, "seconds": 0.173643554, "tokens": [34, 13, 5222]}
+{"id": "arc/1107", "prompt_tokens": 82, "seconds": 0.131416226, "tokens": [33]}
+{"id": "arc/1108", "prompt_tokens": 132, "seconds": 0.146550135, "tokens": [35]}
+{"id": "arc/1109", "prompt_tokens": 83, "seconds": 0.131226238, "tokens": [35]}
+{"id": "arc/1110", "prompt_tokens": 78, "seconds": 0.130653554, "tokens": [33]}
+{"id": "arc/1111", "prompt_tokens": 114, "seconds": 0.134705541, "tokens": [34]}
+{"id": "arc/1112", "prompt_tokens": 71, "seconds": 0.334376123, "tokens": [32, 13, 52829, 1825, 264, 3980, 536]}
+{"id": "arc/1113", "prompt_tokens": 72, "seconds": 0.128968624, "tokens": [34]}
+{"id": "arc/1114", "prompt_tokens": 72, "seconds": 0.128400355, "tokens": [33]}
+{"id": "arc/1115", "prompt_tokens": 81, "seconds": 0.130036709, "tokens": [35]}
+{"id": "arc/1116", "prompt_tokens": 80, "seconds": 0.129156051, "tokens": [35]}
+{"id": "arc/1117", "prompt_tokens": 109, "seconds": 0.133274759, "tokens": [34]}
+{"id": "arc/1118", "prompt_tokens": 105, "seconds": 0.132710139, "tokens": [32]}
+{"id": "arc/1119", "prompt_tokens": 69, "seconds": 0.128311745, "tokens": [33]}
+{"id": "arc/1120", "prompt_tokens": 108, "seconds": 0.133318248, "tokens": [34]}
+{"id": "arc/1121", "prompt_tokens": 75, "seconds": 0.161641707, "tokens": [32, 13]}
+{"id": "arc/1122", "prompt_tokens": 70, "seconds": 0.301602171, "tokens": [32, 13, 28815, 323, 4442, 13]}
+{"id": "arc/1123", "prompt_tokens": 59, "seconds": 0.109967978, "tokens": [34]}
+{"id": "arc/1124", "prompt_tokens": 54, "seconds": 0.11783313, "tokens": [34]}
+{"id": "arc/1125", "prompt_tokens": 86, "seconds": 0.130244681, "tokens": [34]}
+{"id": "arc/1126", "prompt_tokens": 94, "seconds": 0.131592868, "tokens": [34]}
+{"id": "arc/1127", "prompt_tokens": 83, "seconds": 0.129886944, "tokens": [34]}
+{"id": "arc/1128", "prompt_tokens": 82, "seconds": 0.13006506, "tokens": [33]}
+{"id": "arc/1129", "prompt_tokens": 119, "seconds": 0.134403646, "tokens": [35]}
+{"id": "arc/1130", "prompt_tokens": 95, "seconds": 0.131401536, "tokens": [33]}
+{"id": "arc/1131", "prompt_tokens": 107, "seconds": 0.132686331, "tokens": [34]}
+{"id": "arc/1132", "prompt_tokens": 71, "seconds": 0.128172253, "tokens": [33]}
+{"id": "arc/1133", "prompt_tokens": 109, "seconds": 0.132822877, "tokens": [33]}
+{"id": "arc/1134", "prompt_tokens": 58, "seconds": 0.106187516, "tokens": [35]}
+{"id": "arc/1135", "prompt_tokens": 58, "seconds": 0.106261374, "tokens": [35]}
+{"id": "arc/1136", "prompt_tokens": 52, "seconds": 0.105196455, "tokens": [35]}
+{"id": "arc/1137", "prompt_tokens": 121, "seconds": 0.134398685, "tokens": [34]}
+{"id": "arc/1138", "prompt_tokens": 81, "seconds": 0.129287732, "tokens": [32]}
+{"id": "arc/1139", "prompt_tokens": 83, "seconds": 0.13028852, "tokens": [35]}
+{"id": "arc/1140", "prompt_tokens": 102, "seconds": 0.133016608, "tokens": [34]}
+{"id": "arc/1141", "prompt_tokens": 77, "seconds": 0.129010286, "tokens": [34]}
+{"id": "arc/1142", "prompt_tokens": 75, "seconds": 0.163860087, "tokens": [32, 13]}
+{"id": "arc/1143", "prompt_tokens": 104, "seconds": 0.133112066, "tokens": [33]}
+{"id": "arc/1144", "prompt_tokens": 96, "seconds": 0.132260433, "tokens": [33]}
+{"id": "arc/1145", "prompt_tokens": 54, "seconds": 0.10691441, "tokens": [35]}
+{"id": "arc/1146", "prompt_tokens": 98, "seconds": 0.133594668, "tokens": [34]}
+{"id": "arc/1147", "prompt_tokens": 126, "seconds": 0.172301635, "tokens": [32, 13]}
+{"id": "arc/1148", "prompt_tokens": 91, "seconds": 0.125660617, "tokens": [33]}
+{"id": "arc/1149", "prompt_tokens": 70, "seconds": 0.12875748, "tokens": [34]}
+{"id": "arc/1150", "prompt_tokens": 59, "seconds": 0.173341784, "tokens": [32, 13, 46197]}
+{"id": "arc/1151", "prompt_tokens": 105, "seconds": 0.166879092, "tokens": [32, 13]}
+{"id": "arc/1152", "prompt_tokens": 63, "seconds": 0.106598051, "tokens": [34]}
+{"id": "arc/1153", "prompt_tokens": 97, "seconds": 0.131500416, "tokens": [33]}
+{"id": "arc/1154", "prompt_tokens": 105, "seconds": 0.132929982, "tokens": [34]}
+{"id": "arc/1155", "prompt_tokens": 86, "seconds": 0.130648623, "tokens": [32]}
+{"id": "arc/1156", "prompt_tokens": 81, "seconds": 0.129887007, "tokens": [35]}
+{"id": "arc/1157", "prompt_tokens": 76, "seconds": 0.129601562, "tokens": [34]}
+{"id": "arc/1158", "prompt_tokens": 61, "seconds": 0.173711647, "tokens": [32, 13, 13172]}
+{"id": "arc/1159", "prompt_tokens": 92, "seconds": 0.131288316, "tokens": [34]}
+{"id": "arc/1160", "prompt_tokens": 61, "seconds": 0.173594973, "tokens": [32, 13, 47165]}
+{"id": "arc/1161", "prompt_tokens": 112, "seconds": 0.238080258, "tokens": [32, 13, 6156, 50787]}
+{"id": "arc/1162", "prompt_tokens": 105, "seconds": 0.133381286, "tokens": [32]}
+{"id": "arc/1163", "prompt_tokens": 64, "seconds": 0.208234624, "tokens": [32, 13, 2875, 7013]}
+{"id": "arc/1164", "prompt_tokens": 60, "seconds": 0.103676071, "tokens": [35]}
+{"id": "arc/1165", "prompt_tokens": 82, "seconds": 0.12824419, "tokens": [35]}
+{"id": "arc/1166", "prompt_tokens": 100, "seconds": 0.132824378, "tokens": [33]}
+{"id": "arc/1167", "prompt_tokens": 72, "seconds": 0.365760658, "tokens": [34, 13, 11995, 527, 9057, 555, 78352, 13]}
+{"id": "arc/1168", "prompt_tokens": 76, "seconds": 0.163106981, "tokens": [32, 13]}
+{"id": "arc/1169", "prompt_tokens": 107, "seconds": 0.132856379, "tokens": [32]}
+{"id": "arc/1170", "prompt_tokens": 81, "seconds": 0.129635193, "tokens": [35]}
+{"id": "arc/1171", "prompt_tokens": 83, "seconds": 0.129919007, "tokens": [33]}
+{"id": "mmlu/abstract_algebra/0", "prompt_tokens": 363, "seconds": 0.576330048, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/1", "prompt_tokens": 376, "seconds": 0.571453915, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/2", "prompt_tokens": 383, "seconds": 0.58536031, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/3", "prompt_tokens": 393, "seconds": 0.623497152, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/4", "prompt_tokens": 406, "seconds": 0.6128049, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/5", "prompt_tokens": 401, "seconds": 0.628030586, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/6", "prompt_tokens": 394, "seconds": 0.608598859, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/7", "prompt_tokens": 377, "seconds": 0.5818962, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/8", "prompt_tokens": 360, "seconds": 0.554005295, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/9", "prompt_tokens": 374, "seconds": 0.56944596, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/10", "prompt_tokens": 398, "seconds": 0.618851832, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/11", "prompt_tokens": 376, "seconds": 0.278019754, "tokens": [32, 13]}
+{"id": "mmlu/abstract_algebra/12", "prompt_tokens": 361, "seconds": 0.572065275, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/13", "prompt_tokens": 427, "seconds": 0.303056584, "tokens": [33]}
+{"id": "mmlu/abstract_algebra/14", "prompt_tokens": 356, "seconds": 0.563309639, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/15", "prompt_tokens": 371, "seconds": 0.579752405, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/16", "prompt_tokens": 362, "seconds": 0.565930522, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/17", "prompt_tokens": 373, "seconds": 0.253825722, "tokens": [33]}
+{"id": "mmlu/abstract_algebra/18", "prompt_tokens": 367, "seconds": 0.575715168, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/19", "prompt_tokens": 405, "seconds": 0.631949786, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/20", "prompt_tokens": 405, "seconds": 0.626894513, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/21", "prompt_tokens": 406, "seconds": 0.613947271, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/22", "prompt_tokens": 397, "seconds": 0.623790255, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/23", "prompt_tokens": 364, "seconds": 0.56601426, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/24", "prompt_tokens": 379, "seconds": 0.585286395, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/25", "prompt_tokens": 376, "seconds": 0.235405502, "tokens": [33]}
+{"id": "mmlu/abstract_algebra/26", "prompt_tokens": 381, "seconds": 0.583828252, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/27", "prompt_tokens": 390, "seconds": 0.603881588, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/28", "prompt_tokens": 392, "seconds": 0.592300038, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/29", "prompt_tokens": 375, "seconds": 0.580620855, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/30", "prompt_tokens": 394, "seconds": 0.605505937, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/31", "prompt_tokens": 385, "seconds": 0.289063937, "tokens": [33]}
+{"id": "mmlu/abstract_algebra/32", "prompt_tokens": 398, "seconds": 0.606962509, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/33", "prompt_tokens": 402, "seconds": 0.279551839, "tokens": [33]}
+{"id": "mmlu/abstract_algebra/34", "prompt_tokens": 410, "seconds": 0.612939396, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/35", "prompt_tokens": 359, "seconds": 0.571963202, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/36", "prompt_tokens": 358, "seconds": 0.28028254, "tokens": [32, 13]}
+{"id": "mmlu/abstract_algebra/37", "prompt_tokens": 378, "seconds": 0.243753956, "tokens": [33]}
+{"id": "mmlu/abstract_algebra/38", "prompt_tokens": 350, "seconds": 0.555367725, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/39", "prompt_tokens": 363, "seconds": 0.573683457, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/40", "prompt_tokens": 379, "seconds": 0.255368784, "tokens": [33]}
+{"id": "mmlu/abstract_algebra/41", "prompt_tokens": 353, "seconds": 0.568318289, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/42", "prompt_tokens": 402, "seconds": 0.610177284, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/43", "prompt_tokens": 370, "seconds": 0.569987058, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/44", "prompt_tokens": 405, "seconds": 0.625144211, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/45", "prompt_tokens": 381, "seconds": 0.569930927, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/46", "prompt_tokens": 383, "seconds": 0.58230948, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/47", "prompt_tokens": 368, "seconds": 0.231868046, "tokens": [33]}
+{"id": "mmlu/abstract_algebra/48", "prompt_tokens": 405, "seconds": 0.625544663, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/49", "prompt_tokens": 360, "seconds": 0.553902245, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/50", "prompt_tokens": 371, "seconds": 0.58163999, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/51", "prompt_tokens": 369, "seconds": 0.254594875, "tokens": [33]}
+{"id": "mmlu/abstract_algebra/52", "prompt_tokens": 367, "seconds": 0.578074413, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/53", "prompt_tokens": 400, "seconds": 0.595905943, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/54", "prompt_tokens": 355, "seconds": 0.571090748, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/55", "prompt_tokens": 379, "seconds": 0.588561919, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/56", "prompt_tokens": 375, "seconds": 0.594188464, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/57", "prompt_tokens": 350, "seconds": 0.556195019, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/58", "prompt_tokens": 375, "seconds": 0.58014168, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/59", "prompt_tokens": 395, "seconds": 0.629469593, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/60", "prompt_tokens": 375, "seconds": 0.590398942, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/61", "prompt_tokens": 396, "seconds": 0.607020047, "tokens": [32, 13, 426, 198, 33, 13, 426, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/62", "prompt_tokens": 392, "seconds": 0.597989846, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/63", "prompt_tokens": 379, "seconds": 0.296519432, "tokens": [32, 13]}
+{"id": "mmlu/abstract_algebra/64", "prompt_tokens": 354, "seconds": 0.565073144, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/65", "prompt_tokens": 366, "seconds": 0.568988039, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/66", "prompt_tokens": 404, "seconds": 0.620290647, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/67", "prompt_tokens": 382, "seconds": 0.288123452, "tokens": [32, 13]}
+{"id": "mmlu/abstract_algebra/68", "prompt_tokens": 402, "seconds": 0.279592143, "tokens": [33]}
+{"id": "mmlu/abstract_algebra/69", "prompt_tokens": 391, "seconds": 0.621292553, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/70", "prompt_tokens": 372, "seconds": 0.599444845, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/71", "prompt_tokens": 359, "seconds": 0.571869052, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/72", "prompt_tokens": 361, "seconds": 0.574414061, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/73", "prompt_tokens": 353, "seconds": 0.571797912, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/74", "prompt_tokens": 395, "seconds": 0.624761738, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/75", "prompt_tokens": 382, "seconds": 0.57651695, "tokens": [32, 13, 426, 198, 33, 13, 426, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/76", "prompt_tokens": 395, "seconds": 0.623946518, "tokens": [32, 13, 426, 198, 33, 13, 426, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/77", "prompt_tokens": 349, "seconds": 0.576039849, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/78", "prompt_tokens": 394, "seconds": 0.607720971, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/79", "prompt_tokens": 401, "seconds": 0.627723039, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/80", "prompt_tokens": 381, "seconds": 0.582871152, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/81", "prompt_tokens": 382, "seconds": 0.573809848, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/82", "prompt_tokens": 383, "seconds": 0.58244058, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/83", "prompt_tokens": 406, "seconds": 0.617364309, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/84", "prompt_tokens": 405, "seconds": 0.627133357, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/85", "prompt_tokens": 392, "seconds": 0.591548702, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/86", "prompt_tokens": 400, "seconds": 0.594039014, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/87", "prompt_tokens": 377, "seconds": 0.254884162, "tokens": [33]}
+{"id": "mmlu/abstract_algebra/88", "prompt_tokens": 357, "seconds": 0.328514368, "tokens": [32, 13, 426]}
+{"id": "mmlu/abstract_algebra/89", "prompt_tokens": 375, "seconds": 0.580055474, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/90", "prompt_tokens": 390, "seconds": 0.603236455, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/91", "prompt_tokens": 363, "seconds": 0.57257527, "tokens": [32, 13, 426, 198, 33, 13, 426, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/92", "prompt_tokens": 395, "seconds": 0.374481849, "tokens": [32, 13, 426]}
+{"id": "mmlu/abstract_algebra/93", "prompt_tokens": 356, "seconds": 0.562837979, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/94", "prompt_tokens": 377, "seconds": 0.581079555, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/95", "prompt_tokens": 409, "seconds": 0.629673373, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/96", "prompt_tokens": 370, "seconds": 0.566770296, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/97", "prompt_tokens": 362, "seconds": 0.569046942, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/98", "prompt_tokens": 358, "seconds": 0.564297368, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/abstract_algebra/99", "prompt_tokens": 377, "seconds": 0.583408338, "tokens": [32, 13, 426, 198, 33, 13, 362, 198, 34, 13]}
+{"id": "mmlu/anatomy/0", "prompt_tokens": 379, "seconds": 0.257350478, "tokens": [35]}
+{"id": "mmlu/anatomy/1", "prompt_tokens": 380, "seconds": 0.245778721, "tokens": [35]}
+{"id": "mmlu/anatomy/2", "prompt_tokens": 340, "seconds": 0.232893702, "tokens": [35]}
+{"id": "mmlu/anatomy/3", "prompt_tokens": 337, "seconds": 0.24472791, "tokens": [35]}
+{"id": "mmlu/anatomy/4", "prompt_tokens": 352, "seconds": 0.227850144, "tokens": [35]}
+{"id": "mmlu/anatomy/5", "prompt_tokens": 367, "seconds": 0.250569233, "tokens": [35]}
+{"id": "mmlu/anatomy/6", "prompt_tokens": 346, "seconds": 0.233132869, "tokens": [35]}
+{"id": "mmlu/anatomy/7", "prompt_tokens": 345, "seconds": 0.247394585, "tokens": [35]}
+{"id": "mmlu/anatomy/8", "prompt_tokens": 348, "seconds": 0.234051696, "tokens": [35]}
+{"id": "mmlu/anatomy/9", "prompt_tokens": 353, "seconds": 0.246515082, "tokens": [35]}
+{"id": "mmlu/anatomy/10", "prompt_tokens": 371, "seconds": 0.253026717, "tokens": [35]}
+{"id": "mmlu/anatomy/11", "prompt_tokens": 391, "seconds": 0.290946378, "tokens": [35]}
+{"id": "mmlu/anatomy/12", "prompt_tokens": 390, "seconds": 0.271975469, "tokens": [35]}
+{"id": "mmlu/anatomy/13", "prompt_tokens": 425, "seconds": 0.302466251, "tokens": [35]}
+{"id": "mmlu/anatomy/14", "prompt_tokens": 395, "seconds": 0.2924259, "tokens": [35]}
+{"id": "mmlu/anatomy/15", "prompt_tokens": 372, "seconds": 0.244142557, "tokens": [35]}
+{"id": "mmlu/anatomy/16", "prompt_tokens": 359, "seconds": 0.247627827, "tokens": [35]}
+{"id": "mmlu/anatomy/17", "prompt_tokens": 334, "seconds": 0.22992679, "tokens": [35]}
+{"id": "mmlu/anatomy/18", "prompt_tokens": 345, "seconds": 0.246814126, "tokens": [35]}
+{"id": "mmlu/anatomy/19", "prompt_tokens": 337, "seconds": 0.244148833, "tokens": [35]}
+{"id": "mmlu/anatomy/20", "prompt_tokens": 364, "seconds": 0.242152304, "tokens": [35]}
+{"id": "mmlu/anatomy/21", "prompt_tokens": 348, "seconds": 0.234076097, "tokens": [35]}
+{"id": "mmlu/anatomy/22", "prompt_tokens": 361, "seconds": 0.248707323, "tokens": [35]}
+{"id": "mmlu/anatomy/23", "prompt_tokens": 360, "seconds": 0.230702938, "tokens": [35]}
+{"id": "mmlu/anatomy/24", "prompt_tokens": 362, "seconds": 0.241356013, "tokens": [35]}
+{"id": "mmlu/anatomy/25", "prompt_tokens": 337, "seconds": 0.254995881, "tokens": [35]}
+{"id": "mmlu/anatomy/26", "prompt_tokens": 353, "seconds": 0.245684596, "tokens": [35]}
+{"id": "mmlu/anatomy/27", "prompt_tokens": 353, "seconds": 0.246239427, "tokens": [35]}
+{"id": "mmlu/anatomy/28", "prompt_tokens": 353, "seconds": 0.245694674, "tokens": [35]}
+{"id": "mmlu/anatomy/29", "prompt_tokens": 420, "seconds": 0.285971754, "tokens": [35]}
+{"id": "mmlu/anatomy/30", "prompt_tokens": 338, "seconds": 0.231501484, "tokens": [35]}
+{"id": "mmlu/anatomy/31", "prompt_tokens": 363, "seconds": 0.2515752, "tokens": [35]}
+{"id": "mmlu/anatomy/32", "prompt_tokens": 345, "seconds": 0.248438505, "tokens": [35]}
+{"id": "mmlu/anatomy/33", "prompt_tokens": 335, "seconds": 0.244754211, "tokens": [33]}
+{"id": "mmlu/anatomy/34", "prompt_tokens": 367, "seconds": 0.260381105, "tokens": [35]}
+{"id": "mmlu/anatomy/35", "prompt_tokens": 362, "seconds": 0.241160265, "tokens": [35]}
+{"id": "mmlu/anatomy/36", "prompt_tokens": 348, "seconds": 0.234575778, "tokens": [35]}
+{"id": "mmlu/anatomy/37", "prompt_tokens": 348, "seconds": 0.23469198, "tokens": [35]}
+{"id": "mmlu/anatomy/38", "prompt_tokens": 351, "seconds": 0.249319492, "tokens": [35]}
+{"id": "mmlu/anatomy/39", "prompt_tokens": 356, "seconds": 0.24135203, "tokens": [35]}
+{"id": "mmlu/anatomy/40", "prompt_tokens": 354, "seconds": 0.239429844, "tokens": [35]}
+{"id": "mmlu/anatomy/41", "prompt_tokens": 359, "seconds": 0.248589022, "tokens": [35]}
+{"id": "mmlu/anatomy/42", "prompt_tokens": 348, "seconds": 0.236555683, "tokens": [35]}
+{"id": "mmlu/anatomy/43", "prompt_tokens": 388, "seconds": 0.275442149, "tokens": [35]}
+{"id": "mmlu/anatomy/44", "prompt_tokens": 398, "seconds": 0.276941226, "tokens": [35]}
+{"id": "mmlu/anatomy/45", "prompt_tokens": 376, "seconds": 0.236605119, "tokens": [35]}
+{"id": "mmlu/anatomy/46", "prompt_tokens": 355, "seconds": 0.247859049, "tokens": [33]}
+{"id": "mmlu/anatomy/47", "prompt_tokens": 337, "seconds": 0.244919329, "tokens": [35]}
+{"id": "mmlu/anatomy/48", "prompt_tokens": 358, "seconds": 0.241024202, "tokens": [35]}
+{"id": "mmlu/anatomy/49", "prompt_tokens": 402, "seconds": 0.278469136, "tokens": [35]}
+{"id": "mmlu/anatomy/50", "prompt_tokens": 350, "seconds": 0.234842097, "tokens": [35]}
+{"id": "mmlu/anatomy/51", "prompt_tokens": 350, "seconds": 0.237276293, "tokens": [35]}
+{"id": "mmlu/anatomy/52", "prompt_tokens": 382, "seconds": 0.254328131, "tokens": [35]}
+{"id": "mmlu/anatomy/53", "prompt_tokens": 331, "seconds": 0.252622509, "tokens": [33]}
+{"id": "mmlu/anatomy/54", "prompt_tokens": 377, "seconds": 0.255391337, "tokens": [35]}
+{"id": "mmlu/anatomy/55", "prompt_tokens": 335, "seconds": 0.243493069, "tokens": [35]}
+{"id": "mmlu/anatomy/56", "prompt_tokens": 379, "seconds": 0.25540378, "tokens": [35]}
+{"id": "mmlu/anatomy/57", "prompt_tokens": 346, "seconds": 0.233884768, "tokens": [35]}
+{"id": "mmlu/anatomy/58", "prompt_tokens": 345, "seconds": 0.247271492, "tokens": [35]}
+{"id": "mmlu/anatomy/59", "prompt_tokens": 344, "seconds": 0.227498899, "tokens": [35]}
+{"id": "mmlu/anatomy/60", "prompt_tokens": 344, "seconds": 0.227193817, "tokens": [35]}
+{"id": "mmlu/anatomy/61", "prompt_tokens": 379, "seconds": 0.255899091, "tokens": [35]}
+{"id": "mmlu/anatomy/62", "prompt_tokens": 351, "seconds": 0.249042088, "tokens": [35]}
+{"id": "mmlu/anatomy/63", "prompt_tokens": 348, "seconds": 0.234887907, "tokens": [35]}
+{"id": "mmlu/anatomy/64", "prompt_tokens": 365, "seconds": 0.251008681, "tokens": [35]}
+{"id": "mmlu/anatomy/65", "prompt_tokens": 385, "seconds": 0.288900966, "tokens": [35]}
+{"id": "mmlu/anatomy/66", "prompt_tokens": 362, "seconds": 0.243323572, "tokens": [35]}
+{"id": "mmlu/anatomy/67", "prompt_tokens": 367, "seconds": 0.576208255, "tokens": [791, 4495, 11503, 527, 1473, 16, 13, 423, 13, 578]}
+{"id": "mmlu/anatomy/68", "prompt_tokens": 351, "seconds": 0.249119814, "tokens": [35]}
+{"id": "mmlu/anatomy/69", "prompt_tokens": 386, "seconds": 0.273429596, "tokens": [35]}
+{"id": "mmlu/anatomy/70", "prompt_tokens": 399, "seconds": 0.295269522, "tokens": [35]}
+{"id": "mmlu/anatomy/71", "prompt_tokens": 349, "seconds": 0.2529687, "tokens": [35]}
+{"id": "mmlu/anatomy/72", "prompt_tokens": 339, "seconds": 0.2461344, "tokens": [35]}
+{"id": "mmlu/anatomy/73", "prompt_tokens": 403, "seconds": 0.295819553, "tokens": [35]}
+{"id": "mmlu/anatomy/74", "prompt_tokens": 363, "seconds": 0.250410527, "tokens": [35]}
+{"id": "mmlu/anatomy/75", "prompt_tokens": 374, "seconds": 0.245365767, "tokens": [35]}
+{"id": "mmlu/anatomy/76", "prompt_tokens": 356, "seconds": 0.240353927, "tokens": [35]}
+{"id": "mmlu/anatomy/77", "prompt_tokens": 425, "seconds": 0.302540171, "tokens": [35]}
+{"id": "mmlu/anatomy/78", "prompt_tokens": 343, "seconds": 0.246671709, "tokens": [35]}
+{"id": "mmlu/anatomy/79", "prompt_tokens": 374, "seconds": 0.243915437, "tokens": [35]}
+{"id": "mmlu/anatomy/80", "prompt_tokens": 346, "seconds": 0.234738815, "tokens": [35]}
+{"id": "mmlu/anatomy/81", "prompt_tokens": 363, "seconds": 0.251472133, "tokens": [35]}
+{"id": "mmlu/anatomy/82", "prompt_tokens": 357, "seconds": 0.247183631, "tokens": [35]}
+{"id": "mmlu/anatomy/83", "prompt_tokens": 343, "seconds": 0.246242172, "tokens": [35]}
+{"id": "mmlu/anatomy/84", "prompt_tokens": 341, "seconds": 0.246306262, "tokens": [35]}
+{"id": "mmlu/anatomy/85", "prompt_tokens": 382, "seconds": 0.245002261, "tokens": [35]}
+{"id": "mmlu/anatomy/86", "prompt_tokens": 402, "seconds": 0.278268997, "tokens": [35]}
+{"id": "mmlu/anatomy/87", "prompt_tokens": 348, "seconds": 0.233526126, "tokens": [35]}
+{"id": "mmlu/anatomy/88", "prompt_tokens": 374, "seconds": 0.244121981, "tokens": [35]}
+{"id": "mmlu/anatomy/89", "prompt_tokens": 341, "seconds": 0.246734289, "tokens": [35]}
+{"id": "mmlu/anatomy/90", "prompt_tokens": 359, "seconds": 0.247704869, "tokens": [35]}
+{"id": "mmlu/anatomy/91", "prompt_tokens": 412, "seconds": 0.281382069, "tokens": [35]}
+{"id": "mmlu/anatomy/92", "prompt_tokens": 387, "seconds": 0.28987546, "tokens": [35]}
+{"id": "mmlu/anatomy/93", "prompt_tokens": 368, "seconds": 0.231870282, "tokens": [35]}
+{"id": "mmlu/anatomy/94", "prompt_tokens": 358, "seconds": 0.241373219, "tokens": [35]}
+{"id": "mmlu/anatomy/95", "prompt_tokens": 369, "seconds": 0.253158274, "tokens": [35]}
+{"id": "mmlu/anatomy/96", "prompt_tokens": 347, "seconds": 0.248333103, "tokens": [35]}
+{"id": "mmlu/anatomy/97", "prompt_tokens": 396, "seconds": 0.276943253, "tokens": [35]}
+{"id": "mmlu/anatomy/98", "prompt_tokens": 354, "seconds": 0.238353186, "tokens": [35]}
+{"id": "mmlu/anatomy/99", "prompt_tokens": 371, "seconds": 0.253743001, "tokens": [35]}
+{"id": "mmlu/anatomy/100", "prompt_tokens": 362, "seconds": 0.241506786, "tokens": [35]}
+{"id": "mmlu/anatomy/101", "prompt_tokens": 376, "seconds": 0.236200974, "tokens": [35]}
+{"id": "mmlu/anatomy/102", "prompt_tokens": 352, "seconds": 0.228163957, "tokens": [35]}
+{"id": "mmlu/anatomy/103", "prompt_tokens": 356, "seconds": 0.239945202, "tokens": [35]}
+{"id": "mmlu/anatomy/104", "prompt_tokens": 394, "seconds": 0.274899831, "tokens": [35]}
+{"id": "mmlu/anatomy/105", "prompt_tokens": 390, "seconds": 0.274346935, "tokens": [35]}
+{"id": "mmlu/anatomy/106", "prompt_tokens": 345, "seconds": 0.24686491, "tokens": [35]}
+{"id": "mmlu/anatomy/107", "prompt_tokens": 353, "seconds": 0.246534706, "tokens": [35]}
+{"id": "mmlu/anatomy/108", "prompt_tokens": 340, "seconds": 0.232073342, "tokens": [33]}
+{"id": "mmlu/anatomy/109", "prompt_tokens": 379, "seconds": 0.255091289, "tokens": [35]}
+{"id": "mmlu/anatomy/110", "prompt_tokens": 377, "seconds": 0.254784383, "tokens": [35]}
+{"id": "mmlu/anatomy/111", "prompt_tokens": 374, "seconds": 0.244138567, "tokens": [35]}
+{"id": "mmlu/anatomy/112", "prompt_tokens": 345, "seconds": 0.246380442, "tokens": [35]}
+{"id": "mmlu/anatomy/113", "prompt_tokens": 336, "seconds": 0.222687185, "tokens": [35]}
+{"id": "mmlu/anatomy/114", "prompt_tokens": 363, "seconds": 0.249978404, "tokens": [35]}
+{"id": "mmlu/anatomy/115", "prompt_tokens": 347, "seconds": 0.247301181, "tokens": [35]}
+{"id": "mmlu/anatomy/116", "prompt_tokens": 336, "seconds": 0.223648987, "tokens": [35]}
+{"id": "mmlu/anatomy/117", "prompt_tokens": 350, "seconds": 0.234086127, "tokens": [35]}
+{"id": "mmlu/anatomy/118", "prompt_tokens": 366, "seconds": 0.242492292, "tokens": [35]}
+{"id": "mmlu/anatomy/119", "prompt_tokens": 350, "seconds": 0.233909503, "tokens": [35]}
+{"id": "mmlu/anatomy/120", "prompt_tokens": 337, "seconds": 0.245579433, "tokens": [33]}
+{"id": "mmlu/anatomy/121", "prompt_tokens": 358, "seconds": 0.240455354, "tokens": [35]}
+{"id": "mmlu/anatomy/122", "prompt_tokens": 347, "seconds": 0.247957727, "tokens": [35]}
+{"id": "mmlu/anatomy/123", "prompt_tokens": 353, "seconds": 0.247147994, "tokens": [35]}
+{"id": "mmlu/anatomy/124", "prompt_tokens": 345, "seconds": 0.24648803, "tokens": [35]}
+{"id": "mmlu/anatomy/125", "prompt_tokens": 385, "seconds": 0.290549425, "tokens": [35]}
+{"id": "mmlu/anatomy/126", "prompt_tokens": 342, "seconds": 0.235338343, "tokens": [35]}
+{"id": "mmlu/anatomy/127", "prompt_tokens": 337, "seconds": 0.245809388, "tokens": [33]}
+{"id": "mmlu/anatomy/128", "prompt_tokens": 336, "seconds": 0.2225278, "tokens": [35]}

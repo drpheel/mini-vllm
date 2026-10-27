@@ -1,4 +1,5 @@
 #include "../src/prefill.cuh"
+#include "../src/rope.cuh"
 
 #include <cuda_runtime.h>
 
@@ -24,8 +25,7 @@ void check_cuda(cudaError_t status, const char* call) {
 }
 
 float rope_theta_for_pair(int pair_index, int head_dim) {
-  const int double_i = 2 * pair_index;
-  return 1.0f / std::pow(500000.0f, static_cast<float>(double_i) / static_cast<float>(head_dim));
+  return llama3_inv_freq(pair_index, head_dim);
 }
 
 int run_prefill_test() {
@@ -249,20 +249,25 @@ int run_prefill_test() {
     const size_t kv_base = token * llama_prefill::KV_DIM;
 
     const float token_pos = static_cast<float>(token);
+    // Llama pairs dim i with dim i+32. The fixture only fills dims 0..2, so the high half starts at 0.
     const float k_pair0_angle = token_pos * rope_theta_for_pair(0, 64);
     const float k_pair1_angle = token_pos * rope_theta_for_pair(1, 64);
+    const float k_pair2_angle = token_pos * rope_theta_for_pair(2, 64);
     const float k_in0 = 1.5f * inv_rms;
     const float k_in1 = -1.0f * inv_rms;
     const float k_in2 = 0.25f * inv_rms;
-    const float k_expected0 = k_in0 * std::cos(k_pair0_angle) - k_in1 * std::sin(k_pair0_angle);
-    const float k_expected1 = k_in0 * std::sin(k_pair0_angle) + k_in1 * std::cos(k_pair0_angle);
-    const float k_expected2 = k_in2 * std::cos(k_pair1_angle);
-    const float k_expected3 = k_in2 * std::sin(k_pair1_angle);
+    const float k_expected0 = k_in0 * std::cos(k_pair0_angle);
+    const float k_expected1 = k_in1 * std::cos(k_pair1_angle);
+    const float k_expected2 = k_in2 * std::cos(k_pair2_angle);
+    const float k_expected32 = k_in0 * std::sin(k_pair0_angle);
+    const float k_expected33 = k_in1 * std::sin(k_pair1_angle);
 
     require(std::fabs(__bfloat162float(k_proj_out[kv_base + 0]) - k_expected0) < 0.05f, "k_proj dim0 mismatch");
     require(std::fabs(__bfloat162float(k_proj_out[kv_base + 1]) - k_expected1) < 0.05f, "k_proj dim1 mismatch");
     require(std::fabs(__bfloat162float(k_proj_out[kv_base + 2]) - k_expected2) < 0.03f, "k_proj dim2 mismatch");
-    require(std::fabs(__bfloat162float(k_proj_out[kv_base + 3]) - k_expected3) < 0.03f, "k_proj dim3 mismatch");
+    require(std::fabs(__bfloat162float(k_proj_out[kv_base + 3])) < 0.03f, "k_proj dim3 mismatch");
+    require(std::fabs(__bfloat162float(k_proj_out[kv_base + 32]) - k_expected32) < 0.05f, "k_proj dim32 mismatch");
+    require(std::fabs(__bfloat162float(k_proj_out[kv_base + 33]) - k_expected33) < 0.05f, "k_proj dim33 mismatch");
 
     require(std::fabs(__bfloat162float(v_proj_out[kv_base + 0]) - (-2.0f * inv_rms)) < 0.04f, "v_proj dim0 mismatch");
     require(std::fabs(__bfloat162float(v_proj_out[kv_base + 1]) - (0.5f * inv_rms)) < 0.02f, "v_proj dim1 mismatch");

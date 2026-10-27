@@ -23,6 +23,7 @@
 #include <iomanip>
 #include <iostream>
 #include <limits>
+#include <malloc.h>
 #include <numeric>
 #include <random>
 #include <sstream>
@@ -40,9 +41,81 @@ constexpr double B_TO_GB = 1024.0 * 1024.0 * 1024.0;
 constexpr size_t COPY_CHUNK_BYTES = 64 * 1024 * 1024;
 constexpr int LLAMA_HIDDEN_SIZE = llama_prefill::HIDDEN_SIZE;
 constexpr int END_OF_TEXT_TOKEN_ID = 128001;  // <|end_of_text|>
+constexpr int EOM_ID_TOKEN_ID = 128008;       // <|eom_id|>
 constexpr int EOT_ID_TOKEN_ID = 128009;       // <|eot_id|>
+
+bool is_stop_token(int token_id) {
+  return token_id == END_OF_TEXT_TOKEN_ID || token_id == EOM_ID_TOKEN_ID || token_id == EOT_ID_TOKEN_ID;
+}
+
+struct EvalItem {
+  std::string id;
+  std::vector<int> tokens;
+  int max_new = 128;
+};
+
+std::vector<EvalItem> load_eval_jsonl(const std::string& path) {
+  std::ifstream input(path);
+  if (!input) {
+    throw std::runtime_error("could not open eval jsonl: " + path);
+  }
+  std::vector<EvalItem> items;
+  std::string line;
+  size_t line_no = 0;
+  while (std::getline(input, line)) {
+    ++line_no;
+    if (line.empty()) {
+      continue;
+    }
+    const nlohmann::json row = nlohmann::json::parse(line);
+    EvalItem item;
+    item.id = row.at("id").get<std::string>();
+    item.tokens = row.at("tokens").get<std::vector<int>>();
+    if (row.contains("max_new")) {
+      item.max_new = row.at("max_new").get<int>();
+    }
+    if (item.id.empty() || item.max_new < 1) {
+      throw std::runtime_error("eval jsonl line " + std::to_string(line_no) + " needs an id and positive max_new");
+    }
+    items.push_back(std::move(item));
+  }
+  if (items.empty()) {
+    throw std::runtime_error("eval jsonl has no items: " + path);
+  }
+  return items;
+}
+
+// Longest prompt that still fits, without keeping the token lists. The lists are
+// loaded only after the weight and KV allocations, so they cannot split that hole.
+size_t scan_eval_max_prompt(const std::string& path, size_t* item_count) {
+  std::ifstream input(path);
+  if (!input) {
+    throw std::runtime_error("could not open eval jsonl: " + path);
+  }
+  size_t max_prompt = 1;
+  size_t count = 0;
+  std::string line;
+  while (std::getline(input, line)) {
+    if (line.empty()) {
+      continue;
+    }
+    const nlohmann::json row = nlohmann::json::parse(line);
+    const size_t n = row.at("tokens").size();
+    ++count;
+    if (n > 0 && n < static_cast<size_t>(prompt_tokens::MAX_PROMPT_LEN)) {
+      max_prompt = std::max(max_prompt, n);
+    }
+  }
+  if (count == 0) {
+    throw std::runtime_error("eval jsonl has no items: " + path);
+  }
+  *item_count = count;
+  return max_prompt;
+}
 constexpr int MAX_SEQ_LEN = llama_prefill::BLOCK_SIZE * llama_prefill::MAX_BLOCKS_PER_SEQ;
-constexpr int MAX_NEW_TOKENS = 64;
+static_assert(prompt_tokens::MAX_PROMPT_LEN == MAX_SEQ_LEN, "prompt cap and KV context diverged");
+static_assert(decode::MAX_BLOCKS_PER_SEQ == llama_prefill::MAX_BLOCKS_PER_SEQ, "decode page stride diverged");
+constexpr int MAX_NEW_TOKENS = 1024;
 constexpr int BEST_OF_N = 4;
 // Temperature multinomial sampling. TEMPERATURE <= 0 falls back to greedy argmax.
 constexpr float TEMPERATURE = 0.7f;
@@ -215,7 +288,7 @@ std::vector<RankedToken> select_diverse_first_tokens(const std::vector<float>& l
     const double inv_temp = 1.0 / static_cast<double>(temperature);
     for (size_t i = 0; i < logits.size(); ++i) {
       const int token_id = static_cast<int>(i);
-      if (token_id == END_OF_TEXT_TOKEN_ID || token_id == EOT_ID_TOKEN_ID) {
+      if (is_stop_token(token_id)) {
         continue;  // Never start a best-of-N answer with an immediate stop token.
       }
       const double weight =
@@ -703,6 +776,9 @@ int main(int argc, char** argv) {
     bool bench_graph = false;
     bool bench_warmup = true;
     int bench_steps = 32;
+    std::string eval_jsonl_path;
+    std::string eval_out_path;
+    size_t eval_max_prompt_arg = 0;
 
     std::vector<std::string> positional;
     for (int i = 1; i < argc; ++i) {
@@ -723,6 +799,21 @@ int main(int argc, char** argv) {
         bench_graph = true;
       } else if (arg == "--no-warmup") {
         bench_warmup = false;
+      } else if (arg == "--eval-jsonl") {
+        if (i + 1 >= argc) {
+          throw std::runtime_error("--eval-jsonl requires a path");
+        }
+        eval_jsonl_path = argv[++i];
+      } else if (arg == "--eval-out") {
+        if (i + 1 >= argc) {
+          throw std::runtime_error("--eval-out requires a path");
+        }
+        eval_out_path = argv[++i];
+      } else if (arg == "--eval-max-prompt") {
+        if (i + 1 >= argc) {
+          throw std::runtime_error("--eval-max-prompt requires a token count");
+        }
+        eval_max_prompt_arg = static_cast<size_t>(std::stoul(argv[++i]));
       } else if (arg == "--steps") {
         if (i + 1 >= argc) {
           throw std::runtime_error("--steps requires a positive integer");
@@ -732,8 +823,9 @@ int main(int argc, char** argv) {
           throw std::runtime_error("--steps must be positive");
         }
       } else if (arg == "--help" || arg == "-h") {
-        std::cout << "usage: cuda_cublas_json [model.safetensors] [prompt_tokens.txt]"
-                     " [--bench | --bench-eager | --bench-async | --bench-graph] [--steps N] [--no-warmup]\n";
+        std::cout << "usage: cuda_cublas_json [model.safetensors] [prompt_tokens.txt]\n"
+                     "       [--bench | --bench-eager | --bench-async | --bench-graph] [--steps N] [--no-warmup]\n"
+                     "       [--eval-jsonl requests.jsonl --eval-out results.jsonl]\n";
         return 0;
       } else if (!arg.empty() && arg[0] == '-') {
         throw std::runtime_error("unknown argument: " + arg);
@@ -754,25 +846,46 @@ int main(int argc, char** argv) {
     if (bench_mode && prompt_tokens_path.empty()) {
       throw std::runtime_error("benchmark mode requires a prompt token file");
     }
-    const int run_best_of_n = bench_mode ? 1 : BEST_OF_N;
-    const float run_temperature = bench_mode ? 0.0f : TEMPERATURE;
-    const float run_top_p = bench_mode ? 1.0f : TOP_P;
+    const bool eval_mode = !eval_jsonl_path.empty() || !eval_out_path.empty();
+    if (eval_mode && (eval_jsonl_path.empty() || eval_out_path.empty())) {
+      throw std::runtime_error("--eval-jsonl and --eval-out are both required");
+    }
+    if (eval_mode && bench_mode) {
+      throw std::runtime_error("eval mode cannot be combined with benchmark mode");
+    }
+    if (eval_mode && !prompt_tokens_path.empty()) {
+      throw std::runtime_error("eval mode does not take a prompt token file");
+    }
+    std::vector<EvalItem> eval_items;
+    size_t eval_item_count = 0;
+    size_t eval_max_prompt = 1;
+    if (eval_mode) {
+      if (eval_max_prompt_arg > 0) {
+        eval_max_prompt = eval_max_prompt_arg;
+      } else {
+        eval_max_prompt = scan_eval_max_prompt(eval_jsonl_path, &eval_item_count);
+        malloc_trim(0);
+      }
+    }
+    const int run_best_of_n = (bench_mode || eval_mode) ? 1 : BEST_OF_N;
+    const float run_temperature = (bench_mode || eval_mode) ? 0.0f : TEMPERATURE;
+    const float run_top_p = (bench_mode || eval_mode) ? 1.0f : TOP_P;
 
     print_gpu_status();
-    __nv_bfloat16* input_embeddings = nullptr;
-    const size_t input_embeddings_bytes =
-        static_cast<size_t>(prompt_tokens::MAX_PROMPT_LEN) * LLAMA_HIDDEN_SIZE * sizeof(__nv_bfloat16);
-    check_cuda(cudaMalloc(reinterpret_cast<void**>(&input_embeddings), input_embeddings_bytes),
-               "cudaMalloc(input_embeddings)");
-    std::cout << "Allocated prompt input embeddings at " << static_cast<void*>(input_embeddings) << " ("
-              << format_bytes(input_embeddings_bytes) << ")\n";
-
     prompt_tokens::GpuPromptTokens gpu_input_tokens;
-    if (!prompt_tokens_path.empty()) {
+    if (!eval_mode && !prompt_tokens_path.empty()) {
       gpu_input_tokens = prompt_tokens::load_token_ids_to_gpu(prompt_tokens_path);
       std::cout << "Loaded " << gpu_input_tokens.count << " prompt tokens to GPU at "
                 << static_cast<void*>(gpu_input_tokens.device_ptr) << '\n';
     }
+
+    // Decode writes the new token at row 0, so these buffers only need the prompt.
+    // Allocate them after the weight block and the KV cache. A small buffer first
+    // splits the only hole large enough for the 2.3 GB checkpoint.
+    const size_t activation_tokens =
+        std::max(eval_mode ? eval_max_prompt : gpu_input_tokens.count, static_cast<size_t>(1));
+    __nv_bfloat16* input_embeddings = nullptr;
+    const size_t input_embeddings_bytes = activation_tokens * LLAMA_HIDDEN_SIZE * sizeof(__nv_bfloat16);
 
     std::cout << "\nLoading safetensors file: " << model_path << '\n';
 
@@ -782,12 +895,79 @@ int main(int argc, char** argv) {
     std::cout << "Payload bytes: " << metadata.payload_size << " (" << format_bytes(metadata.payload_size) << ")\n";
     std::cout << "Tensor count: " << metadata.tensors.size() << '\n';
 
+    int max_layer = -1;
+    for (const auto& [name, tensor] : metadata.tensors) {
+      (void)tensor;
+      int layer = -1;
+      std::string suffix;
+      if (parse_layer_tensor_name(name, &layer, &suffix)) {
+        max_layer = std::max(max_layer, layer);
+      }
+    }
+    if (max_layer < 0) {
+      throw std::runtime_error("No model.layers.N tensors found");
+    }
+    const size_t num_layers = static_cast<size_t>(max_layer + 1);
+
     void* model_weights = nullptr;
     check_cuda(cudaMalloc(&model_weights, metadata.payload_size), "cudaMalloc(model_weights)");
     std::cout << "Allocated one GPU block at " << model_weights << '\n';
 
     copy_payload_to_gpu(metadata, model_weights);
     ModelWeights weights = build_llama_weight_views(metadata, model_weights);
+
+    // Cache immediately after the weight buffer, before the smaller activation
+    // allocs split the leftover hole.
+    llama_prefill::PagedAttentionState paged_attention_state;
+    paged_attention_state.slot = 0;
+    paged_attention_state.block_size = llama_prefill::BLOCK_SIZE;
+    paged_attention_state.max_blocks_per_seq = llama_prefill::MAX_BLOCKS_PER_SEQ;
+    const int total_blocks = std::max(1, static_cast<int>(num_layers) * paged_attention_state.max_blocks_per_seq);
+    const size_t per_kv_cache_bytes =
+        static_cast<size_t>(paged_attention_state.block_size) * llama_prefill::KV_DIM * sizeof(__nv_bfloat16);
+    paged_attention_state.v_offset = per_kv_cache_bytes;
+    paged_attention_state.block_bytes = per_kv_cache_bytes * 2;
+    const size_t kv_cache_bytes = static_cast<size_t>(total_blocks) * paged_attention_state.block_bytes;
+    check_cuda(cudaMalloc(&paged_attention_state.kv_cache, kv_cache_bytes),
+               "cudaMalloc(paged_attention_state.kv_cache)");
+    // No second copy of the cache. Best-of-N and the bench replays rerun prefill.
+    // A full snapshot is another 128 MB, and this board does not have it after the weights.
+    void* kv_snapshot = nullptr;
+    std::cout << "Allocated KV cache " << format_bytes(kv_cache_bytes) << " for " << MAX_SEQ_LEN << " tokens\n";
+
+    // Reserve the cuBLAS handle before the prompt activations fill the leftover hole.
+    CublasHandleGuard cublas_guard;
+    check_cublas(cublasCreate(&cublas_guard.handle), "cublasCreate(decode)");
+
+    if (eval_mode) {
+      gpu_input_tokens = prompt_tokens::allocate_token_capacity(eval_max_prompt);
+      std::cout << "Eval token buffer " << eval_max_prompt;
+      if (eval_item_count > 0) {
+        std::cout << ", items " << eval_item_count;
+      }
+      std::cout << "\n";
+    }
+
+    check_cuda(cudaMalloc(reinterpret_cast<void**>(&input_embeddings), input_embeddings_bytes),
+               "cudaMalloc(input_embeddings)");
+    std::cout << "Allocated prompt input embeddings at " << static_cast<void*>(input_embeddings) << " ("
+              << format_bytes(input_embeddings_bytes) << ")\n";
+
+    const size_t block_table_elems = static_cast<size_t>(llama_prefill::MAX_SEQUENCES) *
+                                     llama_prefill::N_LAYERS * llama_prefill::MAX_BLOCKS_PER_SEQ;
+    int* block_table =
+        static_cast<int*>(alloc_mapped_host(block_table_elems * sizeof(int), "cudaHostAlloc(block_table)"));
+    std::fill_n(block_table, block_table_elems, -1);
+    std::vector<int> free_blocks_storage(static_cast<size_t>(total_blocks));
+    std::iota(free_blocks_storage.begin(), free_blocks_storage.end(), 0);
+    paged_attention_state.block_table = block_table;
+    paged_attention_state.free_blocks = free_blocks_storage.data();
+    paged_attention_state.free_blocks_count = free_blocks_storage.size();
+    std::vector<std::vector<int>> generated_tokens(llama_prefill::MAX_SEQUENCES);
+    std::vector<int> last_generated_tokens(llama_prefill::MAX_SEQUENCES);
+    std::vector<int> current_prompt_len(llama_prefill::MAX_SEQUENCES);
+    std::vector<char> is_slot_free(llama_prefill::MAX_SEQUENCES, 1);
+
     __nv_bfloat16* hidden_state = nullptr;
     __nv_bfloat16* rms_norms = nullptr;
     __nv_bfloat16* q_proj = nullptr;
@@ -797,10 +977,9 @@ int main(int argc, char** argv) {
     __nv_bfloat16* mlp_up = nullptr;
     __nv_bfloat16* prefill_attn_scores = nullptr;
     __nv_bfloat16* embed_proj = nullptr;
-    const size_t kv_proj_bytes =
-        static_cast<size_t>(prompt_tokens::MAX_PROMPT_LEN) * llama_prefill::KV_DIM * sizeof(__nv_bfloat16);
+    const size_t kv_proj_bytes = activation_tokens * llama_prefill::KV_DIM * sizeof(__nv_bfloat16);
     const size_t mlp_intermediate_bytes =
-        static_cast<size_t>(prompt_tokens::MAX_PROMPT_LEN) * llama_prefill::MLP_INTERMEDIATE_SIZE * sizeof(__nv_bfloat16);
+        activation_tokens * llama_prefill::MLP_INTERMEDIATE_SIZE * sizeof(__nv_bfloat16);
     check_cuda(cudaMalloc(reinterpret_cast<void**>(&hidden_state), input_embeddings_bytes), "cudaMalloc(hidden_state)");
     check_cuda(cudaMalloc(reinterpret_cast<void**>(&rms_norms), input_embeddings_bytes), "cudaMalloc(rms_norms)");
     check_cuda(cudaMalloc(reinterpret_cast<void**>(&q_proj), input_embeddings_bytes), "cudaMalloc(q_proj)");
@@ -829,49 +1008,18 @@ int main(int argc, char** argv) {
     }
     prefill_weights.vocab_size = static_cast<int>(embed_it->second.shape[0]);
 
-    const size_t num_layers = prefill_weights.input_layernorm.size();
-    const size_t prompt_len = gpu_input_tokens.count;
-    const size_t prefill_scores_elements =
-        num_layers * static_cast<size_t>(llama_prefill::NUM_Q_HEADS) * prompt_len * prompt_len;
-    const size_t prefill_scores_bytes = std::max(prefill_scores_elements * sizeof(__nv_bfloat16), sizeof(__nv_bfloat16));
+    const size_t prefill_scores_bytes =
+        activation_tokens * activation_tokens * sizeof(__nv_bfloat16);
     check_cuda(cudaMalloc(reinterpret_cast<void**>(&prefill_attn_scores), prefill_scores_bytes),
                "cudaMalloc(prefill_attn_scores)");
-    const size_t embed_proj_bytes =
-        prompt_len * static_cast<size_t>(prefill_weights.vocab_size) * sizeof(__nv_bfloat16);
+    const size_t embed_proj_bytes = static_cast<size_t>(prefill_weights.vocab_size) * sizeof(__nv_bfloat16);
     // Mapped host memory: GPU writes logits, CPU samples in place (no vocab-sized D2H).
     embed_proj = static_cast<__nv_bfloat16*>(alloc_mapped_host(embed_proj_bytes, "cudaHostAlloc(embed_proj)"));
 
-    llama_prefill::PagedAttentionState paged_attention_state;
-    paged_attention_state.slot = 0;
-    paged_attention_state.block_size = 16;
-    paged_attention_state.max_blocks_per_seq = llama_prefill::MAX_BLOCKS_PER_SEQ;
-    const int total_blocks = std::max(1, static_cast<int>(num_layers) * paged_attention_state.max_blocks_per_seq);
-    const size_t per_kv_cache_bytes =
-        static_cast<size_t>(paged_attention_state.block_size) * llama_prefill::KV_DIM * sizeof(__nv_bfloat16);
-    paged_attention_state.v_offset = per_kv_cache_bytes;
-    paged_attention_state.block_bytes = per_kv_cache_bytes * 2;
-    check_cuda(cudaMalloc(&paged_attention_state.kv_cache,
-                          static_cast<size_t>(total_blocks) * paged_attention_state.block_bytes),
-               "cudaMalloc(paged_attention_state.kv_cache)");
-
-    // One mapped block table shared by CPU page allocator and GPU attention kernels.
-    const size_t block_table_elems = static_cast<size_t>(llama_prefill::MAX_SEQUENCES) *
-                                     llama_prefill::N_LAYERS * llama_prefill::MAX_BLOCKS_PER_SEQ;
-    int* block_table =
-        static_cast<int*>(alloc_mapped_host(block_table_elems * sizeof(int), "cudaHostAlloc(block_table)"));
-    std::fill_n(block_table, block_table_elems, -1);
-    std::vector<int> free_blocks_storage(static_cast<size_t>(total_blocks));
-    std::iota(free_blocks_storage.begin(), free_blocks_storage.end(), 0);
-    paged_attention_state.block_table = block_table;
-    paged_attention_state.free_blocks = free_blocks_storage.data();
-    paged_attention_state.free_blocks_count = free_blocks_storage.size();
-    std::vector<std::vector<int>> generated_tokens(llama_prefill::MAX_SEQUENCES);
-    std::vector<int> last_generated_tokens(llama_prefill::MAX_SEQUENCES);
-    std::vector<int> current_prompt_len(llama_prefill::MAX_SEQUENCES);
-    std::vector<char> is_slot_free(llama_prefill::MAX_SEQUENCES, 1);
     if (bench_mode && (gpu_input_tokens.count == 0 ||
                        gpu_input_tokens.count + static_cast<size_t>(bench_steps) >= static_cast<size_t>(MAX_SEQ_LEN))) {
-      throw std::runtime_error("benchmark prompt plus --steps must fit in MAX_SEQ_LEN (512)");
+      throw std::runtime_error("benchmark prompt plus --steps must fit in MAX_SEQ_LEN (" + std::to_string(MAX_SEQ_LEN) +
+                               ")");
     }
     auto reset_kv_allocator = [&]() {
       std::fill_n(block_table, block_table_elems, -1);
@@ -907,11 +1055,13 @@ int main(int argc, char** argv) {
       check_cuda(cudaEventElapsedTime(&prefill_ms, prefill_start, prefill_stop), "cudaEventElapsedTime(prefill)");
       check_cuda(cudaEventDestroy(prefill_start), "cudaEventDestroy(prefill_start)");
       check_cuda(cudaEventDestroy(prefill_stop), "cudaEventDestroy(prefill_stop)");
-    } else {
+    } else if (!eval_mode) {
       run_prefill();
     }
-    std::cout << "Gathered " << gpu_input_tokens.count << " token embeddings into "
-              << static_cast<void*>(input_embeddings) << '\n';
+    if (!eval_mode) {
+      std::cout << "Gathered " << gpu_input_tokens.count << " token embeddings into "
+                << static_cast<void*>(input_embeddings) << '\n';
+    }
     const int slot = paged_attention_state.slot;
     is_slot_free[static_cast<size_t>(slot)] = 0;
     const int embedding_length = LLAMA_HIDDEN_SIZE;
@@ -940,8 +1090,9 @@ int main(int argc, char** argv) {
     int* decode_token_gpu =
         static_cast<int*>(alloc_mapped_host(sizeof(int), "cudaHostAlloc(decode_token_gpu)"));
 
-    CublasHandleGuard cublas_guard;
-    check_cublas(cublasCreate(&cublas_guard.handle), "cublasCreate(decode)");
+    if (eval_mode) {
+      eval_items = load_eval_jsonl(eval_jsonl_path);
+    }
 
     int* gpu_seq_lens = static_cast<int*>(alloc_mapped_host(sizeof(int), "cudaHostAlloc(gpu_seq_lens)"));
     int* gpu_active_slots = static_cast<int*>(alloc_mapped_host(sizeof(int), "cudaHostAlloc(gpu_active_slots)"));
@@ -950,14 +1101,64 @@ int main(int argc, char** argv) {
     bool verified_first_decode_embed = false;
     const bool verbose_decode = (BEST_OF_N == 1);
     std::cout << "Decode sampling: temperature=" << run_temperature << " top_p=" << run_top_p
-              << " max_new_tokens=" << (bench_mode ? bench_steps : MAX_NEW_TOKENS) << " best_of_n=" << run_best_of_n
-              << " diverse_first_tokens=1 seed=" << SAMPLE_SEED << '\n';
+              << " max_new_tokens=" << (bench_mode ? bench_steps : MAX_NEW_TOKENS)
+              << " max_seq_len=" << MAX_SEQ_LEN << " best_of_n=" << run_best_of_n
+              << " diverse_first_tokens=1 seed=" << SAMPLE_SEED;
+    if (eval_mode) {
+      std::cout << " eval_items=" << eval_items.size() << " greedy=1";
+    }
+    std::cout << '\n';
+
+    std::ofstream eval_out;
+    if (eval_mode) {
+      eval_out.open(eval_out_path, std::ios::app);
+      if (!eval_out) {
+        throw std::runtime_error("could not open eval output: " + eval_out_path);
+      }
+    }
+    const size_t eval_passes = eval_mode ? eval_items.size() : 1;
+    const size_t token_capacity = gpu_input_tokens.count;
+    bool bench_tokens_match = true;
+    for (size_t eval_pass = 0; eval_pass < eval_passes; ++eval_pass) {
+      int run_max_new = bench_mode ? bench_steps : MAX_NEW_TOKENS;
+      const auto eval_t0 = std::chrono::steady_clock::now();
+      if (eval_mode) {
+        const EvalItem& item = eval_items[eval_pass];
+        if (item.tokens.empty() || item.tokens.size() > token_capacity ||
+            item.tokens.size() >= static_cast<size_t>(MAX_SEQ_LEN)) {
+          nlohmann::json row;
+          row["id"] = item.id;
+          row["error"] = "prompt does not fit in context";
+          row["prompt_tokens"] = item.tokens.size();
+          eval_out << row.dump() << '\n';
+          eval_out.flush();
+          continue;
+        }
+        if (item.tokens.size() > token_capacity) {
+          throw std::runtime_error("eval prompt exceeds the allocated token buffer");
+        }
+        std::memcpy(gpu_input_tokens.device_ptr, item.tokens.data(), item.tokens.size() * sizeof(int));
+        gpu_input_tokens.count = item.tokens.size();
+        reset_kv_allocator();
+        run_prefill();
+        const int room = MAX_SEQ_LEN - static_cast<int>(item.tokens.size());
+        run_max_new = std::min(item.max_new, std::min(room, MAX_NEW_TOKENS));
+        if (run_max_new < 1) {
+          nlohmann::json row;
+          row["id"] = item.id;
+          row["error"] = "no room to generate";
+          row["prompt_tokens"] = item.tokens.size();
+          eval_out << row.dump() << '\n';
+          eval_out.flush();
+          continue;
+        }
+      }
 
     // Prefill KV covers the prompt only; the greedy first token is not in cache yet.
     // Capture last-position logits and choose distinct high-prob first tokens for best-of-N.
     const int prompt_len_snapshot = current_prompt_len[static_cast<size_t>(slot)];
-    const size_t first_logit_offset =
-        static_cast<size_t>(prompt_len_snapshot - 1) * static_cast<size_t>(vocab_size);
+    // Prefill writes one logit row, for the last prompt token.
+    const size_t first_logit_offset = 0;
     std::vector<float> first_token_logits(static_cast<size_t>(vocab_size));
     for (int token_idx = 0; token_idx < vocab_size; ++token_idx) {
       first_token_logits[static_cast<size_t>(token_idx)] =
@@ -975,12 +1176,6 @@ int main(int argc, char** argv) {
     }
     std::cout << '\n';
 
-    const size_t kv_cache_bytes =
-        static_cast<size_t>(total_blocks) * paged_attention_state.block_bytes;
-    void* kv_snapshot = nullptr;
-    check_cuda(cudaMalloc(&kv_snapshot, kv_cache_bytes), "cudaMalloc(kv_snapshot)");
-    check_cuda(cudaMemcpy(kv_snapshot, paged_attention_state.kv_cache, kv_cache_bytes, cudaMemcpyDeviceToDevice),
-               "cudaMemcpy(kv_snapshot D2D)");
     std::vector<int> block_table_snapshot(block_table, block_table + block_table_elems);
     std::vector<int> free_blocks_snapshot = free_blocks_storage;
     const size_t free_blocks_count_snapshot = paged_attention_state.free_blocks_count;
@@ -1003,8 +1198,10 @@ int main(int argc, char** argv) {
     const int num_candidates = static_cast<int>(first_token_choices.size());
     if (run_generation) {
     for (int candidate = 0; candidate < num_candidates; ++candidate) {
-      check_cuda(cudaMemcpy(paged_attention_state.kv_cache, kv_snapshot, kv_cache_bytes, cudaMemcpyDeviceToDevice),
-                 "cudaMemcpy(kv_cache restore D2D)");
+      if (candidate > 0) {
+        reset_kv_allocator();
+        run_prefill();
+      }
       std::copy(block_table_snapshot.begin(), block_table_snapshot.end(), block_table);
       free_blocks_storage = free_blocks_snapshot;
       paged_attention_state.free_blocks = free_blocks_storage.data();
@@ -1027,7 +1224,7 @@ int main(int argc, char** argv) {
                 << (SAMPLE_SEED + static_cast<uint32_t>(candidate) * 10007u)
                 << " first_token=" << first_token << " first_logprob=" << first_logprob << ")\n";
 
-      if (!bench_mode && (first_token == END_OF_TEXT_TOKEN_ID || first_token == EOT_ID_TOKEN_ID)) {
+      if (!bench_mode && is_stop_token(first_token)) {
         is_slot_free[static_cast<size_t>(slot)] = 1;
         generated_tokens[static_cast<size_t>(slot)].clear();  // stop tokens are not kept as answer text
         const double cand_score =
@@ -1045,13 +1242,14 @@ int main(int argc, char** argv) {
 
     while (!is_slot_free[static_cast<size_t>(slot)] &&
            (bench_mode ? bench_forwards < bench_steps
-                       : generated_tokens[static_cast<size_t>(slot)].size() < static_cast<size_t>(MAX_NEW_TOKENS))) {
+                       : generated_tokens[static_cast<size_t>(slot)].size() < static_cast<size_t>(run_max_new))) {
     const int decode_token_id = last_generated_tokens[static_cast<size_t>(slot)];
     const size_t decode_token_index = static_cast<size_t>(current_prompt_len[static_cast<size_t>(slot)]);
-    const size_t decode_token_offset = decode_token_index * static_cast<size_t>(LLAMA_HIDDEN_SIZE);
-    const size_t decode_mlp_offset = decode_token_index * static_cast<size_t>(llama_prefill::MLP_INTERMEDIATE_SIZE);
-    if (decode_token_index >= static_cast<size_t>(prompt_tokens::MAX_PROMPT_LEN)) {
-      throw std::runtime_error("decode token index exceeds MAX_PROMPT_LEN");
+    // Row 0 of the activation buffers. The absolute position is only for RoPE and the KV page.
+    const size_t decode_token_offset = 0;
+    const size_t decode_mlp_offset = 0;
+    if (decode_token_index >= static_cast<size_t>(MAX_SEQ_LEN)) {
+      throw std::runtime_error("decode token index exceeds MAX_SEQ_LEN (" + std::to_string(MAX_SEQ_LEN) + ")");
     }
 
     if (bench_mode) {
@@ -1215,12 +1413,7 @@ int main(int argc, char** argv) {
       check_cuda(cudaMemcpy(v_cache_ptr, v_proj_ptr, static_cast<size_t>(kv_dim) * sizeof(__nv_bfloat16), cudaMemcpyDeviceToDevice),
                  "cudaMemcpy(decode paged attention V)");
 
-      // pagedAttention expects q/output at active_slot * HIDDEN_SIZE; copy decode Q to slot 0.
-      check_cuda(cudaMemcpy(q_proj,
-                            q_proj + decode_token_offset,
-                            static_cast<size_t>(embedding_length) * sizeof(__nv_bfloat16),
-                            cudaMemcpyDeviceToDevice),
-                 "cudaMemcpy(decode q_proj to slot 0)");
+      // Q is already at row 0. pagedAttention reads it into registers, then overwrites that row.
       decode::pagedAttention(static_cast<int>(layer),
                              1,
                              q_proj,
@@ -1390,7 +1583,7 @@ int main(int argc, char** argv) {
     }
 
     const bool hit_max_seq = current_prompt_len[static_cast<size_t>(active_slot)] == MAX_SEQ_LEN - 1;
-    if (!bench_mode && (max_token_idx == END_OF_TEXT_TOKEN_ID || max_token_idx == EOT_ID_TOKEN_ID || hit_max_seq)) {
+    if (!bench_mode && (is_stop_token(max_token_idx) || hit_max_seq)) {
       is_slot_free[static_cast<size_t>(active_slot)] = 1;
       for (size_t layer = 0; layer < num_layers; ++layer) {
         for (int logical_block_idx = 0; logical_block_idx < paged_attention_state.max_blocks_per_seq;
@@ -1450,7 +1643,7 @@ int main(int argc, char** argv) {
         }
       }
       if (verbose_decode) {
-        std::cout << "Decode stopped (max_new_tokens=" << MAX_NEW_TOKENS << "); freed slot " << slot << '\n';
+        std::cout << "Decode stopped (max_new_tokens=" << run_max_new << "); freed slot " << slot << '\n';
       }
     }
 
@@ -1469,7 +1662,21 @@ int main(int argc, char** argv) {
     }  // for candidate
     }  // run_generation
 
-    bool bench_tokens_match = true;
+    if (eval_mode) {
+      const EvalItem& item = eval_items[eval_pass];
+      const double seconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - eval_t0).count();
+      nlohmann::json row;
+      row["id"] = item.id;
+      row["tokens"] = best_tokens;
+      row["prompt_tokens"] = item.tokens.size();
+      row["seconds"] = seconds;
+      eval_out << row.dump() << '\n';
+      eval_out.flush();
+      std::cout << "eval " << (eval_pass + 1) << '/' << eval_passes << " id=" << item.id
+                << " prompt=" << item.tokens.size() << " new=" << best_tokens.size() << " sec=" << seconds << '\n'
+                << std::flush;
+    }
+
     if (bench_mode) {
       std::cout << std::fixed;
       std::cout.precision(3);
@@ -1525,6 +1732,10 @@ int main(int argc, char** argv) {
       bench_buffers.free_blocks_snapshot = &free_blocks_snapshot;
       bench_buffers.free_blocks_count_snapshot = free_blocks_count_snapshot;
 
+      if (bench_async || bench_graph) {
+        reset_kv_allocator();
+        run_prefill();
+      }
       const int bench_first_token = first_token_choices.front().id;
       const std::vector<int>* expected_tokens = bench_eager ? &bench_eager_outputs : nullptr;
       DecodeBenchResult async_result;
@@ -1557,8 +1768,10 @@ int main(int argc, char** argv) {
       }
     }
 
-    check_cuda(cudaFree(kv_snapshot), "cudaFree(kv_snapshot)");
-    if (!bench_mode) {
+    if (kv_snapshot != nullptr) {
+      check_cuda(cudaFree(kv_snapshot), "cudaFree(kv_snapshot)");
+    }
+    if (!bench_mode && !eval_mode) {
     generated_tokens[static_cast<size_t>(slot)] = best_tokens;
     std::cout << "Best-of-N selected candidate " << best_candidate << " with score=" << best_score << '\n';
 
@@ -1568,12 +1781,13 @@ int main(int argc, char** argv) {
     }
     std::cout << '\n';
     }
+    }  // eval_pass
 
     check_cuda(cudaFreeHost(gpu_seq_lens), "cudaFreeHost(gpu_seq_lens)");
     check_cuda(cudaFreeHost(gpu_active_slots), "cudaFreeHost(gpu_active_slots)");
     check_cuda(cudaFreeHost(decode_token_gpu), "cudaFreeHost(decode_token_gpu)");
 
-    if (!bench_mode) {
+    if (!bench_mode && !eval_mode) {
       print_input_embedding_debug(gpu_input_tokens, input_embeddings);
       print_mapping_debug(weights);
     }

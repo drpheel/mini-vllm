@@ -1,0 +1,31 @@
+{
+  "model": "Llama-3.2-1B-Instruct",
+  "context": 4096,
+  "sampling": "greedy, one sample",
+  "stopped_early": true,
+  "answered": 1401,
+  "tasks": {
+    "arc_challenge": {
+      "n": 1172,
+      "correct": 557,
+      "accuracy": 0.47525597269624575,
+      "official_bf16": 0.594,
+      "protocol": "0-shot, chat template, reply with only the letter, max 100 new tokens"
+    },
+    "mmlu_partial": {
+      "n": 229,
+      "subjects": {
+        "abstract_algebra": {
+          "n": 100,
+          "accuracy": 0.24
+        },
+        "anatomy": {
+          "n": 129,
+          "accuracy": 0.24806201550387597
+        }
+      },
+      "micro_accuracy": 0.2445414847161572,
+      "note": "First two subjects only. Not a macro MMLU score. Official 5-shot macro is 0.493."
+    }
+  }
+}

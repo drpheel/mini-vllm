@@ -1,9 +1,11 @@
 #include "prefill.cuh"
+#include "rope.cuh"
 
 #include <cublas_v2.h>
 #include <cuda_runtime.h>
 
 #include <cmath>
+#include <cstddef>
 #include <iostream>
 #include <limits>
 #include <stdexcept>
@@ -11,8 +13,6 @@
 
 namespace llama_prefill {
 namespace {
-
-int g_prefill_total_q_heads = NUM_Q_HEADS;
 
 void check_cuda(cudaError_t status, const char* call) {
   if (status != cudaSuccess) {
@@ -69,19 +69,21 @@ __global__ void rmsNormKernel(const __nv_bfloat16* input, __nv_bfloat16* output,
 }
 
 __global__ void ropeKernel(__nv_bfloat16* input, int num_tokens, int proj_dim, int head_dim) {
-  const int idx = 2 * threadIdx.x + blockIdx.x * proj_dim;
-  if (idx + 1 >= num_tokens * proj_dim) {
+  if (threadIdx.x >= proj_dim / 2) {
     return;
   }
 
-  const int pair_index = threadIdx.x % (head_dim / 2);
-  const int double_i = 2 * pair_index;
-  const float theta = 1.0f / powf(500000.0f, static_cast<float>(double_i) / static_cast<float>(head_dim));
+  int pair_index = 0;
+  int low = 0;
+  int high = 0;
+  llama_rope_offsets(threadIdx.x, head_dim, &pair_index, &low, &high);
+  const int base = blockIdx.x * proj_dim;
+  const float theta = llama3_inv_freq(pair_index, head_dim);
   const float angle = static_cast<float>(blockIdx.x) * theta;
-  const __nv_bfloat16 prev_2i = input[idx];
-  const __nv_bfloat16 prev_2i_1 = input[idx + 1];
-  input[idx] = static_cast<__nv_bfloat16>(static_cast<float>(prev_2i) * cosf(angle) - static_cast<float>(prev_2i_1) * sinf(angle));
-  input[idx + 1] = static_cast<__nv_bfloat16>(static_cast<float>(prev_2i) * sinf(angle) + static_cast<float>(prev_2i_1) * cosf(angle));
+  const float x0 = static_cast<float>(input[base + low]);
+  const float x1 = static_cast<float>(input[base + high]);
+  input[base + low] = static_cast<__nv_bfloat16>(x0 * cosf(angle) - x1 * sinf(angle));
+  input[base + high] = static_cast<__nv_bfloat16>(x1 * cosf(angle) + x0 * sinf(angle));
 }
 
 __global__ void residualKernel(__nv_bfloat16* input, const __nv_bfloat16* input_embeds) {
@@ -100,15 +102,15 @@ __global__ void siluKernel(__nv_bfloat16* a, const __nv_bfloat16* b) {
   }
 }
 
-__global__ void causalMaskKernel(__nv_bfloat16* input, int num_tokens, int num_q_heads) {
-  if (threadIdx.x + blockIdx.x * blockDim.x >= num_tokens * num_tokens * num_q_heads) {
-    return;
-  }
+constexpr int kScoreThreads = 256;
 
-  const int column = threadIdx.x;
-  const int row = blockIdx.x % num_tokens;
-  if (column > row) {
-    input[blockIdx.x * num_tokens + threadIdx.x] = __float2bfloat16(-HUGE_VALF);
+// One [n, n] score matrix. One block per row, striding past the 1024-thread launch limit.
+__global__ void causalMaskKernel(__nv_bfloat16* scores, int num_tokens) {
+  const int row = blockIdx.x;
+  for (int col = threadIdx.x; col < num_tokens; col += blockDim.x) {
+    if (col > row) {
+      scores[static_cast<size_t>(row) * num_tokens + col] = __float2bfloat16(-HUGE_VALF);
+    }
   }
 }
 
@@ -191,73 +193,60 @@ void causal_mask(__nv_bfloat16* input, int num_tokens) {
   if (num_tokens <= 0) {
     return;
   }
-  if (g_prefill_total_q_heads <= 0) {
-    return;
-  }
-  if (num_tokens > 1024) {
-    std::cout << "Can't launch more than 1024 threads, Causal mask kernel not launched\n";
-    return;
-  }
 
-  causalMaskKernel<<<num_tokens * g_prefill_total_q_heads, num_tokens>>>(
-      input, num_tokens, g_prefill_total_q_heads);
+  causalMaskKernel<<<num_tokens, kScoreThreads>>>(input, num_tokens);
   check_cuda(cudaGetLastError(), "causalMaskKernel launch");
-  check_cuda(cudaDeviceSynchronize(), "causalMaskKernel");
 }
 
-__global__ void softmaxKernel(__nv_bfloat16* input, int num_tokens, int num_q_heads) {
-  if (threadIdx.x + blockIdx.x * blockDim.x >= num_tokens * num_tokens * num_q_heads) {
-    return;
+__global__ void softmaxKernel(__nv_bfloat16* input, int num_tokens) {
+  const int row = blockIdx.x;
+  const int tid = threadIdx.x;
+  const size_t row_offset = static_cast<size_t>(row) * static_cast<size_t>(num_tokens);
+
+  float local_max = -INFINITY;
+  for (int col = tid; col < num_tokens; col += blockDim.x) {
+    local_max = fmaxf(local_max, __bfloat162float(input[row_offset + col]));
   }
 
-  __shared__ float row[1024];
-  __shared__ float max_val;
-
-  const int work_index = blockIdx.x * num_tokens + threadIdx.x;
-  const __nv_bfloat16 token = input[work_index];
-  row[threadIdx.x] = static_cast<float>(token);
+  __shared__ float reduce[kScoreThreads];
+  reduce[tid] = local_max;
   __syncthreads();
-
-  for (int i = 1; i < num_tokens; i *= 2) {
-    if (threadIdx.x % (i * 2) == 0 && threadIdx.x + i < num_tokens) {
-      row[threadIdx.x] = fmaxf(row[threadIdx.x], row[threadIdx.x + i]);
+  for (int offset = blockDim.x >> 1; offset > 0; offset >>= 1) {
+    if (tid < offset) {
+      reduce[tid] = fmaxf(reduce[tid], reduce[tid + offset]);
     }
     __syncthreads();
   }
-  if (threadIdx.x == 0) {
-    max_val = row[0];
+  const float max_val = reduce[0];
+  __syncthreads();
+
+  float local_sum = 0.0f;
+  for (int col = tid; col < num_tokens; col += blockDim.x) {
+    local_sum += expf(__bfloat162float(input[row_offset + col]) - max_val);
   }
+  reduce[tid] = local_sum;
   __syncthreads();
-
-  const float exp_value = expf(static_cast<float>(token) - max_val);
-  row[threadIdx.x] = exp_value;
-  __syncthreads();
-
-  for (int i = 1; i < num_tokens; i *= 2) {
-    if (threadIdx.x % (i * 2) == 0 && threadIdx.x + i < num_tokens) {
-      row[threadIdx.x] = row[threadIdx.x] + row[threadIdx.x + i];
+  for (int offset = blockDim.x >> 1; offset > 0; offset >>= 1) {
+    if (tid < offset) {
+      reduce[tid] += reduce[tid + offset];
     }
     __syncthreads();
   }
+  const float sum = reduce[0];
 
-  input[work_index] = static_cast<__nv_bfloat16>(exp_value / row[0]);
+  for (int col = tid; col < num_tokens; col += blockDim.x) {
+    const float expat = expf(__bfloat162float(input[row_offset + col]) - max_val);
+    input[row_offset + col] = __float2bfloat16(expat / sum);
+  }
 }
 
 void softmax(__nv_bfloat16* input, int num_tokens) {
   if (num_tokens <= 0) {
     return;
   }
-  if (g_prefill_total_q_heads <= 0) {
-    return;
-  }
-  if (num_tokens > 1024) {
-    std::cout << "Can't launch more than 1024 threads on RTX 5090, Softmax kernel not launched\n";
-    return;
-  }
 
-  softmaxKernel<<<num_tokens * g_prefill_total_q_heads, num_tokens>>>(input, num_tokens, g_prefill_total_q_heads);
+  softmaxKernel<<<num_tokens, kScoreThreads>>>(input, num_tokens);
   check_cuda(cudaGetLastError(), "softmaxKernel launch");
-  check_cuda(cudaDeviceSynchronize(), "softmaxKernel");
 }
 
 }  // namespace
@@ -379,8 +368,11 @@ void prefill(const int* gpu_input_tokens,
   check_cuda(cudaMemcpy(hidden_state, input_embeddings, prompt_len * HIDDEN_SIZE * sizeof(__nv_bfloat16), cudaMemcpyDeviceToDevice),
              "cudaMemcpy(prefill hidden_state <- input_embeddings)");
 
-  CublasHandleGuard cublas_guard;
-  check_cublas(cublasCreate(&cublas_guard.handle), "cublasCreate(prefill)");
+  // One handle for the whole process. Creating it per prompt fragments the Jetson heap.
+  static CublasHandleGuard cublas_guard;
+  if (cublas_guard.handle == nullptr) {
+    check_cublas(cublasCreate(&cublas_guard.handle), "cublasCreate(prefill)");
+  }
 
   const float q_proj_alpha = 1.0f;
   const float q_proj_beta = 0.0f;
@@ -515,16 +507,14 @@ void prefill(const int* gpu_input_tokens,
         k_proj_batched_buffer, v_proj_batched_buffer, prompt_len, layer, weights.input_layernorm.size(), kv_dim,
         paged_attention_state);
 
-    const size_t layer_offset = layer * static_cast<size_t>(NUM_Q_HEADS) * prompt_len * prompt_len;
-    __nv_bfloat16* layer_attn_scores = prefill_attn_scores + layer_offset;
-
-    // Attention scores: each Q head uses one grouped K head and writes [prompt_len, prompt_len].
+    // One [P, P] score matrix, reused per head. All heads at once is 32 * P^2 and
+    // does not fit an 8192-token prompt on this Orin.
+    __nv_bfloat16* attn_scores_v = q_proj;
     for (int i = 0; i < NUM_Q_HEADS; ++i) {
-      const int k_head_idx = i / GQA_Q_TO_K_RATIO;
+      const int kv_head_idx = i / GQA_Q_TO_K_RATIO;
       __nv_bfloat16* q_head = q_proj + i * HEAD_DIM;
-      __nv_bfloat16* k_head = k_proj_batched_buffer + k_head_idx * HEAD_DIM;
-      __nv_bfloat16* attn_score_head =
-          layer_attn_scores + static_cast<size_t>(i) * prompt_len * prompt_len;
+      __nv_bfloat16* k_head = k_proj_batched_buffer + kv_head_idx * HEAD_DIM;
+      __nv_bfloat16* v_head = v_proj_batched_buffer + kv_head_idx * HEAD_DIM;
 
       cublasStatus_t attn_score_status = cublasGemmEx(cublas_guard.handle,
                                                       CUBLAS_OP_T,
@@ -540,27 +530,16 @@ void prefill(const int* gpu_input_tokens,
                                                       CUDA_R_16BF,
                                                       HIDDEN_SIZE,
                                                       &attn_beta,
-                                                      attn_score_head,
+                                                      prefill_attn_scores,
                                                       CUDA_R_16BF,
                                                       prompt_len_int,
                                                       CUBLAS_COMPUTE_32F,
                                                       CUBLAS_GEMM_DEFAULT);
       check_cublas(attn_score_status, "cublasGemmEx(prefill attention scores)");
-    }
+      causal_mask(prefill_attn_scores, prompt_len_int);
+      softmax(prefill_attn_scores, prompt_len_int);
 
-    g_prefill_total_q_heads = NUM_Q_HEADS;
-    causal_mask(layer_attn_scores, prompt_len_int);
-    softmax(layer_attn_scores, prompt_len_int);
-
-    // Attention scores * V: each Q head uses one grouped V head and writes [prompt_len, HEAD_DIM].
-    __nv_bfloat16* attn_scores_v = q_proj;
-    for (int i = 0; i < NUM_Q_HEADS; ++i) {
-      const int v_head_idx = i / GQA_Q_TO_K_RATIO;
-      __nv_bfloat16* attn_scores_head =
-          layer_attn_scores + static_cast<size_t>(i) * prompt_len * prompt_len;
-      __nv_bfloat16* v_head = v_proj_batched_buffer + v_head_idx * HEAD_DIM;
       __nv_bfloat16* output_attn_scores_head = attn_scores_v + i * HEAD_DIM;
-
       cublasStatus_t attn_score_v_status = cublasGemmEx(cublas_guard.handle,
                                                         CUBLAS_OP_N,
                                                         CUBLAS_OP_N,
@@ -571,7 +550,7 @@ void prefill(const int* gpu_input_tokens,
                                                         v_head,
                                                         CUDA_R_16BF,
                                                         KV_DIM,
-                                                        attn_scores_head,
+                                                        prefill_attn_scores,
                                                         CUDA_R_16BF,
                                                         prompt_len_int,
                                                         &attn_scores_v_beta,
@@ -688,24 +667,21 @@ void prefill(const int* gpu_input_tokens,
   check_cuda(cudaMemcpy(hidden_state, rms_norms, prompt_len * HIDDEN_SIZE * sizeof(__nv_bfloat16), cudaMemcpyDeviceToDevice),
              "cudaMemcpy(prefill hidden_state <- final rms_norms)");
 
-  // Row-major target we want: logits = R * E^T, where
-  //   R = rms_norms [P, H], E = tok_embeddings [V, H], logits [P, V].
-  // Naively that is m=P, n=V, k=H, but cuBLAS is column-major and our buffers are row-major.
-  // cuBLAS sees row-major R [P, H] as R^T [H, P], and row-major E [V, H] as E^T [H, V].
-  // With opA=T on E, cuBLAS uses E. GEMM computes C_col = E * R^T = (R * E^T)^T.
-  // Storing C in column-major with m=V, n=P gives the same bytes as row-major logits [P, V].
-  // Leading dims: lda=ldb=H, ldc=V.
+  // Logits for the last prompt token only. A full [P, vocab] row is about 250 KB
+  // per token and does not fit beside an 8192-token KV pool on this board.
+  // Same layout as the old full-prompt GEMM with n = 1: row-major logits [1, V].
+  __nv_bfloat16* last_hidden = rms_norms + (prompt_len - 1) * static_cast<size_t>(HIDDEN_SIZE);
   cublasStatus_t embed_status = cublasGemmEx(cublas_guard.handle,
                                              CUBLAS_OP_T,
                                              CUBLAS_OP_N,
                                              vocab_size,
-                                             prompt_len_int,
+                                             1,
                                              embedding_length,
                                              &embed_alpha,
                                              weights.tok_embeddings,
                                              CUDA_R_16BF,
                                              embedding_length,
-                                             rms_norms,
+                                             last_hidden,
                                              CUDA_R_16BF,
                                              embedding_length,
                                              &embed_beta,
@@ -718,11 +694,10 @@ void prefill(const int* gpu_input_tokens,
   // Managed/zero-copy embed_proj: sync once, then sample on the host without D2H memcpy.
   check_cuda(cudaDeviceSynchronize(), "cudaDeviceSynchronize(prefill embed_proj)");
 
-  const int last_token_offset = static_cast<int>((prompt_len - 1) * static_cast<size_t>(vocab_size));
-  float max_token = __bfloat162float(embed_proj[last_token_offset]);
+  float max_token = __bfloat162float(embed_proj[0]);
   int max_token_idx = 0;
   for (int token_idx = 0; token_idx < vocab_size; ++token_idx) {
-    const float logit = __bfloat162float(embed_proj[token_idx + last_token_offset]);
+    const float logit = __bfloat162float(embed_proj[token_idx]);
     if (logit > max_token) {
       max_token = logit;
       max_token_idx = token_idx;

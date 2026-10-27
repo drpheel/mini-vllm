@@ -1,0 +1,1401 @@
+{"id": "arc/0", "task": "arc", "gold": "C", "prompt_tokens": 90, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1", "task": "arc", "gold": "B", "prompt_tokens": 105, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/2", "task": "arc", "gold": "C", "prompt_tokens": 97, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/3", "task": "arc", "gold": "D", "prompt_tokens": 114, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/4", "task": "arc", "gold": "D", "prompt_tokens": 134, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/5", "task": "arc", "gold": "B", "prompt_tokens": 138, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/6", "task": "arc", "gold": "C", "prompt_tokens": 134, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/7", "task": "arc", "gold": "C", "prompt_tokens": 100, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/8", "task": "arc", "gold": "B", "prompt_tokens": 124, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/9", "task": "arc", "gold": "A", "prompt_tokens": 75, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/10", "task": "arc", "gold": "B", "prompt_tokens": 86, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/11", "task": "arc", "gold": "A", "prompt_tokens": 80, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/12", "task": "arc", "gold": "C", "prompt_tokens": 90, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/13", "task": "arc", "gold": "C", "prompt_tokens": 86, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/14", "task": "arc", "gold": "C", "prompt_tokens": 63, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/15", "task": "arc", "gold": "A", "prompt_tokens": 63, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/16", "task": "arc", "gold": "C", "prompt_tokens": 117, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/17", "task": "arc", "gold": "B", "prompt_tokens": 108, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/18", "task": "arc", "gold": "A", "prompt_tokens": 123, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/19", "task": "arc", "gold": "C", "prompt_tokens": 94, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/20", "task": "arc", "gold": "B", "prompt_tokens": 97, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/21", "task": "arc", "gold": "B", "prompt_tokens": 148, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/22", "task": "arc", "gold": "A", "prompt_tokens": 72, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/23", "task": "arc", "gold": "C", "prompt_tokens": 115, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/24", "task": "arc", "gold": "B", "prompt_tokens": 57, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/25", "task": "arc", "gold": "D", "prompt_tokens": 83, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/26", "task": "arc", "gold": "B", "prompt_tokens": 112, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/27", "task": "arc", "gold": "B", "prompt_tokens": 139, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/28", "task": "arc", "gold": "C", "prompt_tokens": 100, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/29", "task": "arc", "gold": "B", "prompt_tokens": 65, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/30", "task": "arc", "gold": "D", "prompt_tokens": 102, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/31", "task": "arc", "gold": "C", "prompt_tokens": 85, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/32", "task": "arc", "gold": "A", "prompt_tokens": 72, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/33", "task": "arc", "gold": "C", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/34", "task": "arc", "gold": "A", "prompt_tokens": 56, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/35", "task": "arc", "gold": "A", "prompt_tokens": 110, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/36", "task": "arc", "gold": "B", "prompt_tokens": 109, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/37", "task": "arc", "gold": "B", "prompt_tokens": 84, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/38", "task": "arc", "gold": "C", "prompt_tokens": 85, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/39", "task": "arc", "gold": "B", "prompt_tokens": 102, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/40", "task": "arc", "gold": "C", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/41", "task": "arc", "gold": "A", "prompt_tokens": 68, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/42", "task": "arc", "gold": "C", "prompt_tokens": 73, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/43", "task": "arc", "gold": "D", "prompt_tokens": 89, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/44", "task": "arc", "gold": "2", "prompt_tokens": 95, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/45", "task": "arc", "gold": "B", "prompt_tokens": 60, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/46", "task": "arc", "gold": "C", "prompt_tokens": 61, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/47", "task": "arc", "gold": "C", "prompt_tokens": 65, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/48", "task": "arc", "gold": "C", "prompt_tokens": 69, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/49", "task": "arc", "gold": "A", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/50", "task": "arc", "gold": "D", "prompt_tokens": 122, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/51", "task": "arc", "gold": "C", "prompt_tokens": 92, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/52", "task": "arc", "gold": "A", "prompt_tokens": 69, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/53", "task": "arc", "gold": "C", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/54", "task": "arc", "gold": "C", "prompt_tokens": 89, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/55", "task": "arc", "gold": "B", "prompt_tokens": 150, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/56", "task": "arc", "gold": "C", "prompt_tokens": 90, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/57", "task": "arc", "gold": "A", "prompt_tokens": 106, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/58", "task": "arc", "gold": "A", "prompt_tokens": 60, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/59", "task": "arc", "gold": "C", "prompt_tokens": 156, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/60", "task": "arc", "gold": "D", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/61", "task": "arc", "gold": "B", "prompt_tokens": 70, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/62", "task": "arc", "gold": "D", "prompt_tokens": 71, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/63", "task": "arc", "gold": "C", "prompt_tokens": 61, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/64", "task": "arc", "gold": "D", "prompt_tokens": 136, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/65", "task": "arc", "gold": "A", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/66", "task": "arc", "gold": "A", "prompt_tokens": 100, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/67", "task": "arc", "gold": "C", "prompt_tokens": 95, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/68", "task": "arc", "gold": "B", "prompt_tokens": 67, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/69", "task": "arc", "gold": "A", "prompt_tokens": 73, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/70", "task": "arc", "gold": "A", "prompt_tokens": 87, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/71", "task": "arc", "gold": "C", "prompt_tokens": 71, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/72", "task": "arc", "gold": "B", "prompt_tokens": 103, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/73", "task": "arc", "gold": "D", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/74", "task": "arc", "gold": "D", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/75", "task": "arc", "gold": "A", "prompt_tokens": 81, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/76", "task": "arc", "gold": "B", "prompt_tokens": 116, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/77", "task": "arc", "gold": "B", "prompt_tokens": 103, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/78", "task": "arc", "gold": "B", "prompt_tokens": 98, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/79", "task": "arc", "gold": "A", "prompt_tokens": 63, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/80", "task": "arc", "gold": "D", "prompt_tokens": 67, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/81", "task": "arc", "gold": "C", "prompt_tokens": 78, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/82", "task": "arc", "gold": "C", "prompt_tokens": 67, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/83", "task": "arc", "gold": "D", "prompt_tokens": 60, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/84", "task": "arc", "gold": "D", "prompt_tokens": 134, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/85", "task": "arc", "gold": "A", "prompt_tokens": 74, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/86", "task": "arc", "gold": "A", "prompt_tokens": 145, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/87", "task": "arc", "gold": "D", "prompt_tokens": 115, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/88", "task": "arc", "gold": "C", "prompt_tokens": 106, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/89", "task": "arc", "gold": "C", "prompt_tokens": 72, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/90", "task": "arc", "gold": "A", "prompt_tokens": 67, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/91", "task": "arc", "gold": "D", "prompt_tokens": 98, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/92", "task": "arc", "gold": "D", "prompt_tokens": 93, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/93", "task": "arc", "gold": "A", "prompt_tokens": 141, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/94", "task": "arc", "gold": "B", "prompt_tokens": 87, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/95", "task": "arc", "gold": "C", "prompt_tokens": 76, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/96", "task": "arc", "gold": "C", "prompt_tokens": 99, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/97", "task": "arc", "gold": "B", "prompt_tokens": 69, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/98", "task": "arc", "gold": "B", "prompt_tokens": 84, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/99", "task": "arc", "gold": "B", "prompt_tokens": 85, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/100", "task": "arc", "gold": "C", "prompt_tokens": 112, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/101", "task": "arc", "gold": "D", "prompt_tokens": 90, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/102", "task": "arc", "gold": "A", "prompt_tokens": 62, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/103", "task": "arc", "gold": "B", "prompt_tokens": 65, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/104", "task": "arc", "gold": "C", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/105", "task": "arc", "gold": "B", "prompt_tokens": 97, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/106", "task": "arc", "gold": "D", "prompt_tokens": 79, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/107", "task": "arc", "gold": "B", "prompt_tokens": 107, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/108", "task": "arc", "gold": "D", "prompt_tokens": 92, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/109", "task": "arc", "gold": "A", "prompt_tokens": 61, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/110", "task": "arc", "gold": "A", "prompt_tokens": 128, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/111", "task": "arc", "gold": "A", "prompt_tokens": 78, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/112", "task": "arc", "gold": "A", "prompt_tokens": 88, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/113", "task": "arc", "gold": "A", "prompt_tokens": 65, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/114", "task": "arc", "gold": "B", "prompt_tokens": 69, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/115", "task": "arc", "gold": "D", "prompt_tokens": 70, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/116", "task": "arc", "gold": "B", "prompt_tokens": 73, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/117", "task": "arc", "gold": "C", "prompt_tokens": 73, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/118", "task": "arc", "gold": "D", "prompt_tokens": 94, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/119", "task": "arc", "gold": "C", "prompt_tokens": 96, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/120", "task": "arc", "gold": "A", "prompt_tokens": 101, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/121", "task": "arc", "gold": "A", "prompt_tokens": 67, "allowed": ["A", "B", "C"]}
+{"id": "arc/122", "task": "arc", "gold": "D", "prompt_tokens": 86, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/123", "task": "arc", "gold": "A", "prompt_tokens": 96, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/124", "task": "arc", "gold": "B", "prompt_tokens": 91, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/125", "task": "arc", "gold": "D", "prompt_tokens": 71, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/126", "task": "arc", "gold": "A", "prompt_tokens": 58, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/127", "task": "arc", "gold": "B", "prompt_tokens": 59, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/128", "task": "arc", "gold": "4", "prompt_tokens": 55, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/129", "task": "arc", "gold": "C", "prompt_tokens": 76, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/130", "task": "arc", "gold": "B", "prompt_tokens": 64, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/131", "task": "arc", "gold": "C", "prompt_tokens": 70, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/132", "task": "arc", "gold": "D", "prompt_tokens": 65, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/133", "task": "arc", "gold": "B", "prompt_tokens": 75, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/134", "task": "arc", "gold": "B", "prompt_tokens": 97, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/135", "task": "arc", "gold": "2", "prompt_tokens": 96, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/136", "task": "arc", "gold": "B", "prompt_tokens": 109, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/137", "task": "arc", "gold": "B", "prompt_tokens": 87, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/138", "task": "arc", "gold": "A", "prompt_tokens": 90, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/139", "task": "arc", "gold": "B", "prompt_tokens": 75, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/140", "task": "arc", "gold": "D", "prompt_tokens": 92, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/141", "task": "arc", "gold": "C", "prompt_tokens": 89, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/142", "task": "arc", "gold": "A", "prompt_tokens": 73, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/143", "task": "arc", "gold": "A", "prompt_tokens": 104, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/144", "task": "arc", "gold": "A", "prompt_tokens": 65, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/145", "task": "arc", "gold": "C", "prompt_tokens": 119, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/146", "task": "arc", "gold": "B", "prompt_tokens": 68, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/147", "task": "arc", "gold": "A", "prompt_tokens": 75, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/148", "task": "arc", "gold": "C", "prompt_tokens": 57, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/149", "task": "arc", "gold": "A", "prompt_tokens": 76, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/150", "task": "arc", "gold": "C", "prompt_tokens": 76, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/151", "task": "arc", "gold": "D", "prompt_tokens": 64, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/152", "task": "arc", "gold": "D", "prompt_tokens": 65, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/153", "task": "arc", "gold": "B", "prompt_tokens": 99, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/154", "task": "arc", "gold": "B", "prompt_tokens": 93, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/155", "task": "arc", "gold": "D", "prompt_tokens": 68, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/156", "task": "arc", "gold": "C", "prompt_tokens": 62, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/157", "task": "arc", "gold": "B", "prompt_tokens": 67, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/158", "task": "arc", "gold": "C", "prompt_tokens": 63, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/159", "task": "arc", "gold": "B", "prompt_tokens": 64, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/160", "task": "arc", "gold": "A", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/161", "task": "arc", "gold": "D", "prompt_tokens": 67, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/162", "task": "arc", "gold": "A", "prompt_tokens": 134, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/163", "task": "arc", "gold": "B", "prompt_tokens": 84, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/164", "task": "arc", "gold": "A", "prompt_tokens": 59, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/165", "task": "arc", "gold": "A", "prompt_tokens": 54, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/166", "task": "arc", "gold": "C", "prompt_tokens": 76, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/167", "task": "arc", "gold": "B", "prompt_tokens": 83, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/168", "task": "arc", "gold": "A", "prompt_tokens": 68, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/169", "task": "arc", "gold": "D", "prompt_tokens": 95, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/170", "task": "arc", "gold": "D", "prompt_tokens": 186, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/171", "task": "arc", "gold": "D", "prompt_tokens": 87, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/172", "task": "arc", "gold": "B", "prompt_tokens": 95, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/173", "task": "arc", "gold": "D", "prompt_tokens": 76, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/174", "task": "arc", "gold": "C", "prompt_tokens": 62, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/175", "task": "arc", "gold": "A", "prompt_tokens": 122, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/176", "task": "arc", "gold": "A", "prompt_tokens": 88, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/177", "task": "arc", "gold": "A", "prompt_tokens": 93, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/178", "task": "arc", "gold": "B", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/179", "task": "arc", "gold": "C", "prompt_tokens": 54, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/180", "task": "arc", "gold": "A", "prompt_tokens": 61, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/181", "task": "arc", "gold": "D", "prompt_tokens": 109, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/182", "task": "arc", "gold": "C", "prompt_tokens": 66, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/183", "task": "arc", "gold": "C", "prompt_tokens": 104, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/184", "task": "arc", "gold": "A", "prompt_tokens": 98, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/185", "task": "arc", "gold": "C", "prompt_tokens": 131, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/186", "task": "arc", "gold": "D", "prompt_tokens": 127, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/187", "task": "arc", "gold": "A", "prompt_tokens": 109, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/188", "task": "arc", "gold": "C", "prompt_tokens": 65, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/189", "task": "arc", "gold": "C", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/190", "task": "arc", "gold": "C", "prompt_tokens": 80, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/191", "task": "arc", "gold": "B", "prompt_tokens": 102, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/192", "task": "arc", "gold": "A", "prompt_tokens": 70, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/193", "task": "arc", "gold": "D", "prompt_tokens": 101, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/194", "task": "arc", "gold": "B", "prompt_tokens": 106, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/195", "task": "arc", "gold": "A", "prompt_tokens": 83, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/196", "task": "arc", "gold": "B", "prompt_tokens": 123, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/197", "task": "arc", "gold": "C", "prompt_tokens": 90, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/198", "task": "arc", "gold": "B", "prompt_tokens": 94, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/199", "task": "arc", "gold": "B", "prompt_tokens": 76, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/200", "task": "arc", "gold": "C", "prompt_tokens": 86, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/201", "task": "arc", "gold": "C", "prompt_tokens": 83, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/202", "task": "arc", "gold": "A", "prompt_tokens": 59, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/203", "task": "arc", "gold": "B", "prompt_tokens": 81, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/204", "task": "arc", "gold": "D", "prompt_tokens": 72, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/205", "task": "arc", "gold": "C", "prompt_tokens": 85, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/206", "task": "arc", "gold": "B", "prompt_tokens": 102, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/207", "task": "arc", "gold": "C", "prompt_tokens": 116, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/208", "task": "arc", "gold": "C", "prompt_tokens": 91, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/209", "task": "arc", "gold": "C", "prompt_tokens": 69, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/210", "task": "arc", "gold": "C", "prompt_tokens": 80, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/211", "task": "arc", "gold": "D", "prompt_tokens": 119, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/212", "task": "arc", "gold": "C", "prompt_tokens": 81, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/213", "task": "arc", "gold": "B", "prompt_tokens": 117, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/214", "task": "arc", "gold": "B", "prompt_tokens": 115, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/215", "task": "arc", "gold": "B", "prompt_tokens": 91, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/216", "task": "arc", "gold": "D", "prompt_tokens": 71, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/217", "task": "arc", "gold": "A", "prompt_tokens": 89, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/218", "task": "arc", "gold": "C", "prompt_tokens": 50, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/219", "task": "arc", "gold": "B", "prompt_tokens": 86, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/220", "task": "arc", "gold": "A", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/221", "task": "arc", "gold": "B", "prompt_tokens": 99, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/222", "task": "arc", "gold": "A", "prompt_tokens": 68, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/223", "task": "arc", "gold": "A", "prompt_tokens": 96, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/224", "task": "arc", "gold": "A", "prompt_tokens": 64, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/225", "task": "arc", "gold": "A", "prompt_tokens": 99, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/226", "task": "arc", "gold": "C", "prompt_tokens": 116, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/227", "task": "arc", "gold": "B", "prompt_tokens": 90, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/228", "task": "arc", "gold": "B", "prompt_tokens": 65, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/229", "task": "arc", "gold": "B", "prompt_tokens": 84, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/230", "task": "arc", "gold": "D", "prompt_tokens": 159, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/231", "task": "arc", "gold": "A", "prompt_tokens": 216, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/232", "task": "arc", "gold": "A", "prompt_tokens": 70, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/233", "task": "arc", "gold": "B", "prompt_tokens": 61, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/234", "task": "arc", "gold": "C", "prompt_tokens": 75, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/235", "task": "arc", "gold": "B", "prompt_tokens": 75, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/236", "task": "arc", "gold": "D", "prompt_tokens": 85, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/237", "task": "arc", "gold": "D", "prompt_tokens": 89, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/238", "task": "arc", "gold": "B", "prompt_tokens": 121, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/239", "task": "arc", "gold": "A", "prompt_tokens": 81, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/240", "task": "arc", "gold": "D", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/241", "task": "arc", "gold": "C", "prompt_tokens": 90, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/242", "task": "arc", "gold": "B", "prompt_tokens": 85, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/243", "task": "arc", "gold": "A", "prompt_tokens": 62, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/244", "task": "arc", "gold": "B", "prompt_tokens": 113, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/245", "task": "arc", "gold": "C", "prompt_tokens": 79, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/246", "task": "arc", "gold": "A", "prompt_tokens": 76, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/247", "task": "arc", "gold": "C", "prompt_tokens": 95, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/248", "task": "arc", "gold": "B", "prompt_tokens": 67, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/249", "task": "arc", "gold": "B", "prompt_tokens": 56, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/250", "task": "arc", "gold": "D", "prompt_tokens": 75, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/251", "task": "arc", "gold": "B", "prompt_tokens": 109, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/252", "task": "arc", "gold": "A", "prompt_tokens": 98, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/253", "task": "arc", "gold": "D", "prompt_tokens": 64, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/254", "task": "arc", "gold": "D", "prompt_tokens": 96, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/255", "task": "arc", "gold": "A", "prompt_tokens": 70, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/256", "task": "arc", "gold": "D", "prompt_tokens": 61, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/257", "task": "arc", "gold": "A", "prompt_tokens": 123, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/258", "task": "arc", "gold": "C", "prompt_tokens": 95, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/259", "task": "arc", "gold": "A", "prompt_tokens": 83, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/260", "task": "arc", "gold": "C", "prompt_tokens": 91, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/261", "task": "arc", "gold": "D", "prompt_tokens": 65, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/262", "task": "arc", "gold": "A", "prompt_tokens": 88, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/263", "task": "arc", "gold": "D", "prompt_tokens": 71, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/264", "task": "arc", "gold": "B", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/265", "task": "arc", "gold": "C", "prompt_tokens": 95, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/266", "task": "arc", "gold": "A", "prompt_tokens": 68, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/267", "task": "arc", "gold": "C", "prompt_tokens": 79, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/268", "task": "arc", "gold": "B", "prompt_tokens": 112, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/269", "task": "arc", "gold": "C", "prompt_tokens": 198, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/270", "task": "arc", "gold": "C", "prompt_tokens": 81, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/271", "task": "arc", "gold": "A", "prompt_tokens": 53, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/272", "task": "arc", "gold": "C", "prompt_tokens": 73, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/273", "task": "arc", "gold": "B", "prompt_tokens": 81, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/274", "task": "arc", "gold": "B", "prompt_tokens": 73, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/275", "task": "arc", "gold": "D", "prompt_tokens": 111, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/276", "task": "arc", "gold": "B", "prompt_tokens": 84, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/277", "task": "arc", "gold": "B", "prompt_tokens": 75, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/278", "task": "arc", "gold": "D", "prompt_tokens": 113, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/279", "task": "arc", "gold": "B", "prompt_tokens": 78, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/280", "task": "arc", "gold": "B", "prompt_tokens": 80, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/281", "task": "arc", "gold": "D", "prompt_tokens": 102, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/282", "task": "arc", "gold": "A", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/283", "task": "arc", "gold": "B", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/284", "task": "arc", "gold": "B", "prompt_tokens": 117, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/285", "task": "arc", "gold": "C", "prompt_tokens": 76, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/286", "task": "arc", "gold": "C", "prompt_tokens": 86, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/287", "task": "arc", "gold": "C", "prompt_tokens": 89, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/288", "task": "arc", "gold": "B", "prompt_tokens": 80, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/289", "task": "arc", "gold": "C", "prompt_tokens": 114, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/290", "task": "arc", "gold": "D", "prompt_tokens": 132, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/291", "task": "arc", "gold": "B", "prompt_tokens": 117, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/292", "task": "arc", "gold": "C", "prompt_tokens": 62, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/293", "task": "arc", "gold": "B", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/294", "task": "arc", "gold": "C", "prompt_tokens": 65, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/295", "task": "arc", "gold": "B", "prompt_tokens": 62, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/296", "task": "arc", "gold": "C", "prompt_tokens": 81, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/297", "task": "arc", "gold": "C", "prompt_tokens": 80, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/298", "task": "arc", "gold": "B", "prompt_tokens": 126, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/299", "task": "arc", "gold": "A", "prompt_tokens": 135, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/300", "task": "arc", "gold": "D", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/301", "task": "arc", "gold": "C", "prompt_tokens": 89, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/302", "task": "arc", "gold": "B", "prompt_tokens": 74, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/303", "task": "arc", "gold": "C", "prompt_tokens": 86, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/304", "task": "arc", "gold": "A", "prompt_tokens": 75, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/305", "task": "arc", "gold": "A", "prompt_tokens": 65, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/306", "task": "arc", "gold": "D", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/307", "task": "arc", "gold": "C", "prompt_tokens": 78, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/308", "task": "arc", "gold": "C", "prompt_tokens": 69, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/309", "task": "arc", "gold": "C", "prompt_tokens": 83, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/310", "task": "arc", "gold": "B", "prompt_tokens": 167, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/311", "task": "arc", "gold": "A", "prompt_tokens": 103, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/312", "task": "arc", "gold": "D", "prompt_tokens": 53, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/313", "task": "arc", "gold": "3", "prompt_tokens": 96, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/314", "task": "arc", "gold": "B", "prompt_tokens": 97, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/315", "task": "arc", "gold": "A", "prompt_tokens": 93, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/316", "task": "arc", "gold": "C", "prompt_tokens": 71, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/317", "task": "arc", "gold": "B", "prompt_tokens": 94, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/318", "task": "arc", "gold": "A", "prompt_tokens": 146, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/319", "task": "arc", "gold": "B", "prompt_tokens": 57, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/320", "task": "arc", "gold": "A", "prompt_tokens": 146, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/321", "task": "arc", "gold": "C", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/322", "task": "arc", "gold": "A", "prompt_tokens": 92, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/323", "task": "arc", "gold": "B", "prompt_tokens": 79, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/324", "task": "arc", "gold": "A", "prompt_tokens": 64, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/325", "task": "arc", "gold": "C", "prompt_tokens": 119, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/326", "task": "arc", "gold": "B", "prompt_tokens": 57, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/327", "task": "arc", "gold": "D", "prompt_tokens": 74, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/328", "task": "arc", "gold": "A", "prompt_tokens": 73, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/329", "task": "arc", "gold": "D", "prompt_tokens": 64, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/330", "task": "arc", "gold": "D", "prompt_tokens": 88, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/331", "task": "arc", "gold": "C", "prompt_tokens": 137, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/332", "task": "arc", "gold": "A", "prompt_tokens": 64, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/333", "task": "arc", "gold": "B", "prompt_tokens": 99, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/334", "task": "arc", "gold": "C", "prompt_tokens": 90, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/335", "task": "arc", "gold": "D", "prompt_tokens": 91, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/336", "task": "arc", "gold": "A", "prompt_tokens": 88, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/337", "task": "arc", "gold": "B", "prompt_tokens": 105, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/338", "task": "arc", "gold": "A", "prompt_tokens": 84, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/339", "task": "arc", "gold": "D", "prompt_tokens": 85, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/340", "task": "arc", "gold": "C", "prompt_tokens": 75, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/341", "task": "arc", "gold": "C", "prompt_tokens": 70, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/342", "task": "arc", "gold": "B", "prompt_tokens": 71, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/343", "task": "arc", "gold": "D", "prompt_tokens": 130, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/344", "task": "arc", "gold": "A", "prompt_tokens": 117, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/345", "task": "arc", "gold": "B", "prompt_tokens": 106, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/346", "task": "arc", "gold": "C", "prompt_tokens": 73, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/347", "task": "arc", "gold": "C", "prompt_tokens": 79, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/348", "task": "arc", "gold": "A", "prompt_tokens": 60, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/349", "task": "arc", "gold": "D", "prompt_tokens": 80, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/350", "task": "arc", "gold": "D", "prompt_tokens": 74, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/351", "task": "arc", "gold": "B", "prompt_tokens": 106, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/352", "task": "arc", "gold": "D", "prompt_tokens": 72, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/353", "task": "arc", "gold": "C", "prompt_tokens": 76, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/354", "task": "arc", "gold": "D", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/355", "task": "arc", "gold": "D", "prompt_tokens": 74, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/356", "task": "arc", "gold": "A", "prompt_tokens": 113, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/357", "task": "arc", "gold": "B", "prompt_tokens": 120, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/358", "task": "arc", "gold": "D", "prompt_tokens": 78, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/359", "task": "arc", "gold": "C", "prompt_tokens": 84, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/360", "task": "arc", "gold": "B", "prompt_tokens": 107, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/361", "task": "arc", "gold": "A", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/362", "task": "arc", "gold": "C", "prompt_tokens": 70, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/363", "task": "arc", "gold": "A", "prompt_tokens": 69, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/364", "task": "arc", "gold": "C", "prompt_tokens": 126, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/365", "task": "arc", "gold": "B", "prompt_tokens": 83, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/366", "task": "arc", "gold": "B", "prompt_tokens": 75, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/367", "task": "arc", "gold": "A", "prompt_tokens": 71, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/368", "task": "arc", "gold": "C", "prompt_tokens": 83, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/369", "task": "arc", "gold": "D", "prompt_tokens": 73, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/370", "task": "arc", "gold": "A", "prompt_tokens": 93, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/371", "task": "arc", "gold": "B", "prompt_tokens": 72, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/372", "task": "arc", "gold": "B", "prompt_tokens": 100, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/373", "task": "arc", "gold": "A", "prompt_tokens": 85, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/374", "task": "arc", "gold": "C", "prompt_tokens": 180, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/375", "task": "arc", "gold": "D", "prompt_tokens": 86, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/376", "task": "arc", "gold": "B", "prompt_tokens": 79, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/377", "task": "arc", "gold": "C", "prompt_tokens": 61, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/378", "task": "arc", "gold": "C", "prompt_tokens": 109, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/379", "task": "arc", "gold": "B", "prompt_tokens": 76, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/380", "task": "arc", "gold": "A", "prompt_tokens": 89, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/381", "task": "arc", "gold": "C", "prompt_tokens": 75, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/382", "task": "arc", "gold": "C", "prompt_tokens": 91, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/383", "task": "arc", "gold": "A", "prompt_tokens": 97, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/384", "task": "arc", "gold": "C", "prompt_tokens": 85, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/385", "task": "arc", "gold": "2", "prompt_tokens": 59, "allowed": ["A", "B", "C"]}
+{"id": "arc/386", "task": "arc", "gold": "B", "prompt_tokens": 60, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/387", "task": "arc", "gold": "D", "prompt_tokens": 122, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/388", "task": "arc", "gold": "D", "prompt_tokens": 80, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/389", "task": "arc", "gold": "A", "prompt_tokens": 98, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/390", "task": "arc", "gold": "C", "prompt_tokens": 95, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/391", "task": "arc", "gold": "D", "prompt_tokens": 122, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/392", "task": "arc", "gold": "C", "prompt_tokens": 130, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/393", "task": "arc", "gold": "B", "prompt_tokens": 88, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/394", "task": "arc", "gold": "A", "prompt_tokens": 120, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/395", "task": "arc", "gold": "C", "prompt_tokens": 69, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/396", "task": "arc", "gold": "C", "prompt_tokens": 124, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/397", "task": "arc", "gold": "D", "prompt_tokens": 83, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/398", "task": "arc", "gold": "C", "prompt_tokens": 105, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/399", "task": "arc", "gold": "C", "prompt_tokens": 104, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/400", "task": "arc", "gold": "C", "prompt_tokens": 54, "allowed": ["A", "B", "C"]}
+{"id": "arc/401", "task": "arc", "gold": "A", "prompt_tokens": 105, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/402", "task": "arc", "gold": "C", "prompt_tokens": 108, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/403", "task": "arc", "gold": "D", "prompt_tokens": 88, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/404", "task": "arc", "gold": "A", "prompt_tokens": 109, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/405", "task": "arc", "gold": "A", "prompt_tokens": 109, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/406", "task": "arc", "gold": "C", "prompt_tokens": 97, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/407", "task": "arc", "gold": "D", "prompt_tokens": 102, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/408", "task": "arc", "gold": "B", "prompt_tokens": 118, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/409", "task": "arc", "gold": "A", "prompt_tokens": 94, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/410", "task": "arc", "gold": "B", "prompt_tokens": 104, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/411", "task": "arc", "gold": "D", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/412", "task": "arc", "gold": "B", "prompt_tokens": 66, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/413", "task": "arc", "gold": "A", "prompt_tokens": 109, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/414", "task": "arc", "gold": "C", "prompt_tokens": 91, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/415", "task": "arc", "gold": "D", "prompt_tokens": 105, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/416", "task": "arc", "gold": "A", "prompt_tokens": 176, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/417", "task": "arc", "gold": "D", "prompt_tokens": 68, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/418", "task": "arc", "gold": "D", "prompt_tokens": 80, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/419", "task": "arc", "gold": "B", "prompt_tokens": 105, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/420", "task": "arc", "gold": "A", "prompt_tokens": 58, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/421", "task": "arc", "gold": "C", "prompt_tokens": 119, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/422", "task": "arc", "gold": "B", "prompt_tokens": 112, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/423", "task": "arc", "gold": "B", "prompt_tokens": 118, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/424", "task": "arc", "gold": "B", "prompt_tokens": 94, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/425", "task": "arc", "gold": "D", "prompt_tokens": 117, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/426", "task": "arc", "gold": "C", "prompt_tokens": 89, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/427", "task": "arc", "gold": "2", "prompt_tokens": 61, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/428", "task": "arc", "gold": "B", "prompt_tokens": 121, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/429", "task": "arc", "gold": "B", "prompt_tokens": 69, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/430", "task": "arc", "gold": "A", "prompt_tokens": 51, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/431", "task": "arc", "gold": "D", "prompt_tokens": 140, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/432", "task": "arc", "gold": "D", "prompt_tokens": 92, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/433", "task": "arc", "gold": "C", "prompt_tokens": 84, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/434", "task": "arc", "gold": "A", "prompt_tokens": 146, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/435", "task": "arc", "gold": "B", "prompt_tokens": 153, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/436", "task": "arc", "gold": "D", "prompt_tokens": 152, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/437", "task": "arc", "gold": "3", "prompt_tokens": 63, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/438", "task": "arc", "gold": "A", "prompt_tokens": 143, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/439", "task": "arc", "gold": "C", "prompt_tokens": 111, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/440", "task": "arc", "gold": "D", "prompt_tokens": 67, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/441", "task": "arc", "gold": "C", "prompt_tokens": 60, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/442", "task": "arc", "gold": "A", "prompt_tokens": 88, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/443", "task": "arc", "gold": "A", "prompt_tokens": 97, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/444", "task": "arc", "gold": "2", "prompt_tokens": 92, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/445", "task": "arc", "gold": "D", "prompt_tokens": 76, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/446", "task": "arc", "gold": "C", "prompt_tokens": 84, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/447", "task": "arc", "gold": "D", "prompt_tokens": 67, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/448", "task": "arc", "gold": "B", "prompt_tokens": 119, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/449", "task": "arc", "gold": "D", "prompt_tokens": 94, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/450", "task": "arc", "gold": "B", "prompt_tokens": 104, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/451", "task": "arc", "gold": "B", "prompt_tokens": 61, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/452", "task": "arc", "gold": "D", "prompt_tokens": 68, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/453", "task": "arc", "gold": "3", "prompt_tokens": 98, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/454", "task": "arc", "gold": "A", "prompt_tokens": 120, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/455", "task": "arc", "gold": "B", "prompt_tokens": 124, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/456", "task": "arc", "gold": "D", "prompt_tokens": 69, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/457", "task": "arc", "gold": "C", "prompt_tokens": 89, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/458", "task": "arc", "gold": "C", "prompt_tokens": 163, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/459", "task": "arc", "gold": "D", "prompt_tokens": 95, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/460", "task": "arc", "gold": "A", "prompt_tokens": 57, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/461", "task": "arc", "gold": "B", "prompt_tokens": 123, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/462", "task": "arc", "gold": "B", "prompt_tokens": 117, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/463", "task": "arc", "gold": "C", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/464", "task": "arc", "gold": "D", "prompt_tokens": 66, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/465", "task": "arc", "gold": "A", "prompt_tokens": 98, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/466", "task": "arc", "gold": "B", "prompt_tokens": 116, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/467", "task": "arc", "gold": "B", "prompt_tokens": 91, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/468", "task": "arc", "gold": "A", "prompt_tokens": 92, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/469", "task": "arc", "gold": "C", "prompt_tokens": 118, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/470", "task": "arc", "gold": "D", "prompt_tokens": 99, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/471", "task": "arc", "gold": "D", "prompt_tokens": 73, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/472", "task": "arc", "gold": "C", "prompt_tokens": 97, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/473", "task": "arc", "gold": "B", "prompt_tokens": 65, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/474", "task": "arc", "gold": "A", "prompt_tokens": 139, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/475", "task": "arc", "gold": "B", "prompt_tokens": 79, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/476", "task": "arc", "gold": "B", "prompt_tokens": 65, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/477", "task": "arc", "gold": "B", "prompt_tokens": 112, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/478", "task": "arc", "gold": "A", "prompt_tokens": 61, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/479", "task": "arc", "gold": "C", "prompt_tokens": 85, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/480", "task": "arc", "gold": "D", "prompt_tokens": 78, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/481", "task": "arc", "gold": "C", "prompt_tokens": 54, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/482", "task": "arc", "gold": "B", "prompt_tokens": 106, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/483", "task": "arc", "gold": "B", "prompt_tokens": 122, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/484", "task": "arc", "gold": "D", "prompt_tokens": 88, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/485", "task": "arc", "gold": "D", "prompt_tokens": 98, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/486", "task": "arc", "gold": "C", "prompt_tokens": 78, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/487", "task": "arc", "gold": "D", "prompt_tokens": 70, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/488", "task": "arc", "gold": "B", "prompt_tokens": 84, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/489", "task": "arc", "gold": "D", "prompt_tokens": 68, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/490", "task": "arc", "gold": "B", "prompt_tokens": 102, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/491", "task": "arc", "gold": "D", "prompt_tokens": 100, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/492", "task": "arc", "gold": "A", "prompt_tokens": 71, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/493", "task": "arc", "gold": "B", "prompt_tokens": 94, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/494", "task": "arc", "gold": "C", "prompt_tokens": 72, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/495", "task": "arc", "gold": "B", "prompt_tokens": 70, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/496", "task": "arc", "gold": "B", "prompt_tokens": 90, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/497", "task": "arc", "gold": "B", "prompt_tokens": 60, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/498", "task": "arc", "gold": "B", "prompt_tokens": 123, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/499", "task": "arc", "gold": "A", "prompt_tokens": 113, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/500", "task": "arc", "gold": "C", "prompt_tokens": 104, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/501", "task": "arc", "gold": "A", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/502", "task": "arc", "gold": "C", "prompt_tokens": 104, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/503", "task": "arc", "gold": "A", "prompt_tokens": 60, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/504", "task": "arc", "gold": "B", "prompt_tokens": 133, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/505", "task": "arc", "gold": "B", "prompt_tokens": 92, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/506", "task": "arc", "gold": "B", "prompt_tokens": 130, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/507", "task": "arc", "gold": "B", "prompt_tokens": 99, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/508", "task": "arc", "gold": "C", "prompt_tokens": 96, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/509", "task": "arc", "gold": "A", "prompt_tokens": 83, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/510", "task": "arc", "gold": "B", "prompt_tokens": 75, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/511", "task": "arc", "gold": "C", "prompt_tokens": 61, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/512", "task": "arc", "gold": "A", "prompt_tokens": 81, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/513", "task": "arc", "gold": "D", "prompt_tokens": 54, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/514", "task": "arc", "gold": "C", "prompt_tokens": 80, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/515", "task": "arc", "gold": "A", "prompt_tokens": 79, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/516", "task": "arc", "gold": "B", "prompt_tokens": 107, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/517", "task": "arc", "gold": "D", "prompt_tokens": 73, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/518", "task": "arc", "gold": "C", "prompt_tokens": 65, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/519", "task": "arc", "gold": "B", "prompt_tokens": 54, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/520", "task": "arc", "gold": "C", "prompt_tokens": 62, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/521", "task": "arc", "gold": "D", "prompt_tokens": 83, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/522", "task": "arc", "gold": "C", "prompt_tokens": 63, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/523", "task": "arc", "gold": "A", "prompt_tokens": 112, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/524", "task": "arc", "gold": "C", "prompt_tokens": 107, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/525", "task": "arc", "gold": "B", "prompt_tokens": 57, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/526", "task": "arc", "gold": "B", "prompt_tokens": 96, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/527", "task": "arc", "gold": "D", "prompt_tokens": 88, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/528", "task": "arc", "gold": "D", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/529", "task": "arc", "gold": "B", "prompt_tokens": 88, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/530", "task": "arc", "gold": "4", "prompt_tokens": 73, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/531", "task": "arc", "gold": "C", "prompt_tokens": 98, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/532", "task": "arc", "gold": "C", "prompt_tokens": 107, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/533", "task": "arc", "gold": "C", "prompt_tokens": 64, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/534", "task": "arc", "gold": "D", "prompt_tokens": 64, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/535", "task": "arc", "gold": "A", "prompt_tokens": 55, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/536", "task": "arc", "gold": "C", "prompt_tokens": 67, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/537", "task": "arc", "gold": "A", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/538", "task": "arc", "gold": "B", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/539", "task": "arc", "gold": "D", "prompt_tokens": 86, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/540", "task": "arc", "gold": "C", "prompt_tokens": 75, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/541", "task": "arc", "gold": "C", "prompt_tokens": 95, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/542", "task": "arc", "gold": "C", "prompt_tokens": 89, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/543", "task": "arc", "gold": "C", "prompt_tokens": 141, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/544", "task": "arc", "gold": "C", "prompt_tokens": 180, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/545", "task": "arc", "gold": "C", "prompt_tokens": 83, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/546", "task": "arc", "gold": "1", "prompt_tokens": 74, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/547", "task": "arc", "gold": "C", "prompt_tokens": 57, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/548", "task": "arc", "gold": "B", "prompt_tokens": 103, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/549", "task": "arc", "gold": "C", "prompt_tokens": 69, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/550", "task": "arc", "gold": "D", "prompt_tokens": 68, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/551", "task": "arc", "gold": "A", "prompt_tokens": 73, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/552", "task": "arc", "gold": "C", "prompt_tokens": 83, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/553", "task": "arc", "gold": "D", "prompt_tokens": 51, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/554", "task": "arc", "gold": "D", "prompt_tokens": 90, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/555", "task": "arc", "gold": "D", "prompt_tokens": 76, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/556", "task": "arc", "gold": "D", "prompt_tokens": 126, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/557", "task": "arc", "gold": "B", "prompt_tokens": 111, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/558", "task": "arc", "gold": "D", "prompt_tokens": 63, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/559", "task": "arc", "gold": "C", "prompt_tokens": 61, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/560", "task": "arc", "gold": "C", "prompt_tokens": 93, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/561", "task": "arc", "gold": "A", "prompt_tokens": 68, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/562", "task": "arc", "gold": "B", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/563", "task": "arc", "gold": "A", "prompt_tokens": 131, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/564", "task": "arc", "gold": "B", "prompt_tokens": 72, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/565", "task": "arc", "gold": "C", "prompt_tokens": 103, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/566", "task": "arc", "gold": "A", "prompt_tokens": 122, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/567", "task": "arc", "gold": "C", "prompt_tokens": 61, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/568", "task": "arc", "gold": "D", "prompt_tokens": 91, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/569", "task": "arc", "gold": "D", "prompt_tokens": 80, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/570", "task": "arc", "gold": "D", "prompt_tokens": 83, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/571", "task": "arc", "gold": "A", "prompt_tokens": 67, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/572", "task": "arc", "gold": "B", "prompt_tokens": 68, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/573", "task": "arc", "gold": "B", "prompt_tokens": 101, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/574", "task": "arc", "gold": "B", "prompt_tokens": 159, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/575", "task": "arc", "gold": "C", "prompt_tokens": 65, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/576", "task": "arc", "gold": "A", "prompt_tokens": 75, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/577", "task": "arc", "gold": "C", "prompt_tokens": 118, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/578", "task": "arc", "gold": "D", "prompt_tokens": 83, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/579", "task": "arc", "gold": "C", "prompt_tokens": 94, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/580", "task": "arc", "gold": "A", "prompt_tokens": 65, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/581", "task": "arc", "gold": "A", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/582", "task": "arc", "gold": "A", "prompt_tokens": 60, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/583", "task": "arc", "gold": "B", "prompt_tokens": 71, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/584", "task": "arc", "gold": "A", "prompt_tokens": 167, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/585", "task": "arc", "gold": "D", "prompt_tokens": 78, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/586", "task": "arc", "gold": "B", "prompt_tokens": 66, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/587", "task": "arc", "gold": "B", "prompt_tokens": 70, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/588", "task": "arc", "gold": "C", "prompt_tokens": 165, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/589", "task": "arc", "gold": "D", "prompt_tokens": 63, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/590", "task": "arc", "gold": "A", "prompt_tokens": 111, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/591", "task": "arc", "gold": "D", "prompt_tokens": 64, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/592", "task": "arc", "gold": "C", "prompt_tokens": 59, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/593", "task": "arc", "gold": "A", "prompt_tokens": 65, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/594", "task": "arc", "gold": "D", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/595", "task": "arc", "gold": "A", "prompt_tokens": 86, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/596", "task": "arc", "gold": "D", "prompt_tokens": 87, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/597", "task": "arc", "gold": "A", "prompt_tokens": 103, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/598", "task": "arc", "gold": "B", "prompt_tokens": 144, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/599", "task": "arc", "gold": "D", "prompt_tokens": 135, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/600", "task": "arc", "gold": "B", "prompt_tokens": 86, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/601", "task": "arc", "gold": "D", "prompt_tokens": 50, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/602", "task": "arc", "gold": "A", "prompt_tokens": 109, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/603", "task": "arc", "gold": "D", "prompt_tokens": 67, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/604", "task": "arc", "gold": "D", "prompt_tokens": 108, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/605", "task": "arc", "gold": "A", "prompt_tokens": 76, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/606", "task": "arc", "gold": "B", "prompt_tokens": 65, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/607", "task": "arc", "gold": "B", "prompt_tokens": 62, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/608", "task": "arc", "gold": "D", "prompt_tokens": 80, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/609", "task": "arc", "gold": "C", "prompt_tokens": 107, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/610", "task": "arc", "gold": "D", "prompt_tokens": 99, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/611", "task": "arc", "gold": "B", "prompt_tokens": 73, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/612", "task": "arc", "gold": "C", "prompt_tokens": 99, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/613", "task": "arc", "gold": "A", "prompt_tokens": 87, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/614", "task": "arc", "gold": "A", "prompt_tokens": 76, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/615", "task": "arc", "gold": "A", "prompt_tokens": 118, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/616", "task": "arc", "gold": "A", "prompt_tokens": 91, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/617", "task": "arc", "gold": "C", "prompt_tokens": 89, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/618", "task": "arc", "gold": "B", "prompt_tokens": 68, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/619", "task": "arc", "gold": "C", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/620", "task": "arc", "gold": "D", "prompt_tokens": 56, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/621", "task": "arc", "gold": "B", "prompt_tokens": 84, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/622", "task": "arc", "gold": "B", "prompt_tokens": 72, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/623", "task": "arc", "gold": "C", "prompt_tokens": 100, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/624", "task": "arc", "gold": "B", "prompt_tokens": 66, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/625", "task": "arc", "gold": "B", "prompt_tokens": 94, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/626", "task": "arc", "gold": "C", "prompt_tokens": 93, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/627", "task": "arc", "gold": "B", "prompt_tokens": 84, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/628", "task": "arc", "gold": "C", "prompt_tokens": 61, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/629", "task": "arc", "gold": "B", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/630", "task": "arc", "gold": "B", "prompt_tokens": 83, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/631", "task": "arc", "gold": "A", "prompt_tokens": 116, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/632", "task": "arc", "gold": "D", "prompt_tokens": 101, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/633", "task": "arc", "gold": "B", "prompt_tokens": 91, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/634", "task": "arc", "gold": "D", "prompt_tokens": 117, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/635", "task": "arc", "gold": "B", "prompt_tokens": 130, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/636", "task": "arc", "gold": "B", "prompt_tokens": 136, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/637", "task": "arc", "gold": "D", "prompt_tokens": 128, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/638", "task": "arc", "gold": "C", "prompt_tokens": 59, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/639", "task": "arc", "gold": "D", "prompt_tokens": 67, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/640", "task": "arc", "gold": "B", "prompt_tokens": 113, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/641", "task": "arc", "gold": "C", "prompt_tokens": 94, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/642", "task": "arc", "gold": "C", "prompt_tokens": 97, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/643", "task": "arc", "gold": "B", "prompt_tokens": 70, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/644", "task": "arc", "gold": "A", "prompt_tokens": 56, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/645", "task": "arc", "gold": "A", "prompt_tokens": 95, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/646", "task": "arc", "gold": "C", "prompt_tokens": 89, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/647", "task": "arc", "gold": "D", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/648", "task": "arc", "gold": "B", "prompt_tokens": 49, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/649", "task": "arc", "gold": "A", "prompt_tokens": 81, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/650", "task": "arc", "gold": "A", "prompt_tokens": 107, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/651", "task": "arc", "gold": "C", "prompt_tokens": 111, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/652", "task": "arc", "gold": "C", "prompt_tokens": 80, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/653", "task": "arc", "gold": "A", "prompt_tokens": 73, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/654", "task": "arc", "gold": "B", "prompt_tokens": 72, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/655", "task": "arc", "gold": "C", "prompt_tokens": 85, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/656", "task": "arc", "gold": "B", "prompt_tokens": 67, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/657", "task": "arc", "gold": "D", "prompt_tokens": 130, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/658", "task": "arc", "gold": "C", "prompt_tokens": 98, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/659", "task": "arc", "gold": "B", "prompt_tokens": 92, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/660", "task": "arc", "gold": "B", "prompt_tokens": 120, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/661", "task": "arc", "gold": "C", "prompt_tokens": 120, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/662", "task": "arc", "gold": "C", "prompt_tokens": 81, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/663", "task": "arc", "gold": "A", "prompt_tokens": 78, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/664", "task": "arc", "gold": "C", "prompt_tokens": 97, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/665", "task": "arc", "gold": "D", "prompt_tokens": 63, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/666", "task": "arc", "gold": "A", "prompt_tokens": 75, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/667", "task": "arc", "gold": "A", "prompt_tokens": 100, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/668", "task": "arc", "gold": "C", "prompt_tokens": 88, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/669", "task": "arc", "gold": "C", "prompt_tokens": 87, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/670", "task": "arc", "gold": "3", "prompt_tokens": 84, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/671", "task": "arc", "gold": "C", "prompt_tokens": 115, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/672", "task": "arc", "gold": "D", "prompt_tokens": 71, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/673", "task": "arc", "gold": "C", "prompt_tokens": 98, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/674", "task": "arc", "gold": "A", "prompt_tokens": 81, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/675", "task": "arc", "gold": "C", "prompt_tokens": 54, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/676", "task": "arc", "gold": "B", "prompt_tokens": 95, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/677", "task": "arc", "gold": "A", "prompt_tokens": 69, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/678", "task": "arc", "gold": "D", "prompt_tokens": 103, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/679", "task": "arc", "gold": "C", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/680", "task": "arc", "gold": "D", "prompt_tokens": 96, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/681", "task": "arc", "gold": "B", "prompt_tokens": 80, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/682", "task": "arc", "gold": "A", "prompt_tokens": 79, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/683", "task": "arc", "gold": "C", "prompt_tokens": 80, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/684", "task": "arc", "gold": "A", "prompt_tokens": 63, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/685", "task": "arc", "gold": "B", "prompt_tokens": 83, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/686", "task": "arc", "gold": "B", "prompt_tokens": 89, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/687", "task": "arc", "gold": "B", "prompt_tokens": 63, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/688", "task": "arc", "gold": "B", "prompt_tokens": 64, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/689", "task": "arc", "gold": "D", "prompt_tokens": 74, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/690", "task": "arc", "gold": "D", "prompt_tokens": 94, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/691", "task": "arc", "gold": "A", "prompt_tokens": 72, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/692", "task": "arc", "gold": "A", "prompt_tokens": 139, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/693", "task": "arc", "gold": "C", "prompt_tokens": 60, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/694", "task": "arc", "gold": "A", "prompt_tokens": 74, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/695", "task": "arc", "gold": "C", "prompt_tokens": 69, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/696", "task": "arc", "gold": "C", "prompt_tokens": 89, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/697", "task": "arc", "gold": "A", "prompt_tokens": 93, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/698", "task": "arc", "gold": "B", "prompt_tokens": 105, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/699", "task": "arc", "gold": "C", "prompt_tokens": 58, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/700", "task": "arc", "gold": "D", "prompt_tokens": 59, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/701", "task": "arc", "gold": "D", "prompt_tokens": 76, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/702", "task": "arc", "gold": "C", "prompt_tokens": 76, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/703", "task": "arc", "gold": "D", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/704", "task": "arc", "gold": "B", "prompt_tokens": 68, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/705", "task": "arc", "gold": "C", "prompt_tokens": 114, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/706", "task": "arc", "gold": "A", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/707", "task": "arc", "gold": "B", "prompt_tokens": 116, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/708", "task": "arc", "gold": "B", "prompt_tokens": 94, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/709", "task": "arc", "gold": "A", "prompt_tokens": 114, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/710", "task": "arc", "gold": "D", "prompt_tokens": 95, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/711", "task": "arc", "gold": "C", "prompt_tokens": 80, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/712", "task": "arc", "gold": "A", "prompt_tokens": 68, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/713", "task": "arc", "gold": "B", "prompt_tokens": 91, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/714", "task": "arc", "gold": "C", "prompt_tokens": 142, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/715", "task": "arc", "gold": "D", "prompt_tokens": 104, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/716", "task": "arc", "gold": "B", "prompt_tokens": 85, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/717", "task": "arc", "gold": "C", "prompt_tokens": 85, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/718", "task": "arc", "gold": "A", "prompt_tokens": 111, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/719", "task": "arc", "gold": "D", "prompt_tokens": 69, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/720", "task": "arc", "gold": "B", "prompt_tokens": 54, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/721", "task": "arc", "gold": "B", "prompt_tokens": 64, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/722", "task": "arc", "gold": "D", "prompt_tokens": 90, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/723", "task": "arc", "gold": "B", "prompt_tokens": 66, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/724", "task": "arc", "gold": "D", "prompt_tokens": 69, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/725", "task": "arc", "gold": "B", "prompt_tokens": 98, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/726", "task": "arc", "gold": "D", "prompt_tokens": 63, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/727", "task": "arc", "gold": "C", "prompt_tokens": 101, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/728", "task": "arc", "gold": "D", "prompt_tokens": 60, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/729", "task": "arc", "gold": "C", "prompt_tokens": 103, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/730", "task": "arc", "gold": "B", "prompt_tokens": 126, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/731", "task": "arc", "gold": "B", "prompt_tokens": 127, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/732", "task": "arc", "gold": "D", "prompt_tokens": 99, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/733", "task": "arc", "gold": "C", "prompt_tokens": 75, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/734", "task": "arc", "gold": "D", "prompt_tokens": 79, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/735", "task": "arc", "gold": "D", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/736", "task": "arc", "gold": "D", "prompt_tokens": 98, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/737", "task": "arc", "gold": "D", "prompt_tokens": 60, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/738", "task": "arc", "gold": "D", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/739", "task": "arc", "gold": "C", "prompt_tokens": 87, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/740", "task": "arc", "gold": "B", "prompt_tokens": 71, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/741", "task": "arc", "gold": "D", "prompt_tokens": 134, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/742", "task": "arc", "gold": "B", "prompt_tokens": 89, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/743", "task": "arc", "gold": "D", "prompt_tokens": 97, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/744", "task": "arc", "gold": "C", "prompt_tokens": 62, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/745", "task": "arc", "gold": "D", "prompt_tokens": 102, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/746", "task": "arc", "gold": "B", "prompt_tokens": 94, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/747", "task": "arc", "gold": "C", "prompt_tokens": 64, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/748", "task": "arc", "gold": "A", "prompt_tokens": 89, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/749", "task": "arc", "gold": "C", "prompt_tokens": 74, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/750", "task": "arc", "gold": "D", "prompt_tokens": 83, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/751", "task": "arc", "gold": "D", "prompt_tokens": 86, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/752", "task": "arc", "gold": "D", "prompt_tokens": 98, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/753", "task": "arc", "gold": "D", "prompt_tokens": 83, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/754", "task": "arc", "gold": "A", "prompt_tokens": 91, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/755", "task": "arc", "gold": "D", "prompt_tokens": 98, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/756", "task": "arc", "gold": "D", "prompt_tokens": 89, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/757", "task": "arc", "gold": "C", "prompt_tokens": 110, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/758", "task": "arc", "gold": "A", "prompt_tokens": 81, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/759", "task": "arc", "gold": "B", "prompt_tokens": 88, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/760", "task": "arc", "gold": "C", "prompt_tokens": 81, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/761", "task": "arc", "gold": "C", "prompt_tokens": 97, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/762", "task": "arc", "gold": "A", "prompt_tokens": 99, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/763", "task": "arc", "gold": "A", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/764", "task": "arc", "gold": "B", "prompt_tokens": 92, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/765", "task": "arc", "gold": "A", "prompt_tokens": 102, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/766", "task": "arc", "gold": "D", "prompt_tokens": 124, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/767", "task": "arc", "gold": "C", "prompt_tokens": 122, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/768", "task": "arc", "gold": "A", "prompt_tokens": 72, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/769", "task": "arc", "gold": "A", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/770", "task": "arc", "gold": "D", "prompt_tokens": 103, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/771", "task": "arc", "gold": "B", "prompt_tokens": 63, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/772", "task": "arc", "gold": "C", "prompt_tokens": 65, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/773", "task": "arc", "gold": "B", "prompt_tokens": 59, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/774", "task": "arc", "gold": "C", "prompt_tokens": 87, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/775", "task": "arc", "gold": "A", "prompt_tokens": 55, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/776", "task": "arc", "gold": "A", "prompt_tokens": 98, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/777", "task": "arc", "gold": "D", "prompt_tokens": 70, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/778", "task": "arc", "gold": "B", "prompt_tokens": 67, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/779", "task": "arc", "gold": "A", "prompt_tokens": 103, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/780", "task": "arc", "gold": "C", "prompt_tokens": 101, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/781", "task": "arc", "gold": "B", "prompt_tokens": 66, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/782", "task": "arc", "gold": "B", "prompt_tokens": 58, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/783", "task": "arc", "gold": "B", "prompt_tokens": 84, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/784", "task": "arc", "gold": "D", "prompt_tokens": 78, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/785", "task": "arc", "gold": "D", "prompt_tokens": 107, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/786", "task": "arc", "gold": "C", "prompt_tokens": 63, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/787", "task": "arc", "gold": "C", "prompt_tokens": 106, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/788", "task": "arc", "gold": "C", "prompt_tokens": 161, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/789", "task": "arc", "gold": "A", "prompt_tokens": 113, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/790", "task": "arc", "gold": "A", "prompt_tokens": 102, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/791", "task": "arc", "gold": "D", "prompt_tokens": 64, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/792", "task": "arc", "gold": "B", "prompt_tokens": 93, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/793", "task": "arc", "gold": "B", "prompt_tokens": 67, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/794", "task": "arc", "gold": "C", "prompt_tokens": 99, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/795", "task": "arc", "gold": "D", "prompt_tokens": 95, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/796", "task": "arc", "gold": "B", "prompt_tokens": 81, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/797", "task": "arc", "gold": "D", "prompt_tokens": 90, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/798", "task": "arc", "gold": "C", "prompt_tokens": 86, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/799", "task": "arc", "gold": "C", "prompt_tokens": 128, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/800", "task": "arc", "gold": "C", "prompt_tokens": 70, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/801", "task": "arc", "gold": "C", "prompt_tokens": 68, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/802", "task": "arc", "gold": "C", "prompt_tokens": 86, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/803", "task": "arc", "gold": "D", "prompt_tokens": 80, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/804", "task": "arc", "gold": "C", "prompt_tokens": 111, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/805", "task": "arc", "gold": "B", "prompt_tokens": 61, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/806", "task": "arc", "gold": "C", "prompt_tokens": 93, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/807", "task": "arc", "gold": "D", "prompt_tokens": 60, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/808", "task": "arc", "gold": "D", "prompt_tokens": 146, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/809", "task": "arc", "gold": "D", "prompt_tokens": 80, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/810", "task": "arc", "gold": "C", "prompt_tokens": 73, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/811", "task": "arc", "gold": "A", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/812", "task": "arc", "gold": "C", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/813", "task": "arc", "gold": "D", "prompt_tokens": 100, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/814", "task": "arc", "gold": "B", "prompt_tokens": 112, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/815", "task": "arc", "gold": "A", "prompt_tokens": 60, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/816", "task": "arc", "gold": "A", "prompt_tokens": 168, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/817", "task": "arc", "gold": "D", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/818", "task": "arc", "gold": "D", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/819", "task": "arc", "gold": "C", "prompt_tokens": 104, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/820", "task": "arc", "gold": "D", "prompt_tokens": 81, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/821", "task": "arc", "gold": "A", "prompt_tokens": 75, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/822", "task": "arc", "gold": "D", "prompt_tokens": 93, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/823", "task": "arc", "gold": "B", "prompt_tokens": 100, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/824", "task": "arc", "gold": "D", "prompt_tokens": 86, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/825", "task": "arc", "gold": "2", "prompt_tokens": 94, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/826", "task": "arc", "gold": "A", "prompt_tokens": 101, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/827", "task": "arc", "gold": "D", "prompt_tokens": 76, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/828", "task": "arc", "gold": "B", "prompt_tokens": 62, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/829", "task": "arc", "gold": "A", "prompt_tokens": 64, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/830", "task": "arc", "gold": "D", "prompt_tokens": 71, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/831", "task": "arc", "gold": "B", "prompt_tokens": 72, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/832", "task": "arc", "gold": "B", "prompt_tokens": 93, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/833", "task": "arc", "gold": "D", "prompt_tokens": 68, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/834", "task": "arc", "gold": "A", "prompt_tokens": 61, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/835", "task": "arc", "gold": "A", "prompt_tokens": 95, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/836", "task": "arc", "gold": "D", "prompt_tokens": 111, "allowed": ["A", "B", "C", "D", "E"]}
+{"id": "arc/837", "task": "arc", "gold": "A", "prompt_tokens": 66, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/838", "task": "arc", "gold": "D", "prompt_tokens": 87, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/839", "task": "arc", "gold": "D", "prompt_tokens": 61, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/840", "task": "arc", "gold": "C", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/841", "task": "arc", "gold": "B", "prompt_tokens": 91, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/842", "task": "arc", "gold": "B", "prompt_tokens": 84, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/843", "task": "arc", "gold": "D", "prompt_tokens": 91, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/844", "task": "arc", "gold": "A", "prompt_tokens": 89, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/845", "task": "arc", "gold": "2", "prompt_tokens": 73, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/846", "task": "arc", "gold": "D", "prompt_tokens": 68, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/847", "task": "arc", "gold": "B", "prompt_tokens": 113, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/848", "task": "arc", "gold": "B", "prompt_tokens": 116, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/849", "task": "arc", "gold": "D", "prompt_tokens": 83, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/850", "task": "arc", "gold": "D", "prompt_tokens": 111, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/851", "task": "arc", "gold": "C", "prompt_tokens": 113, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/852", "task": "arc", "gold": "B", "prompt_tokens": 64, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/853", "task": "arc", "gold": "B", "prompt_tokens": 76, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/854", "task": "arc", "gold": "B", "prompt_tokens": 71, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/855", "task": "arc", "gold": "C", "prompt_tokens": 213, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/856", "task": "arc", "gold": "A", "prompt_tokens": 131, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/857", "task": "arc", "gold": "3", "prompt_tokens": 107, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/858", "task": "arc", "gold": "A", "prompt_tokens": 60, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/859", "task": "arc", "gold": "B", "prompt_tokens": 108, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/860", "task": "arc", "gold": "C", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/861", "task": "arc", "gold": "B", "prompt_tokens": 80, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/862", "task": "arc", "gold": "D", "prompt_tokens": 121, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/863", "task": "arc", "gold": "D", "prompt_tokens": 86, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/864", "task": "arc", "gold": "D", "prompt_tokens": 114, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/865", "task": "arc", "gold": "C", "prompt_tokens": 91, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/866", "task": "arc", "gold": "B", "prompt_tokens": 88, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/867", "task": "arc", "gold": "C", "prompt_tokens": 71, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/868", "task": "arc", "gold": "A", "prompt_tokens": 94, "allowed": ["A", "B", "C", "D", "E"]}
+{"id": "arc/869", "task": "arc", "gold": "D", "prompt_tokens": 131, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/870", "task": "arc", "gold": "D", "prompt_tokens": 75, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/871", "task": "arc", "gold": "C", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/872", "task": "arc", "gold": "C", "prompt_tokens": 99, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/873", "task": "arc", "gold": "B", "prompt_tokens": 108, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/874", "task": "arc", "gold": "D", "prompt_tokens": 55, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/875", "task": "arc", "gold": "A", "prompt_tokens": 97, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/876", "task": "arc", "gold": "A", "prompt_tokens": 76, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/877", "task": "arc", "gold": "A", "prompt_tokens": 65, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/878", "task": "arc", "gold": "B", "prompt_tokens": 70, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/879", "task": "arc", "gold": "B", "prompt_tokens": 83, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/880", "task": "arc", "gold": "A", "prompt_tokens": 78, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/881", "task": "arc", "gold": "D", "prompt_tokens": 86, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/882", "task": "arc", "gold": "D", "prompt_tokens": 74, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/883", "task": "arc", "gold": "C", "prompt_tokens": 92, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/884", "task": "arc", "gold": "C", "prompt_tokens": 90, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/885", "task": "arc", "gold": "B", "prompt_tokens": 62, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/886", "task": "arc", "gold": "1", "prompt_tokens": 88, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/887", "task": "arc", "gold": "C", "prompt_tokens": 97, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/888", "task": "arc", "gold": "C", "prompt_tokens": 137, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/889", "task": "arc", "gold": "C", "prompt_tokens": 123, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/890", "task": "arc", "gold": "B", "prompt_tokens": 70, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/891", "task": "arc", "gold": "A", "prompt_tokens": 126, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/892", "task": "arc", "gold": "B", "prompt_tokens": 96, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/893", "task": "arc", "gold": "C", "prompt_tokens": 78, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/894", "task": "arc", "gold": "B", "prompt_tokens": 64, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/895", "task": "arc", "gold": "C", "prompt_tokens": 85, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/896", "task": "arc", "gold": "A", "prompt_tokens": 61, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/897", "task": "arc", "gold": "D", "prompt_tokens": 111, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/898", "task": "arc", "gold": "A", "prompt_tokens": 92, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/899", "task": "arc", "gold": "A", "prompt_tokens": 105, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/900", "task": "arc", "gold": "D", "prompt_tokens": 129, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/901", "task": "arc", "gold": "B", "prompt_tokens": 87, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/902", "task": "arc", "gold": "B", "prompt_tokens": 106, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/903", "task": "arc", "gold": "A", "prompt_tokens": 90, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/904", "task": "arc", "gold": "C", "prompt_tokens": 64, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/905", "task": "arc", "gold": "D", "prompt_tokens": 112, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/906", "task": "arc", "gold": "C", "prompt_tokens": 75, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/907", "task": "arc", "gold": "A", "prompt_tokens": 106, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/908", "task": "arc", "gold": "A", "prompt_tokens": 67, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/909", "task": "arc", "gold": "D", "prompt_tokens": 97, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/910", "task": "arc", "gold": "D", "prompt_tokens": 50, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/911", "task": "arc", "gold": "D", "prompt_tokens": 80, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/912", "task": "arc", "gold": "A", "prompt_tokens": 63, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/913", "task": "arc", "gold": "B", "prompt_tokens": 81, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/914", "task": "arc", "gold": "B", "prompt_tokens": 86, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/915", "task": "arc", "gold": "D", "prompt_tokens": 79, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/916", "task": "arc", "gold": "B", "prompt_tokens": 88, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/917", "task": "arc", "gold": "A", "prompt_tokens": 91, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/918", "task": "arc", "gold": "D", "prompt_tokens": 73, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/919", "task": "arc", "gold": "B", "prompt_tokens": 98, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/920", "task": "arc", "gold": "A", "prompt_tokens": 80, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/921", "task": "arc", "gold": "C", "prompt_tokens": 90, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/922", "task": "arc", "gold": "B", "prompt_tokens": 94, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/923", "task": "arc", "gold": "D", "prompt_tokens": 114, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/924", "task": "arc", "gold": "B", "prompt_tokens": 193, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/925", "task": "arc", "gold": "C", "prompt_tokens": 56, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/926", "task": "arc", "gold": "A", "prompt_tokens": 65, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/927", "task": "arc", "gold": "A", "prompt_tokens": 130, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/928", "task": "arc", "gold": "D", "prompt_tokens": 69, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/929", "task": "arc", "gold": "A", "prompt_tokens": 108, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/930", "task": "arc", "gold": "B", "prompt_tokens": 89, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/931", "task": "arc", "gold": "B", "prompt_tokens": 70, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/932", "task": "arc", "gold": "D", "prompt_tokens": 116, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/933", "task": "arc", "gold": "B", "prompt_tokens": 65, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/934", "task": "arc", "gold": "B", "prompt_tokens": 125, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/935", "task": "arc", "gold": "D", "prompt_tokens": 66, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/936", "task": "arc", "gold": "C", "prompt_tokens": 90, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/937", "task": "arc", "gold": "C", "prompt_tokens": 110, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/938", "task": "arc", "gold": "B", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/939", "task": "arc", "gold": "D", "prompt_tokens": 101, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/940", "task": "arc", "gold": "B", "prompt_tokens": 71, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/941", "task": "arc", "gold": "B", "prompt_tokens": 111, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/942", "task": "arc", "gold": "C", "prompt_tokens": 75, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/943", "task": "arc", "gold": "B", "prompt_tokens": 85, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/944", "task": "arc", "gold": "A", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/945", "task": "arc", "gold": "A", "prompt_tokens": 85, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/946", "task": "arc", "gold": "C", "prompt_tokens": 92, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/947", "task": "arc", "gold": "C", "prompt_tokens": 75, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/948", "task": "arc", "gold": "D", "prompt_tokens": 59, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/949", "task": "arc", "gold": "A", "prompt_tokens": 99, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/950", "task": "arc", "gold": "D", "prompt_tokens": 143, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/951", "task": "arc", "gold": "B", "prompt_tokens": 75, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/952", "task": "arc", "gold": "C", "prompt_tokens": 70, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/953", "task": "arc", "gold": "1", "prompt_tokens": 102, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/954", "task": "arc", "gold": "C", "prompt_tokens": 70, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/955", "task": "arc", "gold": "C", "prompt_tokens": 51, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/956", "task": "arc", "gold": "C", "prompt_tokens": 89, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/957", "task": "arc", "gold": "D", "prompt_tokens": 69, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/958", "task": "arc", "gold": "D", "prompt_tokens": 107, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/959", "task": "arc", "gold": "C", "prompt_tokens": 64, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/960", "task": "arc", "gold": "C", "prompt_tokens": 115, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/961", "task": "arc", "gold": "B", "prompt_tokens": 57, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/962", "task": "arc", "gold": "B", "prompt_tokens": 86, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/963", "task": "arc", "gold": "2", "prompt_tokens": 64, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/964", "task": "arc", "gold": "D", "prompt_tokens": 113, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/965", "task": "arc", "gold": "C", "prompt_tokens": 81, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/966", "task": "arc", "gold": "C", "prompt_tokens": 100, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/967", "task": "arc", "gold": "C", "prompt_tokens": 98, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/968", "task": "arc", "gold": "C", "prompt_tokens": 107, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/969", "task": "arc", "gold": "B", "prompt_tokens": 106, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/970", "task": "arc", "gold": "A", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/971", "task": "arc", "gold": "B", "prompt_tokens": 129, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/972", "task": "arc", "gold": "B", "prompt_tokens": 56, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/973", "task": "arc", "gold": "D", "prompt_tokens": 94, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/974", "task": "arc", "gold": "A", "prompt_tokens": 105, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/975", "task": "arc", "gold": "3", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/976", "task": "arc", "gold": "B", "prompt_tokens": 106, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/977", "task": "arc", "gold": "D", "prompt_tokens": 73, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/978", "task": "arc", "gold": "B", "prompt_tokens": 62, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/979", "task": "arc", "gold": "B", "prompt_tokens": 55, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/980", "task": "arc", "gold": "D", "prompt_tokens": 71, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/981", "task": "arc", "gold": "D", "prompt_tokens": 93, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/982", "task": "arc", "gold": "D", "prompt_tokens": 121, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/983", "task": "arc", "gold": "C", "prompt_tokens": 57, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/984", "task": "arc", "gold": "B", "prompt_tokens": 89, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/985", "task": "arc", "gold": "D", "prompt_tokens": 60, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/986", "task": "arc", "gold": "D", "prompt_tokens": 59, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/987", "task": "arc", "gold": "D", "prompt_tokens": 92, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/988", "task": "arc", "gold": "B", "prompt_tokens": 109, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/989", "task": "arc", "gold": "D", "prompt_tokens": 79, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/990", "task": "arc", "gold": "D", "prompt_tokens": 95, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/991", "task": "arc", "gold": "C", "prompt_tokens": 66, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/992", "task": "arc", "gold": "B", "prompt_tokens": 84, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/993", "task": "arc", "gold": "D", "prompt_tokens": 135, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/994", "task": "arc", "gold": "C", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/995", "task": "arc", "gold": "B", "prompt_tokens": 93, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/996", "task": "arc", "gold": "B", "prompt_tokens": 55, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/997", "task": "arc", "gold": "C", "prompt_tokens": 87, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/998", "task": "arc", "gold": "C", "prompt_tokens": 92, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/999", "task": "arc", "gold": "A", "prompt_tokens": 116, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1000", "task": "arc", "gold": "A", "prompt_tokens": 115, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1001", "task": "arc", "gold": "C", "prompt_tokens": 93, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1002", "task": "arc", "gold": "A", "prompt_tokens": 91, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1003", "task": "arc", "gold": "B", "prompt_tokens": 146, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1004", "task": "arc", "gold": "C", "prompt_tokens": 114, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1005", "task": "arc", "gold": "D", "prompt_tokens": 98, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1006", "task": "arc", "gold": "D", "prompt_tokens": 144, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1007", "task": "arc", "gold": "D", "prompt_tokens": 87, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1008", "task": "arc", "gold": "A", "prompt_tokens": 85, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1009", "task": "arc", "gold": "A", "prompt_tokens": 55, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1010", "task": "arc", "gold": "D", "prompt_tokens": 66, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1011", "task": "arc", "gold": "A", "prompt_tokens": 93, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1012", "task": "arc", "gold": "A", "prompt_tokens": 86, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1013", "task": "arc", "gold": "A", "prompt_tokens": 66, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1014", "task": "arc", "gold": "B", "prompt_tokens": 80, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1015", "task": "arc", "gold": "D", "prompt_tokens": 72, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1016", "task": "arc", "gold": "D", "prompt_tokens": 63, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1017", "task": "arc", "gold": "A", "prompt_tokens": 106, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1018", "task": "arc", "gold": "D", "prompt_tokens": 78, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1019", "task": "arc", "gold": "A", "prompt_tokens": 91, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1020", "task": "arc", "gold": "C", "prompt_tokens": 93, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1021", "task": "arc", "gold": "D", "prompt_tokens": 90, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1022", "task": "arc", "gold": "D", "prompt_tokens": 86, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1023", "task": "arc", "gold": "D", "prompt_tokens": 79, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1024", "task": "arc", "gold": "C", "prompt_tokens": 92, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1025", "task": "arc", "gold": "C", "prompt_tokens": 115, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1026", "task": "arc", "gold": "C", "prompt_tokens": 69, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1027", "task": "arc", "gold": "C", "prompt_tokens": 70, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1028", "task": "arc", "gold": "B", "prompt_tokens": 96, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1029", "task": "arc", "gold": "D", "prompt_tokens": 53, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1030", "task": "arc", "gold": "D", "prompt_tokens": 88, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1031", "task": "arc", "gold": "A", "prompt_tokens": 101, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1032", "task": "arc", "gold": "D", "prompt_tokens": 122, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1033", "task": "arc", "gold": "D", "prompt_tokens": 128, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1034", "task": "arc", "gold": "A", "prompt_tokens": 69, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1035", "task": "arc", "gold": "B", "prompt_tokens": 96, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1036", "task": "arc", "gold": "D", "prompt_tokens": 67, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1037", "task": "arc", "gold": "B", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D", "E"]}
+{"id": "arc/1038", "task": "arc", "gold": "C", "prompt_tokens": 89, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1039", "task": "arc", "gold": "B", "prompt_tokens": 89, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1040", "task": "arc", "gold": "B", "prompt_tokens": 87, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1041", "task": "arc", "gold": "B", "prompt_tokens": 113, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1042", "task": "arc", "gold": "A", "prompt_tokens": 68, "allowed": ["A", "B", "C"]}
+{"id": "arc/1043", "task": "arc", "gold": "C", "prompt_tokens": 87, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1044", "task": "arc", "gold": "A", "prompt_tokens": 78, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1045", "task": "arc", "gold": "B", "prompt_tokens": 125, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1046", "task": "arc", "gold": "D", "prompt_tokens": 63, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1047", "task": "arc", "gold": "C", "prompt_tokens": 116, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1048", "task": "arc", "gold": "B", "prompt_tokens": 63, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1049", "task": "arc", "gold": "A", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1050", "task": "arc", "gold": "D", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1051", "task": "arc", "gold": "C", "prompt_tokens": 128, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1052", "task": "arc", "gold": "D", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1053", "task": "arc", "gold": "A", "prompt_tokens": 87, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1054", "task": "arc", "gold": "A", "prompt_tokens": 73, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1055", "task": "arc", "gold": "A", "prompt_tokens": 94, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1056", "task": "arc", "gold": "A", "prompt_tokens": 61, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1057", "task": "arc", "gold": "B", "prompt_tokens": 100, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1058", "task": "arc", "gold": "A", "prompt_tokens": 88, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1059", "task": "arc", "gold": "B", "prompt_tokens": 113, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1060", "task": "arc", "gold": "B", "prompt_tokens": 83, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1061", "task": "arc", "gold": "A", "prompt_tokens": 71, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1062", "task": "arc", "gold": "B", "prompt_tokens": 80, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1063", "task": "arc", "gold": "D", "prompt_tokens": 108, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1064", "task": "arc", "gold": "D", "prompt_tokens": 86, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1065", "task": "arc", "gold": "C", "prompt_tokens": 140, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1066", "task": "arc", "gold": "C", "prompt_tokens": 94, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1067", "task": "arc", "gold": "D", "prompt_tokens": 78, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1068", "task": "arc", "gold": "C", "prompt_tokens": 73, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1069", "task": "arc", "gold": "D", "prompt_tokens": 129, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1070", "task": "arc", "gold": "D", "prompt_tokens": 102, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1071", "task": "arc", "gold": "A", "prompt_tokens": 86, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1072", "task": "arc", "gold": "B", "prompt_tokens": 53, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1073", "task": "arc", "gold": "A", "prompt_tokens": 71, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1074", "task": "arc", "gold": "D", "prompt_tokens": 145, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1075", "task": "arc", "gold": "C", "prompt_tokens": 98, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1076", "task": "arc", "gold": "D", "prompt_tokens": 63, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1077", "task": "arc", "gold": "D", "prompt_tokens": 79, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1078", "task": "arc", "gold": "B", "prompt_tokens": 108, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1079", "task": "arc", "gold": "B", "prompt_tokens": 111, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1080", "task": "arc", "gold": "A", "prompt_tokens": 109, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1081", "task": "arc", "gold": "D", "prompt_tokens": 75, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1082", "task": "arc", "gold": "A", "prompt_tokens": 73, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1083", "task": "arc", "gold": "A", "prompt_tokens": 108, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1084", "task": "arc", "gold": "D", "prompt_tokens": 93, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1085", "task": "arc", "gold": "A", "prompt_tokens": 119, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1086", "task": "arc", "gold": "C", "prompt_tokens": 128, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1087", "task": "arc", "gold": "D", "prompt_tokens": 106, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1088", "task": "arc", "gold": "A", "prompt_tokens": 79, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1089", "task": "arc", "gold": "D", "prompt_tokens": 105, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1090", "task": "arc", "gold": "A", "prompt_tokens": 84, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1091", "task": "arc", "gold": "C", "prompt_tokens": 64, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1092", "task": "arc", "gold": "2", "prompt_tokens": 134, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1093", "task": "arc", "gold": "C", "prompt_tokens": 111, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1094", "task": "arc", "gold": "D", "prompt_tokens": 71, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1095", "task": "arc", "gold": "B", "prompt_tokens": 62, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1096", "task": "arc", "gold": "D", "prompt_tokens": 80, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1097", "task": "arc", "gold": "C", "prompt_tokens": 96, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1098", "task": "arc", "gold": "B", "prompt_tokens": 111, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1099", "task": "arc", "gold": "D", "prompt_tokens": 83, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1100", "task": "arc", "gold": "D", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1101", "task": "arc", "gold": "B", "prompt_tokens": 88, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1102", "task": "arc", "gold": "D", "prompt_tokens": 68, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1103", "task": "arc", "gold": "A", "prompt_tokens": 71, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1104", "task": "arc", "gold": "C", "prompt_tokens": 87, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1105", "task": "arc", "gold": "B", "prompt_tokens": 95, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1106", "task": "arc", "gold": "D", "prompt_tokens": 63, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1107", "task": "arc", "gold": "B", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1108", "task": "arc", "gold": "B", "prompt_tokens": 132, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1109", "task": "arc", "gold": "D", "prompt_tokens": 83, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1110", "task": "arc", "gold": "D", "prompt_tokens": 78, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1111", "task": "arc", "gold": "C", "prompt_tokens": 114, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1112", "task": "arc", "gold": "D", "prompt_tokens": 71, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1113", "task": "arc", "gold": "2", "prompt_tokens": 72, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1114", "task": "arc", "gold": "B", "prompt_tokens": 72, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1115", "task": "arc", "gold": "C", "prompt_tokens": 81, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1116", "task": "arc", "gold": "D", "prompt_tokens": 80, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1117", "task": "arc", "gold": "C", "prompt_tokens": 109, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1118", "task": "arc", "gold": "A", "prompt_tokens": 105, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1119", "task": "arc", "gold": "A", "prompt_tokens": 69, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1120", "task": "arc", "gold": "C", "prompt_tokens": 108, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1121", "task": "arc", "gold": "A", "prompt_tokens": 75, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1122", "task": "arc", "gold": "A", "prompt_tokens": 70, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1123", "task": "arc", "gold": "A", "prompt_tokens": 59, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1124", "task": "arc", "gold": "C", "prompt_tokens": 54, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1125", "task": "arc", "gold": "C", "prompt_tokens": 86, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1126", "task": "arc", "gold": "A", "prompt_tokens": 94, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1127", "task": "arc", "gold": "C", "prompt_tokens": 83, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1128", "task": "arc", "gold": "A", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1129", "task": "arc", "gold": "B", "prompt_tokens": 119, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1130", "task": "arc", "gold": "A", "prompt_tokens": 95, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1131", "task": "arc", "gold": "D", "prompt_tokens": 107, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1132", "task": "arc", "gold": "B", "prompt_tokens": 71, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1133", "task": "arc", "gold": "D", "prompt_tokens": 109, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1134", "task": "arc", "gold": "C", "prompt_tokens": 58, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1135", "task": "arc", "gold": "C", "prompt_tokens": 58, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1136", "task": "arc", "gold": "C", "prompt_tokens": 52, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1137", "task": "arc", "gold": "C", "prompt_tokens": 121, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1138", "task": "arc", "gold": "D", "prompt_tokens": 81, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1139", "task": "arc", "gold": "C", "prompt_tokens": 83, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1140", "task": "arc", "gold": "A", "prompt_tokens": 102, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1141", "task": "arc", "gold": "D", "prompt_tokens": 77, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1142", "task": "arc", "gold": "D", "prompt_tokens": 75, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1143", "task": "arc", "gold": "B", "prompt_tokens": 104, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1144", "task": "arc", "gold": "B", "prompt_tokens": 96, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1145", "task": "arc", "gold": "B", "prompt_tokens": 54, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1146", "task": "arc", "gold": "D", "prompt_tokens": 98, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1147", "task": "arc", "gold": "C", "prompt_tokens": 126, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1148", "task": "arc", "gold": "B", "prompt_tokens": 91, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1149", "task": "arc", "gold": "C", "prompt_tokens": 70, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1150", "task": "arc", "gold": "D", "prompt_tokens": 59, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1151", "task": "arc", "gold": "C", "prompt_tokens": 105, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1152", "task": "arc", "gold": "3", "prompt_tokens": 63, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1153", "task": "arc", "gold": "D", "prompt_tokens": 97, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1154", "task": "arc", "gold": "D", "prompt_tokens": 105, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1155", "task": "arc", "gold": "D", "prompt_tokens": 86, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1156", "task": "arc", "gold": "A", "prompt_tokens": 81, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1157", "task": "arc", "gold": "C", "prompt_tokens": 76, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1158", "task": "arc", "gold": "A", "prompt_tokens": 61, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1159", "task": "arc", "gold": "A", "prompt_tokens": 92, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1160", "task": "arc", "gold": "B", "prompt_tokens": 61, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1161", "task": "arc", "gold": "A", "prompt_tokens": 112, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1162", "task": "arc", "gold": "C", "prompt_tokens": 105, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1163", "task": "arc", "gold": "B", "prompt_tokens": 64, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1164", "task": "arc", "gold": "A", "prompt_tokens": 60, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1165", "task": "arc", "gold": "A", "prompt_tokens": 82, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1166", "task": "arc", "gold": "B", "prompt_tokens": 100, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1167", "task": "arc", "gold": "A", "prompt_tokens": 72, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1168", "task": "arc", "gold": "A", "prompt_tokens": 76, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1169", "task": "arc", "gold": "A", "prompt_tokens": 107, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1170", "task": "arc", "gold": "D", "prompt_tokens": 81, "allowed": ["A", "B", "C", "D"]}
+{"id": "arc/1171", "task": "arc", "gold": "A", "prompt_tokens": 83, "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/0", "task": "mmlu", "gold": "B", "prompt_tokens": 363, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/1", "task": "mmlu", "gold": "C", "prompt_tokens": 376, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/2", "task": "mmlu", "gold": "D", "prompt_tokens": 383, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/3", "task": "mmlu", "gold": "B", "prompt_tokens": 393, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/4", "task": "mmlu", "gold": "B", "prompt_tokens": 406, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/5", "task": "mmlu", "gold": "A", "prompt_tokens": 401, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/6", "task": "mmlu", "gold": "A", "prompt_tokens": 394, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/7", "task": "mmlu", "gold": "D", "prompt_tokens": 377, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/8", "task": "mmlu", "gold": "B", "prompt_tokens": 360, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/9", "task": "mmlu", "gold": "C", "prompt_tokens": 374, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/10", "task": "mmlu", "gold": "C", "prompt_tokens": 398, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/11", "task": "mmlu", "gold": "C", "prompt_tokens": 376, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/12", "task": "mmlu", "gold": "A", "prompt_tokens": 361, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/13", "task": "mmlu", "gold": "C", "prompt_tokens": 427, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/14", "task": "mmlu", "gold": "C", "prompt_tokens": 356, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/15", "task": "mmlu", "gold": "B", "prompt_tokens": 371, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/16", "task": "mmlu", "gold": "C", "prompt_tokens": 362, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/17", "task": "mmlu", "gold": "C", "prompt_tokens": 373, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/18", "task": "mmlu", "gold": "D", "prompt_tokens": 367, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/19", "task": "mmlu", "gold": "A", "prompt_tokens": 405, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/20", "task": "mmlu", "gold": "A", "prompt_tokens": 405, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/21", "task": "mmlu", "gold": "A", "prompt_tokens": 406, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/22", "task": "mmlu", "gold": "D", "prompt_tokens": 397, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/23", "task": "mmlu", "gold": "D", "prompt_tokens": 364, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/24", "task": "mmlu", "gold": "B", "prompt_tokens": 379, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/25", "task": "mmlu", "gold": "C", "prompt_tokens": 376, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/26", "task": "mmlu", "gold": "C", "prompt_tokens": 381, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/27", "task": "mmlu", "gold": "B", "prompt_tokens": 390, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/28", "task": "mmlu", "gold": "D", "prompt_tokens": 392, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/29", "task": "mmlu", "gold": "A", "prompt_tokens": 375, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/30", "task": "mmlu", "gold": "B", "prompt_tokens": 394, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/31", "task": "mmlu", "gold": "B", "prompt_tokens": 385, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/32", "task": "mmlu", "gold": "A", "prompt_tokens": 398, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/33", "task": "mmlu", "gold": "C", "prompt_tokens": 402, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/34", "task": "mmlu", "gold": "A", "prompt_tokens": 410, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/35", "task": "mmlu", "gold": "B", "prompt_tokens": 359, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/36", "task": "mmlu", "gold": "D", "prompt_tokens": 358, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/37", "task": "mmlu", "gold": "B", "prompt_tokens": 378, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/38", "task": "mmlu", "gold": "C", "prompt_tokens": 350, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/39", "task": "mmlu", "gold": "D", "prompt_tokens": 363, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/40", "task": "mmlu", "gold": "C", "prompt_tokens": 379, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/41", "task": "mmlu", "gold": "A", "prompt_tokens": 353, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/42", "task": "mmlu", "gold": "B", "prompt_tokens": 402, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/43", "task": "mmlu", "gold": "C", "prompt_tokens": 370, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/44", "task": "mmlu", "gold": "C", "prompt_tokens": 405, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/45", "task": "mmlu", "gold": "C", "prompt_tokens": 381, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/46", "task": "mmlu", "gold": "B", "prompt_tokens": 383, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/47", "task": "mmlu", "gold": "B", "prompt_tokens": 368, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/48", "task": "mmlu", "gold": "C", "prompt_tokens": 405, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/49", "task": "mmlu", "gold": "B", "prompt_tokens": 360, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/50", "task": "mmlu", "gold": "D", "prompt_tokens": 371, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/51", "task": "mmlu", "gold": "B", "prompt_tokens": 369, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/52", "task": "mmlu", "gold": "A", "prompt_tokens": 367, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/53", "task": "mmlu", "gold": "C", "prompt_tokens": 400, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/54", "task": "mmlu", "gold": "B", "prompt_tokens": 355, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/55", "task": "mmlu", "gold": "A", "prompt_tokens": 379, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/56", "task": "mmlu", "gold": "D", "prompt_tokens": 375, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/57", "task": "mmlu", "gold": "B", "prompt_tokens": 350, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/58", "task": "mmlu", "gold": "A", "prompt_tokens": 375, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/59", "task": "mmlu", "gold": "A", "prompt_tokens": 395, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/60", "task": "mmlu", "gold": "D", "prompt_tokens": 375, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/61", "task": "mmlu", "gold": "D", "prompt_tokens": 396, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/62", "task": "mmlu", "gold": "C", "prompt_tokens": 392, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/63", "task": "mmlu", "gold": "B", "prompt_tokens": 379, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/64", "task": "mmlu", "gold": "B", "prompt_tokens": 354, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/65", "task": "mmlu", "gold": "C", "prompt_tokens": 366, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/66", "task": "mmlu", "gold": "D", "prompt_tokens": 404, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/67", "task": "mmlu", "gold": "C", "prompt_tokens": 382, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/68", "task": "mmlu", "gold": "A", "prompt_tokens": 402, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/69", "task": "mmlu", "gold": "A", "prompt_tokens": 391, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/70", "task": "mmlu", "gold": "D", "prompt_tokens": 372, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/71", "task": "mmlu", "gold": "C", "prompt_tokens": 359, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/72", "task": "mmlu", "gold": "D", "prompt_tokens": 361, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/73", "task": "mmlu", "gold": "B", "prompt_tokens": 353, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/74", "task": "mmlu", "gold": "D", "prompt_tokens": 395, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/75", "task": "mmlu", "gold": "B", "prompt_tokens": 382, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/76", "task": "mmlu", "gold": "C", "prompt_tokens": 395, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/77", "task": "mmlu", "gold": "A", "prompt_tokens": 349, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/78", "task": "mmlu", "gold": "D", "prompt_tokens": 394, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/79", "task": "mmlu", "gold": "C", "prompt_tokens": 401, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/80", "task": "mmlu", "gold": "B", "prompt_tokens": 381, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/81", "task": "mmlu", "gold": "D", "prompt_tokens": 382, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/82", "task": "mmlu", "gold": "A", "prompt_tokens": 383, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/83", "task": "mmlu", "gold": "C", "prompt_tokens": 406, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/84", "task": "mmlu", "gold": "D", "prompt_tokens": 405, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/85", "task": "mmlu", "gold": "C", "prompt_tokens": 392, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/86", "task": "mmlu", "gold": "A", "prompt_tokens": 400, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/87", "task": "mmlu", "gold": "A", "prompt_tokens": 377, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/88", "task": "mmlu", "gold": "A", "prompt_tokens": 357, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/89", "task": "mmlu", "gold": "C", "prompt_tokens": 375, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/90", "task": "mmlu", "gold": "D", "prompt_tokens": 390, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/91", "task": "mmlu", "gold": "B", "prompt_tokens": 363, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/92", "task": "mmlu", "gold": "B", "prompt_tokens": 395, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/93", "task": "mmlu", "gold": "A", "prompt_tokens": 356, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/94", "task": "mmlu", "gold": "D", "prompt_tokens": 377, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/95", "task": "mmlu", "gold": "C", "prompt_tokens": 409, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/96", "task": "mmlu", "gold": "B", "prompt_tokens": 370, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/97", "task": "mmlu", "gold": "C", "prompt_tokens": 362, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/98", "task": "mmlu", "gold": "C", "prompt_tokens": 358, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/abstract_algebra/99", "task": "mmlu", "gold": "C", "prompt_tokens": 377, "subject": "abstract_algebra", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/0", "task": "mmlu", "gold": "A", "prompt_tokens": 379, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/1", "task": "mmlu", "gold": "B", "prompt_tokens": 380, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/2", "task": "mmlu", "gold": "A", "prompt_tokens": 340, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/3", "task": "mmlu", "gold": "C", "prompt_tokens": 337, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/4", "task": "mmlu", "gold": "B", "prompt_tokens": 352, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/5", "task": "mmlu", "gold": "B", "prompt_tokens": 367, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/6", "task": "mmlu", "gold": "A", "prompt_tokens": 346, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/7", "task": "mmlu", "gold": "B", "prompt_tokens": 345, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/8", "task": "mmlu", "gold": "C", "prompt_tokens": 348, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/9", "task": "mmlu", "gold": "D", "prompt_tokens": 353, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/10", "task": "mmlu", "gold": "D", "prompt_tokens": 371, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/11", "task": "mmlu", "gold": "D", "prompt_tokens": 391, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/12", "task": "mmlu", "gold": "D", "prompt_tokens": 390, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/13", "task": "mmlu", "gold": "B", "prompt_tokens": 425, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/14", "task": "mmlu", "gold": "A", "prompt_tokens": 395, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/15", "task": "mmlu", "gold": "C", "prompt_tokens": 372, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/16", "task": "mmlu", "gold": "B", "prompt_tokens": 359, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/17", "task": "mmlu", "gold": "D", "prompt_tokens": 334, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/18", "task": "mmlu", "gold": "D", "prompt_tokens": 345, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/19", "task": "mmlu", "gold": "C", "prompt_tokens": 337, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/20", "task": "mmlu", "gold": "C", "prompt_tokens": 364, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/21", "task": "mmlu", "gold": "C", "prompt_tokens": 348, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/22", "task": "mmlu", "gold": "B", "prompt_tokens": 361, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/23", "task": "mmlu", "gold": "B", "prompt_tokens": 360, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/24", "task": "mmlu", "gold": "B", "prompt_tokens": 362, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/25", "task": "mmlu", "gold": "C", "prompt_tokens": 337, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/26", "task": "mmlu", "gold": "C", "prompt_tokens": 353, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/27", "task": "mmlu", "gold": "A", "prompt_tokens": 353, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/28", "task": "mmlu", "gold": "C", "prompt_tokens": 353, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/29", "task": "mmlu", "gold": "B", "prompt_tokens": 420, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/30", "task": "mmlu", "gold": "C", "prompt_tokens": 338, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/31", "task": "mmlu", "gold": "A", "prompt_tokens": 363, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/32", "task": "mmlu", "gold": "B", "prompt_tokens": 345, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/33", "task": "mmlu", "gold": "B", "prompt_tokens": 335, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/34", "task": "mmlu", "gold": "C", "prompt_tokens": 367, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/35", "task": "mmlu", "gold": "C", "prompt_tokens": 362, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/36", "task": "mmlu", "gold": "D", "prompt_tokens": 348, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/37", "task": "mmlu", "gold": "C", "prompt_tokens": 348, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/38", "task": "mmlu", "gold": "D", "prompt_tokens": 351, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/39", "task": "mmlu", "gold": "C", "prompt_tokens": 356, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/40", "task": "mmlu", "gold": "C", "prompt_tokens": 354, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/41", "task": "mmlu", "gold": "C", "prompt_tokens": 359, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/42", "task": "mmlu", "gold": "B", "prompt_tokens": 348, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/43", "task": "mmlu", "gold": "C", "prompt_tokens": 388, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/44", "task": "mmlu", "gold": "A", "prompt_tokens": 398, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/45", "task": "mmlu", "gold": "C", "prompt_tokens": 376, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/46", "task": "mmlu", "gold": "B", "prompt_tokens": 355, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/47", "task": "mmlu", "gold": "C", "prompt_tokens": 337, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/48", "task": "mmlu", "gold": "A", "prompt_tokens": 358, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/49", "task": "mmlu", "gold": "C", "prompt_tokens": 402, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/50", "task": "mmlu", "gold": "D", "prompt_tokens": 350, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/51", "task": "mmlu", "gold": "D", "prompt_tokens": 350, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/52", "task": "mmlu", "gold": "B", "prompt_tokens": 382, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/53", "task": "mmlu", "gold": "B", "prompt_tokens": 331, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/54", "task": "mmlu", "gold": "B", "prompt_tokens": 377, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/55", "task": "mmlu", "gold": "D", "prompt_tokens": 335, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/56", "task": "mmlu", "gold": "A", "prompt_tokens": 379, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/57", "task": "mmlu", "gold": "C", "prompt_tokens": 346, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/58", "task": "mmlu", "gold": "D", "prompt_tokens": 345, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/59", "task": "mmlu", "gold": "D", "prompt_tokens": 344, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/60", "task": "mmlu", "gold": "D", "prompt_tokens": 344, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/61", "task": "mmlu", "gold": "C", "prompt_tokens": 379, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/62", "task": "mmlu", "gold": "B", "prompt_tokens": 351, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/63", "task": "mmlu", "gold": "C", "prompt_tokens": 348, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/64", "task": "mmlu", "gold": "C", "prompt_tokens": 365, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/65", "task": "mmlu", "gold": "B", "prompt_tokens": 385, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/66", "task": "mmlu", "gold": "D", "prompt_tokens": 362, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/67", "task": "mmlu", "gold": "C", "prompt_tokens": 367, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/68", "task": "mmlu", "gold": "D", "prompt_tokens": 351, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/69", "task": "mmlu", "gold": "B", "prompt_tokens": 386, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/70", "task": "mmlu", "gold": "B", "prompt_tokens": 399, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/71", "task": "mmlu", "gold": "A", "prompt_tokens": 349, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/72", "task": "mmlu", "gold": "D", "prompt_tokens": 339, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/73", "task": "mmlu", "gold": "A", "prompt_tokens": 403, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/74", "task": "mmlu", "gold": "D", "prompt_tokens": 363, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/75", "task": "mmlu", "gold": "C", "prompt_tokens": 374, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/76", "task": "mmlu", "gold": "A", "prompt_tokens": 356, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/77", "task": "mmlu", "gold": "A", "prompt_tokens": 425, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/78", "task": "mmlu", "gold": "C", "prompt_tokens": 343, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/79", "task": "mmlu", "gold": "D", "prompt_tokens": 374, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/80", "task": "mmlu", "gold": "B", "prompt_tokens": 346, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/81", "task": "mmlu", "gold": "B", "prompt_tokens": 363, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/82", "task": "mmlu", "gold": "C", "prompt_tokens": 357, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/83", "task": "mmlu", "gold": "B", "prompt_tokens": 343, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/84", "task": "mmlu", "gold": "B", "prompt_tokens": 341, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/85", "task": "mmlu", "gold": "C", "prompt_tokens": 382, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/86", "task": "mmlu", "gold": "C", "prompt_tokens": 402, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/87", "task": "mmlu", "gold": "C", "prompt_tokens": 348, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/88", "task": "mmlu", "gold": "C", "prompt_tokens": 374, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/89", "task": "mmlu", "gold": "A", "prompt_tokens": 341, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/90", "task": "mmlu", "gold": "D", "prompt_tokens": 359, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/91", "task": "mmlu", "gold": "B", "prompt_tokens": 412, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/92", "task": "mmlu", "gold": "B", "prompt_tokens": 387, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/93", "task": "mmlu", "gold": "D", "prompt_tokens": 368, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/94", "task": "mmlu", "gold": "A", "prompt_tokens": 358, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/95", "task": "mmlu", "gold": "C", "prompt_tokens": 369, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/96", "task": "mmlu", "gold": "A", "prompt_tokens": 347, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/97", "task": "mmlu", "gold": "C", "prompt_tokens": 396, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/98", "task": "mmlu", "gold": "A", "prompt_tokens": 354, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/99", "task": "mmlu", "gold": "C", "prompt_tokens": 371, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/100", "task": "mmlu", "gold": "D", "prompt_tokens": 362, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/101", "task": "mmlu", "gold": "D", "prompt_tokens": 376, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/102", "task": "mmlu", "gold": "C", "prompt_tokens": 352, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/103", "task": "mmlu", "gold": "B", "prompt_tokens": 356, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/104", "task": "mmlu", "gold": "A", "prompt_tokens": 394, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/105", "task": "mmlu", "gold": "C", "prompt_tokens": 390, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/106", "task": "mmlu", "gold": "C", "prompt_tokens": 345, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/107", "task": "mmlu", "gold": "D", "prompt_tokens": 353, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/108", "task": "mmlu", "gold": "D", "prompt_tokens": 340, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/109", "task": "mmlu", "gold": "A", "prompt_tokens": 379, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/110", "task": "mmlu", "gold": "C", "prompt_tokens": 377, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/111", "task": "mmlu", "gold": "C", "prompt_tokens": 374, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/112", "task": "mmlu", "gold": "D", "prompt_tokens": 345, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/113", "task": "mmlu", "gold": "A", "prompt_tokens": 336, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/114", "task": "mmlu", "gold": "A", "prompt_tokens": 363, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/115", "task": "mmlu", "gold": "B", "prompt_tokens": 347, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/116", "task": "mmlu", "gold": "D", "prompt_tokens": 336, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/117", "task": "mmlu", "gold": "B", "prompt_tokens": 350, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/118", "task": "mmlu", "gold": "B", "prompt_tokens": 366, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/119", "task": "mmlu", "gold": "D", "prompt_tokens": 350, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/120", "task": "mmlu", "gold": "C", "prompt_tokens": 337, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/121", "task": "mmlu", "gold": "B", "prompt_tokens": 358, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/122", "task": "mmlu", "gold": "C", "prompt_tokens": 347, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/123", "task": "mmlu", "gold": "B", "prompt_tokens": 353, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/124", "task": "mmlu", "gold": "D", "prompt_tokens": 345, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/125", "task": "mmlu", "gold": "B", "prompt_tokens": 385, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/126", "task": "mmlu", "gold": "C", "prompt_tokens": 342, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/127", "task": "mmlu", "gold": "C", "prompt_tokens": 337, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}
+{"id": "mmlu/anatomy/128", "task": "mmlu", "gold": "A", "prompt_tokens": 336, "subject": "anatomy", "allowed": ["A", "B", "C", "D"]}

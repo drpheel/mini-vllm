@@ -12,7 +12,8 @@ constexpr int NUM_Q_HEADS = HIDDEN_SIZE / HEAD_DIM;
 constexpr int NUM_KV_HEADS = KV_DIM / HEAD_DIM;
 constexpr int GQA_Q_TO_K_RATIO = NUM_Q_HEADS / NUM_KV_HEADS;
 constexpr int BLOCK_SIZE = 16;
-constexpr int MAX_BLOCKS_PER_SEQ = 32;
+// Must match llama_prefill::MAX_BLOCKS_PER_SEQ. The attention kernel uses this stride.
+constexpr int MAX_BLOCKS_PER_SEQ = 256;
 constexpr int N_LAYERS = 32;
 constexpr int BLOCK_BYTES = BLOCK_SIZE * KV_DIM * static_cast<int>(sizeof(__nv_bfloat16)) * 2;
 constexpr int V_OFFSET = BLOCK_SIZE * KV_DIM * static_cast<int>(sizeof(__nv_bfloat16));

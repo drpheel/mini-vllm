@@ -15,7 +15,8 @@
 
 namespace prompt_tokens {
 
-constexpr int MAX_PROMPT_LEN = 512;
+// Must match BLOCK_SIZE * MAX_BLOCKS_PER_SEQ in prefill.cuh (4096).
+constexpr int MAX_PROMPT_LEN = 4096;
 
 inline void check_cuda(cudaError_t status, const char* call) {
   if (status != cudaSuccess) {
@@ -150,6 +151,24 @@ inline GpuPromptTokens copy_token_ids_to_gpu(const std::vector<int>& input_token
 
 inline GpuPromptTokens load_token_ids_to_gpu(const std::filesystem::path& path) {
   return copy_token_ids_to_gpu(read_token_ids(path));
+}
+
+// Capacity stays fixed so an eval loop can rewrite a shorter prompt into the same buffer.
+inline GpuPromptTokens allocate_token_capacity(size_t capacity) {
+  if (capacity == 0 || capacity > static_cast<size_t>(MAX_PROMPT_LEN)) {
+    throw std::runtime_error("token capacity must be in 1.." + std::to_string(MAX_PROMPT_LEN));
+  }
+  void* raw_device_tokens = nullptr;
+  check_cuda(cudaHostAlloc(&raw_device_tokens, capacity * sizeof(int), cudaHostAllocMapped),
+             "cudaHostAlloc(prompt token capacity)");
+  void* device_alias = nullptr;
+  check_cuda(cudaHostGetDevicePointer(&device_alias, raw_device_tokens, 0),
+             "cudaHostGetDevicePointer(prompt token capacity)");
+  if (device_alias != raw_device_tokens) {
+    cudaFreeHost(raw_device_tokens);
+    throw std::runtime_error("prompt tokens: expected unified host/device pointer on Jetson");
+  }
+  return GpuPromptTokens(static_cast<int*>(raw_device_tokens), capacity);
 }
 
 }  // namespace prompt_tokens

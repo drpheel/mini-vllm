@@ -1,4 +1,5 @@
 #include "decode.cuh"
+#include "rope.cuh"
 
 #include <cuda_runtime.h>
 
@@ -44,20 +45,20 @@ __global__ void rmsNormKernel(__nv_bfloat16* input,
 }
 
 __global__ void ropeKernelDecode(__nv_bfloat16* input, int position_in_sequence, int proj_dim, int head_dim) {
-  if (2 * threadIdx.x + 1 >= proj_dim) {
+  if (threadIdx.x >= proj_dim / 2) {
     return;
   }
 
-  const int pair_index = threadIdx.x % (head_dim / 2);
-  const int double_i = 2 * pair_index;
-  const float theta = 1.0f / powf(500000.0f, static_cast<float>(double_i) / static_cast<float>(head_dim));
+  int pair_index = 0;
+  int low = 0;
+  int high = 0;
+  llama_rope_offsets(threadIdx.x, head_dim, &pair_index, &low, &high);
+  const float theta = llama3_inv_freq(pair_index, head_dim);
   const float angle = static_cast<float>(position_in_sequence) * theta;
-  const __nv_bfloat16 prev_2i = input[2 * threadIdx.x];
-  const __nv_bfloat16 prev_2i_1 = input[2 * threadIdx.x + 1];
-  input[2 * threadIdx.x] =
-      static_cast<__nv_bfloat16>(static_cast<float>(prev_2i) * cosf(angle) - static_cast<float>(prev_2i_1) * sinf(angle));
-  input[2 * threadIdx.x + 1] =
-      static_cast<__nv_bfloat16>(static_cast<float>(prev_2i) * sinf(angle) + static_cast<float>(prev_2i_1) * cosf(angle));
+  const float x0 = static_cast<float>(input[low]);
+  const float x1 = static_cast<float>(input[high]);
+  input[low] = static_cast<__nv_bfloat16>(x0 * cosf(angle) - x1 * sinf(angle));
+  input[high] = static_cast<__nv_bfloat16>(x1 * cosf(angle) + x0 * sinf(angle));
 }
 
 // Inside a single particular thread that processes a single position of particular Q head for a
@@ -130,20 +131,20 @@ __global__ void pagedAttentionKernel(int layer,
 }
 
 __global__ void ropeKernelDecodePtr(__nv_bfloat16* input, const int* position, int proj_dim, int head_dim) {
-  if (2 * threadIdx.x + 1 >= proj_dim) {
+  if (threadIdx.x >= proj_dim / 2) {
     return;
   }
 
-  const int pair_index = threadIdx.x % (head_dim / 2);
-  const int double_i = 2 * pair_index;
-  const float theta = 1.0f / powf(500000.0f, static_cast<float>(double_i) / static_cast<float>(head_dim));
+  int pair_index = 0;
+  int low = 0;
+  int high = 0;
+  llama_rope_offsets(threadIdx.x, head_dim, &pair_index, &low, &high);
+  const float theta = llama3_inv_freq(pair_index, head_dim);
   const float angle = static_cast<float>(*position) * theta;
-  const __nv_bfloat16 prev_2i = input[2 * threadIdx.x];
-  const __nv_bfloat16 prev_2i_1 = input[2 * threadIdx.x + 1];
-  input[2 * threadIdx.x] =
-      static_cast<__nv_bfloat16>(static_cast<float>(prev_2i) * cosf(angle) - static_cast<float>(prev_2i_1) * sinf(angle));
-  input[2 * threadIdx.x + 1] =
-      static_cast<__nv_bfloat16>(static_cast<float>(prev_2i) * sinf(angle) + static_cast<float>(prev_2i_1) * cosf(angle));
+  const float x0 = static_cast<float>(input[low]);
+  const float x1 = static_cast<float>(input[high]);
+  input[low] = static_cast<__nv_bfloat16>(x0 * cosf(angle) - x1 * sinf(angle));
+  input[high] = static_cast<__nv_bfloat16>(x1 * cosf(angle) + x0 * sinf(angle));
 }
 
 __global__ void scatterKvIndirectKernel(__nv_bfloat16* const* dsts, const __nv_bfloat16* src, int layer, int n) {

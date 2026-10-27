@@ -98,8 +98,11 @@ struct GraphFree {
 };
 
 void restore_snapshot(DecodeBenchBuffers& buffers) {
-  check_cuda(cudaMemcpy(buffers.paged->kv_cache, buffers.kv_snapshot, buffers.kv_cache_bytes, cudaMemcpyDeviceToDevice),
-             "cudaMemcpy(bench kv restore)");
+  // A null snapshot means the caller already rebuilt the prompt cache with prefill.
+  if (buffers.kv_snapshot != nullptr) {
+    check_cuda(cudaMemcpy(buffers.paged->kv_cache, buffers.kv_snapshot, buffers.kv_cache_bytes, cudaMemcpyDeviceToDevice),
+               "cudaMemcpy(bench kv restore)");
+  }
   if (buffers.block_table_snapshot->size() != buffers.block_table_elems ||
       buffers.free_blocks_snapshot->size() < buffers.free_blocks_count_snapshot) {
     throw std::runtime_error("KV snapshot size does not match the live cache");
